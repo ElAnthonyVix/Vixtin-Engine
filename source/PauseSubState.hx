@@ -10,125 +10,131 @@ import flixel.input.keyboard.FlxKey;
 import flixel.system.FlxSound;
 import flixel.util.FlxColor;
 
+import hscript.Interp;
+import hscript.Parser;
+import hscript.ParserEx;
+import hscript.InterpEx;
+
 class PauseSubState extends MusicBeatSubstate
 {
-	var grpMenuShit:FlxTypedGroup<Alphabet>;
+	var hscriptStates:Map<String, Interp> = [];
+	var exInterp:InterpEx = new InterpEx();
+	var haxeSprites:Map<String, FlxSprite> = [];
 
-	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Change Options', 'Change Modifiers', 'Exit to menu'];
-	var curSelected:Int = 0;
-
-	var pauseMusic:FlxSound;
+	function callHscript(func_name:String, args:Array<Dynamic>, usehaxe:String) {
+		// if function doesn't exist
+		if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
+			trace("Function doesn't exist, silently skipping...");
+			return;
+		}
+		var method = hscriptStates.get(usehaxe).variables.get(func_name);
+		switch(args.length) {
+			case 0:
+				method();
+			case 1:
+				method(args[0]);
+			case 2:
+				method(args[0], args[1]);
+			case 3:
+				method(args[0], args[1], args[2]);
+			case 4:
+				method(args[0], args[1], args[2], args[3]);
+			case 5:
+				method(args[0], args[1], args[2], args[3], args[4]);
+		}
+	}
+	function callAllHScript(func_name:String, args:Array<Dynamic>) {
+		for (key in hscriptStates.keys()) {
+			callHscript(func_name, args, key);
+		}
+	}
+	function setHaxeVar(name:String, value:Dynamic, usehaxe:String) {
+		hscriptStates.get(usehaxe).variables.set(name,value);
+	}
+	function getHaxeVar(name:String, usehaxe:String):Dynamic {
+		return hscriptStates.get(usehaxe).variables.get(name);
+	}
+	function setAllHaxeVar(name:String, value:Dynamic) {
+		for (key in hscriptStates.keys())
+			setHaxeVar(name, value, key);
+	}
+	function makeHaxeState(usehaxe:String, path:String, filename:String) {
+		trace("opening a haxe state (because we are cool :))");
+		var parser = new ParserEx();
+		var program = parser.parseString(FNFAssets.getHscript(path + filename));
+		var interp = PluginManager.createSimpleInterp();
+		// set vars
+		interp.variables.set("controls", controls);
+		interp.variables.set("MainMenuState", MainMenuState);
+		interp.variables.set("CategoryState", CategoryState);
+		interp.variables.set("ChartingState", ChartingState);
+		interp.variables.set("Alphabet", Alphabet);
+		interp.variables.set("curBeat", 0);
+		interp.variables.set("currentState", this);
+		interp.variables.set("add", add);
+		interp.variables.set("remove", remove);
+		interp.variables.set("insert", insert);
+		interp.variables.set("pi", Math.PI);
+		interp.variables.set("curMusicName", Main.curMusicName);
+		interp.variables.set("Highscore", Highscore);
+		interp.variables.set("HealthIcon", HealthIcon);
+		interp.variables.set("LoadingState", LoadingState);
+		interp.variables.set("DialogueBox", DialogueBox);
+		interp.variables.set("StoryMenuState", StoryMenuState);
+		interp.variables.set("FreeplayState", FreeplayState);
+		interp.variables.set("CreditsState", CreditsState);
+		interp.variables.set("SaveDataState", SaveDataState);
+		interp.variables.set("DifficultyIcons", DifficultyIcons);
+		interp.variables.set("Controls", Controls);
+		interp.variables.set("DifficultyManager", DifficultyManager);
+		interp.variables.set("flixelSave", FlxG.save);
+		interp.variables.set("Record", Record);
+		interp.variables.set("Math", Math);
+		interp.variables.set("Song", Song);
+		interp.variables.set("ModifierState", ModifierState);
+		interp.variables.set("Reflect", Reflect);
+		interp.variables.set("curStep", curStep);
+		interp.variables.set("curBeat", curBeat);
+		interp.variables.set("colorFromString", FlxColor.fromString);
+		interp.variables.set("PlayState", PlayState);
+		interp.variables.set("NewCharacterState", NewCharacterState);
+		interp.variables.set("NewStageState", NewStageState);
+		interp.variables.set("NewSongState", NewSongState);
+		interp.variables.set("NewWeekState", NewWeekState);
+		interp.variables.set("SelectSortState", SelectSortState);
+		interp.variables.set("CategoryState", CategoryState);
+		interp.variables.set("ControlsState", ControlsState);
+		interp.variables.set("close", close);
+		interp.variables.set("resetState", FlxG.resetState);
+		interp.variables.set("setCameras", setCameras);
+		
+		trace("set stuff");
+		interp.execute(program);
+		hscriptStates.set(usehaxe,interp);
+		callHscript("create", [], usehaxe);
+		trace('executed');
+	}
 
 	public function new(x:Float, y:Float)
 	{
 		super();
+		makeHaxeState("pause", "assets/scripts/custom_menus/", "PauseSubstate");
+	}
 
-		pauseMusic = new FlxSound().loadEmbedded('assets/music/breakfast' + TitleState.soundExt, true, true);
-		pauseMusic.volume = 0;
-		pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
-		FlxG.sound.list.add(pauseMusic);
-
-		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		bg.alpha = 0.6;
-		bg.scrollFactor.set();
-		add(bg);
-
-		grpMenuShit = new FlxTypedGroup<Alphabet>();
-		add(grpMenuShit);
-
-		for (i in 0...menuItems.length)
-		{
-			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, menuItems[i], true, false);
-			songText.isMenuItem = true;
-			songText.targetY = i;
-			grpMenuShit.add(songText);
-		}
-
-		changeSelection();
-
+	function setCameras()
+	{
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 	}
 
 	override function update(elapsed:Float)
 	{
-		if (pauseMusic.volume < 0.5)
-			pauseMusic.volume += 0.01 * elapsed;
-
 		super.update(elapsed);
-
-		var upP = controls.UP_MENU;
-		var downP = controls.DOWN_MENU;
-		var accepted = controls.ACCEPT;
-
-		if (upP)
-		{
-			changeSelection(-1);
-		}
-		if (downP)
-		{
-			changeSelection(1);
-		}
-
-		if (accepted)
-		{
-			var daSelected:String = menuItems[curSelected];
-
-			switch (daSelected)
-			{
-				case "Resume":
-					close();
-				case "Restart Song":
-					FlxG.resetState();
-				case "Exit to menu":
-					if (PlayState.isStoryMode)
-						LoadingState.loadAndSwitchState(new StoryMenuState());
-					else
-						LoadingState.loadAndSwitchState(new FreeplayState());
-				case "Change Modifiers":
-					LoadingState.loadAndSwitchState(new ModifierState());
-				case "Change Options":
-					LoadingState.loadAndSwitchState(new SaveDataState());
-			}
-		}
-
-		if (FlxG.keys.justPressed.J)
-		{
-			// for reference later!
-			// PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxKey.J, null);
-		}
+		callAllHScript("update", [elapsed]);
 	}
 
 	override function destroy()
 	{
-		pauseMusic.destroy();
-
+		callAllHScript("onDestroy", []);
 		super.destroy();
-	}
-
-	function changeSelection(change:Int = 0):Void
-	{
-		curSelected += change;
-
-		if (curSelected < 0)
-			curSelected = menuItems.length - 1;
-		if (curSelected >= menuItems.length)
-			curSelected = 0;
-
-		var bullShit:Int = 0;
-
-		for (item in grpMenuShit.members)
-		{
-			item.targetY = bullShit - curSelected;
-			bullShit++;
-
-			item.alpha = 0.6;
-			// item.setGraphicSize(Std.int(item.width * 0.8));
-
-			if (item.targetY == 0)
-			{
-				item.alpha = 1;
-				// item.setGraphicSize(Std.int(item.width));
-			}
-		}
 	}
 }

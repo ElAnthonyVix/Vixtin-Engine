@@ -9,6 +9,9 @@ import plugins.ExamplePlugin.ExampleCharPlugin;
 #end
 class Main extends Sprite
 {
+	public static var ammo:Array<Int> = [4, 6, 7, 9];
+	public static var curMusicName:String = "";
+	
 	#if sys
 	public static var cwd:String;
 	#end

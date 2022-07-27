@@ -11,10 +11,13 @@ import openfl.display.DisplayObject;
 import flixel.input.keyboard.FlxKeyboard;
 import flixel.system.frontEnds.InputFrontEnd;
 import flixel.math.FlxRect;
+import animateatlas.AtlasFrameMaker;
+import flixel.text.FlxText;
 import flixel.FlxState;
 import openfl.display.Stage;
 import flixel.FlxGame;
 import flixel.input.gamepad.FlxGamepadManager;
+import flixel.addons.display.FlxBackdrop;
 import flixel.FlxCamera;
 import flixel.util.FlxColor;
 import flixel.tweens.FlxEase;
@@ -27,10 +30,17 @@ import flixel.FlxG;
 class PluginManager {
     public static var interp = new InterpEx();
     public static var hscriptClasses:Array<String> = [];
+    //private static var nextId:Int = 1;
 	@:access(hscript.InterpEx)
-    public static function init() {
+    public static function init() 
+    {
+        //checks if the text file that has the names of the classes stored exists, otherwise this function will do nothing.
+        if (!FNFAssets.exists("assets/scripts/plugin_classes/classes.txt"))
+            return;
+        
+        //split lines of text, given to separate them into different names. something basic but powerful.
         var filelist = hscriptClasses = CoolUtil.coolTextFile("assets/scripts/plugin_classes/classes.txt");
-		interp = addVarsToInterp(interp);
+		addVarsToInterp(interp); //this little thing is responsible for adding the corresponding variables.
         HscriptGlobals.init();
         for (file in filelist) {
             if (FNFAssets.exists("assets/scripts/plugin_classes/" + file + ".hx")) {
@@ -39,6 +49,7 @@ class PluginManager {
         }
         trace(InterpEx._scriptClassDescriptors);
     }
+
     /**
      * Create a simple interp, that already added all the needed shit
      * This is what has all the default things for hscript.
@@ -61,6 +72,10 @@ class PluginManager {
 		interp.variables.set("TitleState", TitleState);
 		interp.variables.set("makeRangeArray", CoolUtil.numberArray);
 		interp.variables.set("FNFAssets", FNFAssets);
+        interp.variables.set("CoolUtil", CoolUtil);
+        interp.variables.set("Main", Main);
+        interp.variables.set("AtlasFrameMaker", AtlasFrameMaker);
+
 		// : )
 		interp.variables.set("FlxG", HscriptGlobals);
 		interp.variables.set("FlxTimer", flixel.util.FlxTimer);
@@ -73,11 +88,17 @@ class PluginManager {
 		interp.variables.set("Reflect", Reflect);
 		interp.variables.set("Character", Character);
 		interp.variables.set("OptionsHandler", OptionsHandler);
+        interp.variables.set("FlxText", FlxText);
+        interp.variables.set("FlxBackdrop", FlxBackdrop);
+        interp.variables.set("LoadingState", LoadingState);
+        interp.variables.set("FlxRect", FlxRect);
+        interp.variables.set("callExternClass", PluginManager.interp.createScriptClassInstance); //Call modules?? :D
 		#if debug
 		interp.variables.set("debug", true);
 		#else
 		interp.variables.set("debug", false);
 		#end
+
         return interp;
     }
 }

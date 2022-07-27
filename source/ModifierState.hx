@@ -58,6 +58,15 @@ class ModifierState extends MusicBeatState
 			desc: "Play the Funkin Game!"
 		},
 		{
+			name: "Chart...",
+			internName: "chart",
+			value: false,
+			conflicts: [],
+			multi: 1,
+			times: true,
+			desc: "Enter in Chart Mode!"
+		},
+		{
 			name: "Char Select...",
 			internName: "charselect",
 			value: false,

@@ -12,7 +12,7 @@ class DiscordClient
         #if cpp
 		trace("Discord Client starting...");
 		DiscordRpc.start({
-			clientID: "840632338949210114",
+			clientID: "959138138951913554",
 			onReady: onReady,
 			onError: onError,
 			onDisconnected: onDisconnected
@@ -44,7 +44,7 @@ class DiscordClient
 			details: "In the Menus",
 			state: null,
 			largeImageKey: 'icon',
-			largeImageText: "Friday Night Funkin' Modding Plus"
+			largeImageText: "Friday Night Funkin' Vixtin Engine"
 		});
         #end
 	}
@@ -84,7 +84,7 @@ class DiscordClient
 			smallImageKey = "icon";
 		}
 		if (smallImageString == null) {
-			smallImageString = "Friday Night Funkin' Modding Plus";
+			smallImageString = "Friday Night Funkin' Vixtin Engine";
 		}
 		DiscordRpc.presence({
 			details: details,

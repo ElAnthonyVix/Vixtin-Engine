@@ -10,6 +10,8 @@ typedef SwagSection =
 	var changeBPM:Bool;
 	var altAnim:Bool;
 	var altAnimNum:Null<Int>;
+	var crossfadeBf:Bool;
+	var crossfadeDad:Bool;
 }
 
 class Section

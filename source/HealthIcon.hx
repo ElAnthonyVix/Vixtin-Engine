@@ -4,6 +4,7 @@ import flixel.FlxSprite;
 import lime.utils.Assets;
 import lime.system.System;
 import flash.display.BitmapData;
+import flixel.graphics.FlxGraphic;
 #if sys
 import sys.io.File;
 import haxe.io.Path;
@@ -26,6 +27,8 @@ class HealthIcon extends FlxSprite
 	var player:Bool = false;
 	public var sprTracker:FlxSprite;
 	public var iconState(default, set):IconState = Normal;
+	public var xAdd:Float = 0;
+	public var yAdd:Float = 0;
 	function set_iconState(x:IconState):IconState {
 		switch (x) {
 			case Normal:
@@ -80,7 +83,7 @@ class HealthIcon extends FlxSprite
 		else
 		{
 			loadGraphic('assets/images/iconGrid.png', true, 150, 150);
-			animation.add('icon', iconFrames, false, player);
+			animation.add('icon', [10, 11, 11, 10], false, player);
 		}
 		animation.play('icon');
 		animation.pause();
@@ -90,6 +93,6 @@ class HealthIcon extends FlxSprite
 		super.update(elapsed);
 
 		if (sprTracker != null)
-			setPosition(sprTracker.x + sprTracker.width + 10, sprTracker.y - 30);
+			setPosition(sprTracker.x + sprTracker.width + 10 + xAdd, sprTracker.y + yAdd - 30);
 	}
 }

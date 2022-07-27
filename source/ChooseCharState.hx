@@ -9,6 +9,7 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+import flixel.tweens.FlxTween;
 import DifficultyIcons;
 import flixel.addons.ui.FlxInputText;
 import flixel.addons.ui.FlxUI9SliceSprite;
@@ -38,6 +39,12 @@ class ChooseCharState extends MusicBeatState
     var curChar:String = PlayState.SONG.player1;
 
     var dadMenu:Bool = false;
+    private var iconArray:Array<HealthIcon> = [];
+	var isPixelIcon:Array<Bool> = [];
+
+    var charJson:Dynamic;
+	var iconJson:Dynamic;
+    var menuBG:FlxSprite;
 
 
     public function new(anim:String = "bf")
@@ -48,7 +55,15 @@ class ChooseCharState extends MusicBeatState
 
     override function create()
     {
-        var menuBG:FlxSprite = new FlxSprite().loadGraphic('assets/images/menuDesat.png');
+        
+        var isDebug:Bool = false;
+		charJson = CoolUtil.parseJson(FNFAssets.getJson('assets/images/custom_chars/custom_chars'));
+		iconJson = CoolUtil.parseJson(FNFAssets.getJson("assets/images/custom_chars/icon_only_chars"));
+		#if debug
+		isDebug = true;
+		#end
+        
+        menuBG = new FlxSprite().loadGraphic('assets/images/menuDesat.png');
         menuBG.color = 0xFFea71fd;
         grpAlphabet = new FlxTypedGroup<Alphabet>();
         menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
@@ -81,6 +96,14 @@ class ChooseCharState extends MusicBeatState
             awesomeChar.isMenuItem = true;
             awesomeChar.targetY = character;
             grpAlphabet.add(awesomeChar);
+
+            var icon:HealthIcon = new HealthIcon(characters[character]);
+			icon.sprTracker = awesomeChar;
+			// icons won't be visible 
+			icon.visible = true;
+            icon.xAdd = 50;
+			iconArray.push(icon);
+			add(icon);
         }
 
         add(grpAlphabet);
@@ -134,6 +157,13 @@ class ChooseCharState extends MusicBeatState
 
         var bullShit:Int = 0;
 
+        for (i in 0...iconArray.length)
+		{
+			iconArray[i].alpha = 0.6;
+		}
+
+		iconArray[curSelected].alpha = 1;
+
         for (item in grpAlphabet.members)
         {
             item.targetY = bullShit - curSelected;
@@ -148,11 +178,20 @@ class ChooseCharState extends MusicBeatState
                 // item.setGraphicSize(Std.int(item.width));
             }
         }
+
+        var coolors = ["black"];
+		if (Reflect.hasField(charJson, characters[curSelected])) {
+			coolors = Reflect.field(charJson, characters[curSelected]).colors;
+		} else {
+			coolors = Reflect.field(iconJson, characters[curSelected]).colors;
+		}
+		FlxTween.color(menuBG,0.5, menuBG.color, FlxColor.fromString(coolors[0]));
     }
 
     function chooseSelection()
     {
         remove(char);
+        char.destroy();
         char = new Character(400, 100, curChar);
         if (!dadMenu) //cleaned up
         {
@@ -176,6 +215,7 @@ class ChooseCharState extends MusicBeatState
         FlxG.sound.play('assets/sounds/scrollMenu' + TitleState.soundExt, 0.4);
         dadMenu = !dadMenu;
         remove(char);
+        char.destroy();
         if (!dadMenu){ //cleaned this too
             char = new Character(400, 100, PlayState.SONG.player1);
             char.flipX = true;
