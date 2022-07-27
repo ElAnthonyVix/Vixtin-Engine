@@ -1,0 +1,107 @@
+var grpMenuShit;
+
+var menuItems = ['Resume', 'Restart Song', 'Change Options', 'Change Modifiers', 'Exit to menu'];
+var curSelected = 0;
+
+var pauseMusic;
+
+function create() 
+{
+	pauseMusic = new FlxSound().loadEmbedded('assets/music/breakfast' + TitleState.soundExt, true, true);
+	pauseMusic.volume = 0;
+	pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
+	FlxG.sound.list.add(pauseMusic);
+
+	var bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF000000);
+	bg.alpha = 0.6;
+	bg.scrollFactor.set();
+	add(bg);
+
+	grpMenuShit = new FlxGroup();
+	add(grpMenuShit);
+
+	for (i in 0...menuItems.length)
+	{
+		var songText = new Alphabet(0, (70 * i) + 30, menuItems[i], true, false);
+		songText.isMenuItem = true;
+		songText.targetY = i;
+		grpMenuShit.add(songText);
+	}
+
+	changeSelection(0);
+
+	setCameras();
+}
+
+function update(elapsed)
+{
+	if (pauseMusic.volume < 0.5)
+		pauseMusic.volume += 0.01 * elapsed;
+
+	var upP = controls.UP_MENU;
+	var downP = controls.DOWN_MENU;
+	var accepted = controls.ACCEPT;
+
+	if (upP)
+	{
+		changeSelection(-1);
+	}
+	if (downP)
+	{
+		changeSelection(1);
+	}
+
+	if (accepted)
+	{
+		var daSelected = menuItems[curSelected];
+
+		switch (daSelected)
+		{
+			case "Resume":
+				close();
+			case "Restart Song":
+				resetState();
+			case "Exit to menu":
+				if (PlayState.isStoryMode)
+					LoadingState.loadAndSwitchState(new StoryMenuState());
+				else
+					LoadingState.loadAndSwitchState(new FreeplayState());
+			case "Change Modifiers":
+				LoadingState.loadAndSwitchState(new ModifierState());
+			case "Change Options":
+				LoadingState.loadAndSwitchState(new SaveDataState());
+		}
+	}
+}
+
+function onDestroy()
+{
+	pauseMusic.destroy();
+}
+
+function changeSelection(change)
+{
+	curSelected += change;
+
+	if (curSelected < 0)
+		curSelected = menuItems.length - 1;
+	if (curSelected >= menuItems.length)
+		curSelected = 0;
+
+	var bullShit = 0;
+
+	for (item in grpMenuShit.members)
+	{
+		item.targetY = bullShit - curSelected;
+		bullShit++;
+
+		item.alpha = 0.6;
+		// item.setGraphicSize(Std.int(item.width * 0.8));
+
+		if (item.targetY == 0)
+		{
+			item.alpha = 1;
+			// item.setGraphicSize(Std.int(item.width));
+		}
+	}
+}

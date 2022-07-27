@@ -1,0 +1,458 @@
+var saves;
+var options;
+var optionMenu;
+var optionMask;
+var curSelected = 0;
+var mappedOptions = {};
+var inOptionsMenu = false;
+var optionsSelected = 0;
+var checkmarks;
+var numberDisplays = [];
+var sfxJson = CoolUtil.parseJson(FNFAssets.getText("assets/sounds/custom_menu_sounds/custom_menu_sounds.json"));
+var musicJson = CoolUtil.parseJson(FNFAssets.getText("assets/music/custom_menu_music/custom_menu_music.json"));
+var preferredSave = 0;
+var description;
+var forbiddenIndexes = [];
+var activedOptions = [];
+function create()
+{
+	FlxG.sound.music.stop();
+	var goodSound = FNFAssets.getSound('assets/music/custom_menu_music/'
+		+ musicJson.Options
+		+ '/options'
+		+ TitleState.soundExt);
+	optionMask = CoolUtil.parseJson(FNFAssets.getJson('assets/data/optionsMask'));
+	FlxG.sound.playMusic(goodSound);
+	var menuBG = new FlxSprite().loadGraphic('assets/images/menuDesat.png');
+	makeOptionList();
+	var kidsToKill = [];
+	for (option in 0...SaveDataState.optionList.length) {
+		var exception = false;
+		if (Reflect.field(optionMask, SaveDataState.optionList[option].intName) != null && !Reflect.field(optionMask, SaveDataState.optionList[option].intName))
+		{
+			kidsToKill.push(option);
+			exception = true;
+		}
+		if (!exception)
+			activedOptions.push(option);
+	}
+	for (kid in 0...kidsToKill.length) {
+		SaveDataState.optionList.remove(kidsToKill[kid]);
+	}
+	// amount of things that aren't options
+	var curOptions = OptionsHandler.options;
+	for (i in 0...SaveDataState.optionList.length) {
+		if (SaveDataState.optionList[i].ignore)
+			continue;
+		Reflect.setField(mappedOptions, SaveDataState.optionList[i].intName, SaveDataState.optionList[i]);
+		SaveDataState.optionList[i].value = Reflect.field(curOptions, SaveDataState.optionList[i].intName);
+		if (valueIsInt(Reflect.field(curOptions, SaveDataState.optionList[i].intName)) || (valueIsFloat(Reflect.field(curOptions, SaveDataState.optionList[i].intName)))) {
+			SaveDataState.optionList[i].amount = Reflect.field(curOptions, SaveDataState.optionList[i].intName);
+			SaveDataState.optionList[i].value = SaveDataState.optionList[i].amount != SaveDataState.optionList[i].defAmount;
+		}
+	}
+	// we use a var because if we don't it will read the file each time
+	// although it isn't as laggy thanks to assets
+	preferredSave = curOptions.preferredSave;
+	/*
+	SaveDataState.optionList[0].value = curOptions.alwaysDoCutscenes;
+	SaveDataState.optionList[1].value = curOptions.skipModifierMenu;
+	SaveDataState.optionList[2].value = curOptions.skipVictoryScreen;
+	SaveDataState.optionList[3].value = curOptions.downscroll;
+	SaveDataState.optionList[4].value = curOptions.useCustomInput;
+	SaveDataState.optionList[5].value = curOptions.DJFKKeys;
+	SaveDataState.optionList[6].value = curOptions.showSongPos;
+	*/
+	saves = new FlxTypedSpriteGroup();
+	menuBG.color = 0xFF7194fc;
+	menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
+	menuBG.updateHitbox();
+	menuBG.screenCenter();
+	menuBG.antialiasing = true;
+	trace("before");
+	for (i in 0...10) {
+		var saveFile = new SaveFile(420, 0, i);
+
+		saves.add(saveFile);
+	}
+	trace("x3");
+	checkmarks = new FlxTypedSpriteGroup();
+	options = new FlxTypedSpriteGroup();
+	optionMenu = new FlxTypedSpriteGroup();
+	optionMenu.add(options);
+	trace("hmmm");
+	var curNum = 0;
+	for (j in 0...SaveDataState.optionList.length) {
+		if (Reflect.field(optionMask, SaveDataState.optionList[j].intName) != null && !Reflect.field(optionMask, SaveDataState.optionList[j].intName))
+		{
+			// skip display if it is masked out
+			continue;
+		}
+		forbiddenIndexes.push(j);
+		trace("l53");
+		var swagOption = new Alphabet(0,0,SaveDataState.optionList[j].name,true,false, false);
+		swagOption.isMenuItem = true;
+		swagOption.targetY = curNum;
+		trace("l57");
+		var coolCheckmark = new FlxSprite().loadGraphic('assets/images/checkmark.png');
+
+		var gvar;
+		if (SaveDataState.optionList[j].precision != null) 
+			gvar = SaveDataState.optionList[j].precision;
+		else
+			gvar = 1;
+
+		var hvar;
+		if (SaveDataState.optionList[j].min != null)
+			hvar = SaveDataState.optionList[j].min;
+		else
+			hvar = 0;
+
+		var numDisplay = new NumberDisplay(0, 0, SaveDataState.optionList[j].defAmount, gvar, hvar, SaveDataState.optionList[j].max);
+		numDisplay.visible = SaveDataState.optionList[j].amount != null;
+		numberDisplays.push(numDisplay);
+		numDisplay.value = SaveDataState.optionList[j].amount;
+		coolCheckmark.visible = SaveDataState.optionList[j].value;
+		if (SaveDataState.optionList[j].intName == "judge") {
+			switch (Std.int(SaveDataState.optionList[j].amount))
+			{
+				case 9:
+					numDisplay.text = "Classic";
+				case 10:
+					numDisplay.text = "Hard";
+				default:
+					numDisplay.text = SaveDataState.optionList[j].amount + 1 + "";
+			}
+		}
+		numDisplay.size = 40;
+		numDisplay.x += numDisplay.width + swagOption.width;
+		
+		checkmarks.add(coolCheckmark);
+		swagOption.add(coolCheckmark);
+		swagOption.add(numDisplay);
+		options.add(swagOption);
+		curNum++;
+	}
+	add(menuBG);
+	add(saves);
+	add(optionMenu);
+	trace("hewwo");
+	options.x = 10;
+	optionMenu.x = FlxG.width;
+	options.y = 10;
+	description = new FlxText(750, 150, 350, "", 90);
+	description.setFormat("assets/fonts/vcr.ttf", 32, 0xFFffffff, "left", FlxTextBorderStyle.OUTLINE, 0xFF000000);
+	description.text = "Amongus???";
+	description.scrollFactor.set();
+	optionMenu.add(description);
+	changeSelection(0);
+	if (curOptions.allowEditOptions)
+		swapMenus();
+	
+}
+
+function update(elapsed) {
+	if (controls.BACK) {
+		if (!saves.members[curSelected].beingSelected) {
+			// our current save saves this
+			// we are gonna have to do some shenanagins to save our preffered save
+
+			saveOptions();
+			saveOptions();
+			//FlxG.sound.music.stop();
+			LoadingState.loadAndSwitchState(new MainMenuState());
+		} else {
+			if (saves.members[curSelected].askingToConfirm)
+				saves.members[curSelected].askToConfirm(false);
+			else
+				saves.members[curSelected].beSelected(false);
+		}
+	}
+	if (inOptionsMenu || !saves.members[curSelected].askingToConfirm) {
+		if (controls.UP_MENU)
+		{
+			if (inOptionsMenu || !saves.members[curSelected].beingSelected)
+				changeSelection(-1);
+		}
+		if (controls.DOWN_MENU)
+		{
+			if (inOptionsMenu || !saves.members[curSelected].beingSelected)
+				changeSelection(1);
+		}
+		if ((controls.RIGHT_MENU || controls.LEFT_MENU)) {
+			if (saves.members[curSelected].beingSelected)
+				saves.members[curSelected].changeSelection();
+			else if (SaveDataState.optionList[activedOptions[optionsSelected]].amount != null) {
+
+				changeAmount(controls.RIGHT_MENU);
+
+			}	else {
+				if ((OptionsHandler.options.allowEditOptions && !inOptionsMenu) || (OptionsHandler.options.useSaveDataMenu && inOptionsMenu))
+					swapMenus();
+
+			}
+		}
+	}
+	// holding control makes changing things go WEEEEEEEEEEE
+	if (FlxG.keys.pressed.CONTROL && (controls.RIGHT_MENU_H || controls.LEFT_MENU_H)) {
+		if (inOptionsMenu && SaveDataState.optionList[activedOptions[optionsSelected]].amount != null)
+		{
+			changeAmount(controls.RIGHT_MENU_H);
+		}
+	}
+	if (controls.ACCEPT) {
+		if (saves.members[curSelected].beingSelected) {
+			if (!saves.members[curSelected].askingToConfirm) {
+				if (saves.members[curSelected].selectingLoad) {
+					var saveName = "save" + curSelected;
+					flixelSave.close();
+					preferredSave = curSelected;
+					flixelSave.bind(saveName, "ElAnthonyVixtin");
+					FlxG.sound.play('assets/sounds/custom_menu_sounds/'
+						+ CoolUtil.parseJson(FNFAssets.getText("assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuConfirm+'/confirmMenu.ogg');
+					// don't edit the djkf
+					if (flixelSave.data.songScores == null) {
+						flixelSave.data.songScores = ["tutorial" => 0];
+					}
+					Highscore.load();
+				} else {
+					saves.members[curSelected].askToConfirm(true);
+				}
+
+			} else {
+				// this means the user confirmed!
+				var oldSave = flixelSave.name;
+				var saveName = "save" + curSelected;
+				flixelSave.bind(saveName, "ElAnthonyVixtin");
+				flixelSave.erase();
+				saves.members[curSelected].askToConfirm(false);
+				// sounds like someone farted into the mic. perfect for a delete sfx
+				FlxG.sound.play('assets/sounds/freshIntro.ogg');
+				flixelSave.data.songScores = ["tutorial" => 0];
+				flixelSave.bind(oldSave, "bulbyVR");
+				Highscore.load();
+			}
+		} else if (!inOptionsMenu) {
+			FlxG.sound.play('assets/sounds/custom_menu_sounds/'
+				+ sfxJson.customMenuScroll+'/scrollMenu' + TitleState.soundExt);
+			saves.members[curSelected].beSelected(true);
+		} else {
+			switch (SaveDataState.optionList[activedOptions[optionsSelected]].name) {
+				case "New Character...":
+					// our current save saves this
+					// we are gonna have to do some shenanagins to save our preffered save
+
+					saveOptions();
+					LoadingState.loadAndSwitchState(new NewCharacterState());
+				case "New Stage...":
+					// our current save saves this
+					// we are gonna have to do some shenanagins to save our preffered save
+
+					saveOptions();
+
+					LoadingState.loadAndSwitchState(new NewStageState());
+				case "New Song...":
+					saveOptions();
+
+					LoadingState.loadAndSwitchState(new NewSongState());
+				case "New Week...":
+					saveOptions();
+					NewWeekState.sorted = false;
+					LoadingState.loadAndSwitchState(new NewWeekState());
+				case "Sort...":
+					saveOptions();
+
+					LoadingState.loadAndSwitchState(new SelectSortState());
+				case "Sound Test...":
+					saveOptions();
+					FreeplayState.soundTest = true;
+					CategoryState.choosingFor = "freeplay";
+					LoadingState.loadAndSwitchState(new CategoryState());
+				case "Controls...": 
+					saveOptions();
+					LoadingState.loadAndSwitchState(new ControlsState());
+				case "Credits": 
+					saveOptions();
+					LoadingState.loadAndSwitchState(new CreditsState());
+				default:
+					if (OptionsHandler.options.allowEditOptions){
+						checkmarks.members[optionsSelected].visible = !checkmarks.members[optionsSelected].visible;
+						SaveDataState.optionList[activedOptions[optionsSelected]].value = checkmarks.members[optionsSelected].visible;
+					}
+					
+			}
+
+			FlxG.sound.play('assets/sounds/custom_menu_sounds/'
+				+ CoolUtil.parseJson(FNFAssets.getText("assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuScroll+'/scrollMenu' + TitleState.soundExt);
+		}
+	}
+
+}
+
+function changeAmount(increase) {
+	if (!numberDisplays[optionsSelected].visible)
+		return;
+	numberDisplays[optionsSelected].changeAmount(increase);
+	SaveDataState.optionList[activedOptions[optionsSelected]].amount = Std.int(numberDisplays[optionsSelected].value);
+	if (numberDisplays[optionsSelected].value == numberDisplays[optionsSelected].useDefaultValue && SaveDataState.optionList[activedOptions[optionsSelected]].value) {
+		toggleSelection();
+	}
+	else if (numberDisplays[optionsSelected].value != numberDisplays[optionsSelected].useDefaultValue && !SaveDataState.optionList[activedOptions[optionsSelected]].value) {
+		toggleSelection();
+	}
+	if (SaveDataState.optionList[activedOptions[optionsSelected]].intName == "judge") {
+		switch ((Std.int(SaveDataState.optionList[activedOptions[optionsSelected]].amount))) {
+			case 9:
+				numberDisplays[optionsSelected].text = "Classic";
+			case 10:
+				numberDisplays[optionsSelected].text = "Hard";
+			default:
+				numberDisplays[optionsSelected].text = SaveDataState.optionList[activedOptions[optionsSelected]].amount + 1 + "";
+		}
+	}
+	if (SaveDataState.optionList[activedOptions[optionsSelected]].intName == "preferJudgement") {
+		var judgementList = CoolUtil.coolTextFile('assets/data/judgements.txt');
+		numberDisplays[optionsSelected].text = judgementList[Std.int(SaveDataState.optionList[activedOptions[optionsSelected]].amount)];
+	}
+	if (SaveDataState.optionList[activedOptions[optionsSelected]].intName == "accuracyMode") {
+		switch ((Std.int(SaveDataState.optionList[activedOptions[optionsSelected]].amount))) {
+			case OptionsHandler.AccuracyMode.Simple: 
+				numberDisplays[optionsSelected].text = "Simple";
+			case OptionsHandler.AccuracyMode.Binary:
+				numberDisplays[optionsSelected].text = "Binary";
+			case OptionsHandler.AccuracyMode.Complex:
+				numberDisplays[optionsSelected].text = "Complex";
+			case OptionsHandler.AccuracyMode.None:
+				numberDisplays[optionsSelected].text = "Disable";
+		}
+	}
+}
+
+function changeSelection(change)
+{
+	if (!inOptionsMenu) {
+		FlxG.sound.play('assets/sounds/custom_menu_sounds/'
+			+ CoolUtil.parseJson(FNFAssets.getText("assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuScroll+'/scrollMenu' + TitleState.soundExt, 0.4);
+
+		curSelected += change;
+
+		if (curSelected < 0)
+			curSelected = saves.members.length - 1;
+		if (curSelected >= saves.members.length)
+			curSelected = 0;
+
+
+		var bullShit = 0;
+
+		for (item in saves.members)
+		{
+			item.targetY = bullShit - curSelected;
+			bullShit++;
+
+			item.color = 0xFF828282;
+			// item.setGraphicSize(Std.int(item.width * 0.8));
+
+			if (item.targetY == 0)
+			{
+				item.color = 0xFFFFFFFF;
+				// item.setGraphicSize(Std.int(item.width));
+			}
+		}
+	} else {
+		FlxG.sound.play('assets/sounds/custom_menu_sounds/'
+			+ CoolUtil.parseJson(FNFAssets.getText("assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuScroll+'/scrollMenu' + TitleState.soundExt, 0.4);
+
+		optionsSelected += change;
+
+		if (optionsSelected < 0)
+			optionsSelected = options.members.length - 1;
+		if (optionsSelected >= options.members.length)
+			optionsSelected = 0;
+
+
+		var bullShit = 0;
+
+		for (item in options.members)
+		{
+			item.targetY = bullShit - optionsSelected;
+			bullShit++;
+
+			item.alpha = 0.6;
+			// item.setGraphicSize(Std.int(item.width * 0.8));
+
+			if (item.targetY == 0)
+			{
+				item.alpha = 1;
+				// item.setGraphicSize(Std.int(item.width));
+			}
+		}
+		description.text = SaveDataState.optionList[activedOptions[optionsSelected]].desc;
+	}
+
+}
+
+function swapMenus() {
+	if (inOptionsMenu) {
+		FlxTween.tween(optionMenu, {x: FlxG.width}, 0.2, {type: oneshot, ease: FlxEase.backInOut});
+		FlxTween.tween(saves, {x: 0}, 0.2, {type: oneshot, ease: FlxEase.backInOut});
+		inOptionsMenu = false;
+	} else {
+		FlxTween.tween(optionMenu, {x: 0}, 0.2, {type: oneshot, ease: FlxEase.backInOut});
+		FlxTween.tween(saves, {x: -FlxG.width}, 0.2, {type: oneshot, ease: FlxEase.backInOut});
+		inOptionsMenu = true;
+	}
+}
+function saveOptions() {
+	var noneditableoptions = makeSaveData(OptionsHandler.options.allowEditOptions, preferredSave, true);
+	for (field in Reflect.fields(mappedOptions)) {
+		Reflect.setField(noneditableoptions, field, Reflect.field(mappedOptions, field).value);
+		if (Reflect.field(mappedOptions, field).amount != null) {
+			Reflect.setField(noneditableoptions, field, Reflect.field(mappedOptions, field).amount);
+		}
+	}
+	OptionsHandler.options = noneditableoptions;
+}
+function toggleSelection() { 
+	switch (SaveDataState.optionList[activedOptions[optionsSelected]].name)
+	{
+		case "New Character...":
+			// our current save saves this
+			// we are gonna have to do some shenanagins to save our preffered save
+
+			saveOptions();
+			LoadingState.loadAndSwitchState(new NewCharacterState());
+		case "New Stage...":
+			// our current save saves this
+			// we are gonna have to do some shenanagins to save our preffered save
+
+			saveOptions();
+
+			LoadingState.loadAndSwitchState(new NewStageState());
+		case "New Song...":
+			saveOptions();
+
+			LoadingState.loadAndSwitchState(new NewSongState());
+		case "New Week...":
+			saveOptions();
+			NewWeekState.sorted = false;
+			LoadingState.loadAndSwitchState(new NewWeekState());
+		case "Sort...":
+			saveOptions();
+
+			LoadingState.loadAndSwitchState(new SelectSortState());
+		case "Sound Test...":
+			saveOptions();
+			FreeplayState.soundTest = true;
+			CategoryState.choosingFor = "freeplay";
+			LoadingState.loadAndSwitchState(new CategoryState());
+		case "Credits":
+			saveOptions();
+			LoadingState.loadAndSwitchState(new CreditsState());
+		default:
+			if (OptionsHandler.options.allowEditOptions)
+			{
+				checkmarks.members[optionsSelected].visible = !checkmarks.members[optionsSelected].visible;
+				SaveDataState.optionList[activedOptions[optionsSelected]].value = checkmarks.members[optionsSelected].visible;
+			}
+	}
+}
