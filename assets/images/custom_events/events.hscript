@@ -1,0 +1,43 @@
+//name -- the name of the current event
+//value1 -- the first value of the event
+//value2 -- the second value of the event
+//value3 -- Extra Value :D
+
+function onEvent(name, value1, value2, value3)
+{
+    switch (name)
+    {
+        case 'Camera Flash': //Camera Flashing value1: Flash Fade Time, value2: Forced
+            var time;
+            if (value1 != '')
+                time = Std.parseFloat(value1);
+            else
+                time = 1;
+
+            var forced;
+            if (value2 == "true" || value2 == "1")
+                forced = true;
+            else
+                forced = false;
+
+            var colorSelected;
+            if (value3 == 'black')
+                colorSelected = 0xFF000000;
+            else if (value3 == 'red')
+                colorSelected = 0xFFff0000;
+            else if (value3 == 'green')
+                colorSelected = 0xFF00ff00;
+            else if (value3 == 'blue')
+                colorSelected = 0xFF0000ff;
+            else if (value3 == 'yellow')
+                colorSelected = 0xFFffff00;
+            else if (value3 == 'cyan')
+                colorSelected = 0xFF00ffff;
+            else if (value3 == 'magenta')
+                colorSelected = 0xFFff00ff;
+            else //white xd
+                colorSelected = 0xFFffffff;
+
+            FlxG.camera.flash(colorSelected, time, null, forced);
+    }
+}

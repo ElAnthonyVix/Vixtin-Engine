@@ -1,0 +1,5 @@
+hit with a flash on the camera, 
+the event only takes the base camera.
+Value 1: the Duration of the flash.
+Value 2: forced flash?
+Value 3: flash color (white default).
