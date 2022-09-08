@@ -1,0 +1,178 @@
+var categories = [];
+var categorySongs = [[]];
+var categorybgs = [[]];
+var selector;
+var curSelected = 0;
+
+var grpSongs;
+var curPlaying = false;
+
+function create()
+{
+	var epicCategoryJs = CoolUtil.parseJson(FNFAssets.getJson('assets/data/freeplaySongJson'));
+	if (epicCategoryJs.length > 1 || choosingFor != "freeplay") {
+		for (category in epicCategoryJs) {
+			categories.push(category.name);
+			categorySongs.push(category.songs);
+			categorybgs.push(category.bgs);
+		}
+	} else {
+		// just set freeplay states songs to the only category
+		trace(epicCategoryJs[0].songs);
+		trace(epicCategoryJs[0].Bg);
+		FreeplayState.currentSongList = epicCategoryJs[0].songs;
+		LoadingState.loadAndSwitchState(new FreeplayState());
+	}
+
+	/*
+		if (FlxG.sound.music != null)
+		{
+			if (!FlxG.sound.music.playing)
+				FlxG.sound.playMusic('assets/music/freakyMenu' + TitleState.soundExt);
+		}
+		*/
+
+
+	// LOAD MUSIC
+
+	// LOAD CHARACTERS
+
+	var bg = new FlxSprite().loadGraphic('assets/images/menuBGBlue.png');
+	add(bg);
+
+	grpSongs = new FlxTypedGroup();
+	add(grpSongs);
+
+	for (i in 0...categories.length)
+	{
+		var songText = new Alphabet(0, (70 * i) + 30, categories[i], true, false);
+		songText.isMenuItem = true;
+		songText.targetY = i;
+		grpSongs.add(songText);
+		// songText.x += 40;
+		// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
+		// songText.screenCenter(X);
+	}
+
+	changeSelection(0);
+	// FlxG.sound.playMusic('assets/music/title' + TitleState.soundExt, 0);
+	// FlxG.sound.music.fadeIn(2, 0, 0.8);
+	//selector = new FlxText();
+
+	//selector.size = 40;
+	//selector.text = ">";
+	// add(selector);
+
+	//var swag = new Alphabet(1, 0, "swag");
+
+	// JUST DOIN THIS SHIT FOR TESTING!!!
+	/*
+		var md:String = Markdown.markdownToHtml(Assets.getText('CHANGELOG.md'));
+
+		var texFel:TextField = new TextField();
+		texFel.width = FlxG.width;
+		texFel.height = FlxG.height;
+		// texFel.
+		texFel.htmlText = md;
+
+		FlxG.stage.addChild(texFel);
+
+		// scoreText.textField.htmlText = md;
+
+		trace(md);
+		*/
+}
+
+function update(elapsed)
+{
+	if (FlxG.sound.music.volume < 0.7)
+	{
+		FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
+	}
+
+
+	var upP = controls.UP_MENU;
+	var downP = controls.DOWN_MENU;
+	var accepted = controls.ACCEPT;
+
+	if (upP)
+	{
+		changeSelection(-1);
+	}
+	if (downP)
+	{
+		changeSelection(1);
+	}
+
+
+	if (controls.BACK)
+	{
+		LoadingState.loadAndSwitchState(new MainMenuState());
+	}
+	// make sure it isn't a header
+	
+	if (accepted && categorySongs[curSelected+1].length > 0 && choosingFor == "freeplay")
+	{
+		var songsButData = [];
+		for (song in categorySongs[curSelected+1])
+		{
+			if (varIsString(song))
+			{
+				// we have to generate our own metadata
+				songsButData.push({name: song, week: -1, character: "face"});
+			}
+			else
+			{
+				songsButData.push(song);
+			}
+		}
+		FreeplayState.currentSongList = songsButData;
+		LoadingState.loadAndSwitchState(new FreeplayState());
+
+	} else if (accepted && categorySongs[curSelected+1].length > 0) {
+		var songsButData = [];
+		for (song in categorySongs[curSelected+1]) {
+			if (varIsString(song)) {
+				// we have to generate our own metadata
+				songsButData.push({name: song, week: -1, character: "face"});
+			} else {
+				songsButData.push(song);
+			}
+		}
+		SortState.stuffToSort = songsButData;
+		SortState.category = categories[curSelected+1];
+		LoadingState.loadAndSwitchState(new SortState());
+	} 
+}
+
+
+function changeSelection(change)
+{
+
+	FlxG.sound.play('assets/sounds/scrollMenu' + TitleState.soundExt, 0.4);
+
+	curSelected += change;
+
+	if (curSelected < 0)
+		curSelected = categories.length - 1;
+	if (curSelected >= categories.length)
+		curSelected = 0;
+
+	// selector.y = (70 * curSelected) + 30;
+	var bullShit = 0;
+
+	for (item in grpSongs.members)
+	{
+		item.targetY = bullShit - curSelected;
+		bullShit++;
+
+		item.alpha = 0.6;
+		// item.setGraphicSize(Std.int(item.width * 0.8));
+
+		if (item.targetY == 0)
+		{
+			item.alpha = 1;
+			// item.setGraphicSize(Std.int(item.width));
+		}
+	}
+}

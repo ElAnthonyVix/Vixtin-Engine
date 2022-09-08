@@ -101,8 +101,8 @@ function startIntro()
     if (gfTitle.shouldScale == true){
         gfDance.setGraphicSize(Std.int(gfDance.width * gfTitle.curScale));
     }
-    add(gfDance);
-    add(logoBl);
+    //add(gfDance);
+    //add(logoBl);
 
     titleText = new FlxSprite(100, FlxG.height * 0.8);
     titleText.frames = FlxAtlasFrames.fromSparrow('assets/images/titleEnter.png', 'assets/images/titleEnter.xml');

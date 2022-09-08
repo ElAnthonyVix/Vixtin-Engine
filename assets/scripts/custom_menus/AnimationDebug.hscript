@@ -1,0 +1,397 @@
+var bf;
+var bfText;
+var bfOnion;
+var dad;
+var dadText;
+var dadOnion;
+var loadCharButton;
+var char;
+var textAnim;
+var textCam;
+var camOffsetText;
+var dumbTexts;
+var textArray = [];
+var animList = [];
+var curAnim = 0;
+var isDad = true;
+var daAnim = 'spooky';
+var daOtherAnim = 'bf';
+var camFollow;
+var GridSize = 10;
+var GridWidth = 200;
+var GridHeight = 150;
+
+var dadInitWidth;
+var bfInitWidth;
+
+var camBG;
+var camHUD;
+var gridBG;
+
+function start(daAnix, daOtherAnix)
+{
+    daAnim = daAnix;
+    daOtherAnim = daOtherAnix;
+}
+
+function create()
+{
+    FNFAssets.clearStoredMemory();
+    
+    camBG = new FlxCamera();
+    camHUD = new FlxCamera();
+
+    FlxG.cameras.reset(camBG);
+
+    camHUD.bgColor = 0x00000000;
+
+    FlxG.cameras.add(camHUD);
+
+    FlxCamera.defaultCameras = [camBG];
+
+    FlxG.sound.music.stop();
+
+    gridBG = FlxGridOverlay.create(GridSize, GridSize, GridSize * GridWidth, GridSize * GridHeight);
+    gridBG.setPosition(-300, -200);
+    gridBG.scrollFactor.set(0, 0);
+    add(gridBG);
+
+    createCharacters(false);
+
+    dumbTexts = new FlxGroup();
+    dumbTexts.cameras = [camHUD];
+    add(dumbTexts);
+
+    dadText = new FlxUIInputText(1200, 30, 70, 'dad');
+    dadText.text = daAnim;
+    dadText.cameras = [camHUD];
+    dadText.scrollFactor.set();
+    add(dadText);
+
+    bfText = new FlxUIInputText(1200, 60, 70, 'bf');
+    bfText.text = daOtherAnim;
+    bfText.cameras = [camHUD];
+    bfText.scrollFactor.set();
+    add(bfText);
+
+    
+    loadCharButton = new FlxButton(1195, 90, "Load Chars", function()
+    {
+        daAnim = dadText.text;
+        daOtherAnim = bfText.text;
+        createCharacters(true);
+        curAnim = 0;
+        animList = [];
+        updateTexts();
+        genBoyOffsets(true);
+        char.playAnim(animList[curAnim]);
+    });
+    loadCharButton.cameras = [camHUD];
+    loadCharButton.scrollFactor.set();
+    add(loadCharButton);
+
+    textAnim = new FlxText(300, 16);
+    textAnim.size = 26;
+    textAnim.scrollFactor.set();
+    textAnim.cameras = [camHUD];
+    add(textAnim);
+
+    genBoyOffsets(true);
+
+    camFollow = new FlxObject(0, 0, 2, 2);
+    camFollow.screenCenter();
+    add(camFollow);
+
+    textCam = new FlxText(500, 16);
+    textCam.size = 14;
+    textCam.scrollFactor.set();
+    textCam.cameras = [camHUD];
+    add(textCam);
+
+    camOffsetText = new FlxText(500, 46);
+    camOffsetText.size = 14;
+    camOffsetText.scrollFactor.set();
+    camOffsetText.cameras = [camHUD];
+    add(camOffsetText);
+
+    FlixG.mouse.visible = true;
+    FlxG.camera.follow(camFollow);
+}
+
+function genBoyOffsets(pushList)
+{
+    var daLoop = 0;
+
+    for (anim in char.animOffsets.keys())
+    {
+        var offsets = char.animOffsets.get(anim);
+        
+        /*var text = new FlxText(10, 20 + (18 * daLoop), 0, anim + ": " + offsets, 15);
+        text.scrollFactor.set();
+        text.color = 0xFF0000ff;*/
+        textArray[daLoop] = new FlxText(10, 20 + (18 * daLoop), 0, anim + ": " + offsets, 15);
+        textArray[daLoop].scrollFactor.set();
+        textArray[daLoop].color = 0xFF0000ff;
+        add(textArray[daLoop]);
+        //dumbTexts.add(text);
+
+        if (pushList)
+            animList.push(anim);
+
+        daLoop += 1;
+    }
+    
+    textArray[daLoop] = new FlxText(10, 20 + (18 * daLoop), 0, "FrameWidth: " + char.frameWidth, 15);
+    textArray[daLoop].scrollFactor.set();
+    textArray[daLoop].color = 0xFF0000ff;
+    add(textArray[daLoop]);
+    //dumbTexts.add(text);
+
+    daLoop += 1;
+
+    textArray[daLoop] = new FlxText(10, 20 + (18 * daLoop), 0, "FrameHeight: " + char.frameHeight, 15);
+    textArray[daLoop].scrollFactor.set();
+    textArray[daLoop].color = 0xFF0000ff;
+    add(textArray[daLoop]);
+    //.add(text);
+}
+
+function updateTexts()
+{
+    /*dumbTexts.forEach(function(text)
+    {
+        text.kill();
+        dumbTexts.remove(text, true);
+        text.destroy();
+    });
+    for (text in dumbTexts.members)
+    {
+        text.kill();
+        dumbTexts.remove(text, true);
+        text.destroy();
+    }*/
+    for (i in 0...textArray.length)
+    {
+        textArray[i].kill();
+        remove(textArray[i], true);
+        textArray[i].destroy();
+    }
+}
+
+function createCharacters(replace)
+{
+    if (replace) dad.destroy();
+    dad = new Character(100, 100, daAnim);
+    dad.debugMode = true;
+    dad.x += dad.enemyOffsetX;
+    dad.y += dad.enemyOffsetY;
+
+    if (replace) bf.destroy();
+    bf = new Character(770, 450, daOtherAnim, true);
+    bf.debugMode = true;
+    bf.x += bf.playerOffsetX;
+    bf.y += bf.playerOffsetY;
+
+    if (replace) bfOnion.destroy();
+    bfOnion = new FlxSprite(bf.x, bf.y);
+    bfOnion.frames = bf.frames;
+    bfOnion.animation.copyFrom(bf.animation);
+    bfOnion.animation.play('idle');
+    bfOnion.alpha = 0.6;
+    bfOnion.scale.set(bf.scale.x, bf.scale.y);
+    bfOnion.flipX = bf.flipX;
+
+    if (replace) dadOnion.destroy();
+    dadOnion = new FlxSprite(dad.x, dad.y);
+    dadOnion.frames = dad.frames;
+    dadOnion.animation.copyFrom(dad.animation);
+    dadOnion.animation.play('idle');
+    dadOnion.alpha = 0.6;
+    dadOnion.scale.set(dad.scale.x, dad.scale.y);
+    dadOnion.flipX = dad.flipX;
+
+    bfInitWidth = bf.frameWidth;
+    dadInitWidth = dad.frameWidth;
+
+    add(dadOnion);
+    add(bfOnion);
+    add(dad);
+    add(bf);
+
+    char = dad;
+}
+
+function update(elapsed)
+{
+    textAnim.text = char.animation.curAnim.name;
+
+    textCam.text = camFollow.x + ", " + camFollow.y;
+
+    camOffsetText.text = ((bf.followCamX - camFollow.x) + ", " + (bf.followCamY - camFollow.y));
+    // you're gonna need some math to fix these camera offsets!
+
+    if (!bfText.hasFocus && !dadText.hasFocus) {
+        if (FlxG.keys.justPressed.E)
+            FlxG.camera.zoom += (0.25 * 0.25); // this could either make zooming better or break it entirely
+        if (FlxG.keys.justPressed.Q)
+            FlxG.camera.zoom -= (0.25 * 0.25);
+
+        gridBG.scale.x = 1 / FlxG.camera.zoom;
+        gridBG.scale.y = 1 / FlxG.camera.zoom;
+
+        var holdShift = FlxG.keys.pressed.SHIFT;
+        var holdCtrl = FlxG.keys.pressed.CONTROL;
+        var multiplier = 1;
+        if (holdShift)
+            multiplier = 10;
+        if (holdCtrl)
+            multiplier = 100;
+
+        if (FlxG.keys.pressed.I || FlxG.keys.pressed.J || FlxG.keys.pressed.K || FlxG.keys.pressed.L) {
+            if (FlxG.keys.pressed.I && !FlxG.keys.pressed.K)
+                camFollow.velocity.y = -90 * multiplier;
+            else if (FlxG.keys.pressed.K && !FlxG.keys.pressed.I)
+                camFollow.velocity.y = 90 * multiplier;
+            else
+                camFollow.velocity.y = 0;
+
+            if (FlxG.keys.pressed.J && !FlxG.keys.pressed.L)
+                camFollow.velocity.x = -90 * multiplier;
+            else if (FlxG.keys.pressed.L && !FlxG.keys.pressed.J)
+                camFollow.velocity.x = 90 * multiplier;
+            else
+                camFollow.velocity.x = 0;
+        } else if (FlxG.keys.pressed.F)
+            if (holdShift)
+                camFollow.setPosition(bf.getMidpoint().x + bf.followCamX, bf.getMidpoint().y + bf.followCamY);
+            else
+                camFollow.setPosition(bf.getMidpoint().x, bf.getMidpoint().y);
+        else
+            camFollow.velocity.set();
+
+        if (FlxG.keys.justPressed.W)
+            curAnim -= 1;
+
+        if (FlxG.keys.justPressed.S)
+            curAnim += 1;
+
+        if (curAnim < 0)
+            curAnim = animList.length - 1;
+
+        if (curAnim >= animList.length)
+            curAnim = 0;
+
+        if (FlxG.keys.justPressed.S || FlxG.keys.justPressed.W || FlxG.keys.justPressed.SPACE) {
+            char.playAnim(animList[curAnim], true);
+
+            updateTexts();
+            genBoyOffsets(false);
+        }
+
+        if (FlxG.keys.justPressed.G)
+        {
+            bf.flipX = !bf.flipX;
+            bfOnion.flipX = bf.flipX;
+        }
+
+        if (FlxG.keys.justPressed.H)
+        {
+            dad.flipX = !dad.flipX;
+            //flipEnemy();
+            //animList = [];
+            //genBoyOffsets(true);
+            dadOnion.flipX = dad.flipX;
+        }
+
+
+        if (FlxG.keys.justPressed.Y) { //camera origin
+            camFollow.x = 0;
+            camFollow.y = 0;
+        }
+
+        if (FlxG.keys.justPressed.T) { // this is supposed to swap the character whose anims ur editing, i dont know why its not working
+            //it didn't work because you did 'char == bf' instead of 'char = bf' bruh
+    
+            if (char == bf)
+                char = dad;
+            else
+                char = bf;
+    
+            curAnim = 0;
+            animList = [];
+            updateTexts();
+            animList = [];
+            genBoyOffsets(true);
+            char.playAnim(animList[curAnim]);
+        }
+
+        if (FlxG.keys.justPressed.ENTER)
+        {
+            FlixG.mouse.visible = false;
+            if (holdShift)
+                LoadingState.loadAndSwitchState(new FreeplayState(), false);
+            else
+                LoadingState.loadAndSwitchState(new PlayState());
+        }
+
+        var upP = FlxG.keys.justPressed.UP;
+        var rightP = FlxG.keys.justPressed.RIGHT;
+        var downP = FlxG.keys.justPressed.DOWN;
+        var leftP = FlxG.keys.justPressed.LEFT;
+
+        if (upP || rightP || downP || leftP)
+        {
+            updateTexts();
+            if (upP)
+                char.animOffsets.get(animList[curAnim])[1] += 1 * multiplier;
+            if (downP)
+                char.animOffsets.get(animList[curAnim])[1] -= 1 * multiplier;
+            if (leftP)
+                char.animOffsets.get(animList[curAnim])[0] += 1 * multiplier;
+            if (rightP)
+                char.animOffsets.get(animList[curAnim])[0] -= 1 * multiplier;
+
+            updateTexts();
+            genBoyOffsets(false);
+            char.playAnim(animList[curAnim]);
+        }
+    }
+
+    if (camFollow.x < -100)
+        camFollow.x = -100;
+    if (camFollow.x > FlxG.width + 100)
+        camFollow.x = FlxG.width + 100;
+    if (camFollow.y < -100)
+        camFollow.y = -100;
+    if (camFollow.y > FlxG.height + 100)
+        camFollow.y = FlxG.height + 100;
+}
+
+function flipEnemy()
+{
+    var flipBox;
+    var flipSign;
+
+    dad.flipX = !dad.flipX;
+
+    if (!dad.flipX)
+        flipBox = 0;
+    else
+        flipBox = dadInitWidth;
+
+    if (!dad.flipX)
+        flipSign = 1;
+    else
+        flipSign = -1;
+    
+    for (anim in dad.animOffsets.keys())
+    {
+        var offsets = dad.animOffsets.get(anim);
+        
+        dad.addOffset(anim, flipBox + offsets[0] * flipSign, offsets[1]);
+    }
+    
+    dad.playAnim('idle');
+
+    updateTexts();
+}
