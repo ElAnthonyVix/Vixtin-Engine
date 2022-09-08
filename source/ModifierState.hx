@@ -9,6 +9,13 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+
+import hscript.Interp;
+import hscript.Parser;
+import hscript.ParserEx;
+import hscript.InterpEx;
+import hscript.ClassDeclEx;
+
 #if sys
 import sys.io.File;
 #end
@@ -321,15 +328,119 @@ class ModifierState extends MusicBeatState
 			desc: "Let the game play itself!"
 		}
 	];
-	var grpAlphabet:FlxTypedGroup<Alphabet>;
-	var curSelected:Int = 1;
-	var checkmarks:Array<FlxSprite> = [];
-	var numberdisplays:Array<NumberDisplay> = [];
-	var multiTxt:FlxText;
 	public static var isStoryMode:Bool = false;
 	public static var scoreMultiplier:Float = 1;
-	var description:FlxText;
 	public static var namedModifiers:Dynamic = {};
+
+	var hscriptStates:Map<String, Interp> = [];
+	var exInterp:InterpEx = new InterpEx();
+	var haxeSprites:Map<String, FlxSprite> = [];
+
+	#if debug
+		var debugTarget = true;
+	#else
+		var debugTarget = false;
+	#end
+
+	function callHscript(func_name:String, args:Array<Dynamic>, usehaxe:String) {
+		// if function doesn't exist
+		if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
+			trace("Function doesn't exist, silently skipping...");
+			return;
+		}
+		var method = hscriptStates.get(usehaxe).variables.get(func_name);
+		switch(args.length) {
+			case 0:
+				method();
+			case 1:
+				method(args[0]);
+			case 2:
+				method(args[0], args[1]);
+			case 3:
+				method(args[0], args[1], args[2]);
+			case 4:
+				method(args[0], args[1], args[2], args[3]);
+			case 5:
+				method(args[0], args[1], args[2], args[3], args[4]);
+		}
+	}
+	function callAllHScript(func_name:String, args:Array<Dynamic>) {
+		for (key in hscriptStates.keys()) {
+			callHscript(func_name, args, key);
+		}
+	}
+	function setHaxeVar(name:String, value:Dynamic, usehaxe:String) {
+		hscriptStates.get(usehaxe).variables.set(name,value);
+	}
+	function getHaxeVar(name:String, usehaxe:String):Dynamic {
+		return hscriptStates.get(usehaxe).variables.get(name);
+	}
+	function setAllHaxeVar(name:String, value:Dynamic) {
+		for (key in hscriptStates.keys())
+			setHaxeVar(name, value, key);
+	}
+	function makeHaxeState(usehaxe:String, path:String, filename:String) {
+		trace("opening a haxe state (because we are cool :))");
+		var parser = new ParserEx();
+		var program = parser.parseString(FNFAssets.getHscript(path + filename));
+		var interp = PluginManager.createSimpleInterp();
+		// set vars
+		interp.variables.set("FlxTextBorderStyle", FlxTextBorderStyle);
+		interp.variables.set("MainMenuState", MainMenuState);
+		interp.variables.set("CategoryState", CategoryState);
+		interp.variables.set("ChartingState", ChartingState);
+		interp.variables.set("Alphabet", Alphabet);
+		interp.variables.set("instance", this);
+		interp.variables.set("add", add);
+		interp.variables.set("remove", remove);
+		interp.variables.set("insert", insert);
+        interp.variables.set("replace", replace);
+		interp.variables.set("pi", Math.PI);
+		interp.variables.set("curMusicName", Main.curMusicName);
+		interp.variables.set("Highscore", Highscore);
+		interp.variables.set("HealthIcon", HealthIcon);
+		interp.variables.set("debugTarget", debugTarget);
+		interp.variables.set("StoryMenuState", StoryMenuState);
+		interp.variables.set("FreeplayState", FreeplayState);
+		interp.variables.set("CreditsState", CreditsState);
+		interp.variables.set("SaveDataState", SaveDataState);
+		interp.variables.set("DifficultyIcons", DifficultyIcons);
+		interp.variables.set("Controls", Controls);
+		interp.variables.set("Tooltip", Tooltip);
+		interp.variables.set("SongInfoPanel", SongInfoPanel);
+		interp.variables.set("DifficultyManager", DifficultyManager);
+		interp.variables.set("flixelSave", FlxG.save);
+		interp.variables.set("Record", Record);
+		interp.variables.set("Math", Math);
+		interp.variables.set("Song", Song);
+		interp.variables.set("ModifierState", ModifierState);
+        interp.variables.set("ChooseCharState", ChooseCharState);
+		interp.variables.set("Reflect", Reflect);
+		interp.variables.set("colorFromString", FlxColor.fromString);
+		interp.variables.set("PlayState", PlayState);
+		interp.variables.set("NewCharacterState", NewCharacterState);
+		interp.variables.set("NewStageState", NewStageState);
+		interp.variables.set("NewSongState", NewSongState);
+		interp.variables.set("NewWeekState", NewWeekState);
+		interp.variables.set("SelectSortState", SelectSortState);
+		interp.variables.set("CategoryState", CategoryState);
+		interp.variables.set("ControlsState", ControlsState);
+		interp.variables.set("NumberDisplay", NumberDisplay);
+		interp.variables.set("controls", controls);
+		interp.variables.set("ModifierState", ModifierState);
+		interp.variables.set("FlxTypedGroup", FlxTypedGroup);
+		interp.variables.set("modifiers", modifiers);
+		interp.variables.set("isStoryMode", isStoryMode);
+		interp.variables.set("scoreMultiplier", scoreMultiplier);
+		interp.variables.set("namedModifiers", namedModifiers);
+		
+		trace("set stuff");
+		interp.execute(program);
+		hscriptStates.set(usehaxe,interp);
+		callHscript("create", [], usehaxe);
+		trace('executed');
+	}
+
 	public static function init() {
 		for (modifier in 0...modifiers.length)
 		{
@@ -338,181 +449,24 @@ class ModifierState extends MusicBeatState
 	}
 	override function create()
 	{
-		var menuBG:FlxSprite = new FlxSprite().loadGraphic('assets/images/menuDesat.png');
-		menuBG.color = 0xFFea71fd;
-		grpAlphabet = new FlxTypedGroup<Alphabet>();
-		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
-		menuBG.updateHitbox();
-		menuBG.screenCenter();
-		menuBG.antialiasing = true;
-		multiTxt = new FlxText(800, 60, 0, "", 200);
-		multiTxt.setFormat("assets/fonts/vcr.ttf", 40, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
-		multiTxt.text = "Multiplier: 1";
-		multiTxt.scrollFactor.set();
-		description = new FlxText(750, 150, 350, "", 90);
-		description.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
-		description.text = "Instantly fail when you don't get \"Sick\"";
-		description.scrollFactor.set();
-		for (modifier in 0...modifiers.length) {
-			var swagModifier = new Alphabet(0, 10, "   "+modifiers[modifier].name, true, false, true);
-			swagModifier.isMenuItem = true;
-			swagModifier.targetY = modifier;
-			var coolCheckmark:FlxSprite = new FlxSprite().loadGraphic('assets/images/checkmark.png');
-			coolCheckmark.visible = modifiers[modifier].value;
-			var displayNum:NumberDisplay = new NumberDisplay(0, 0, modifiers[modifier].defAmount, modifiers[modifier].precision, modifiers[modifier].minimum, modifiers[modifier].maximum);
-			displayNum.visible = modifiers[modifier].amount != null;
-			if (displayNum.visible)
-				displayNum.value = modifiers[modifier].amount;
-			displayNum.size = 90;
-			checkmarks.push(coolCheckmark);
-			numberdisplays.push(displayNum);
-			displayNum.x += swagModifier.width + displayNum.width;
-			swagModifier.add(coolCheckmark);
-			swagModifier.add(displayNum);
-			grpAlphabet.add(swagModifier);
-			
-			
-			Reflect.setField(namedModifiers, modifiers[modifier].internName, modifiers[modifier]);
-		}
-		add(menuBG);
-		add(grpAlphabet);
-		add(multiTxt);
-		add(description);
-		calculateMultiplier();
-		multiTxt.text = "Multiplier: "+scoreMultiplier;
-		changeSelection(0);
+		FNFAssets.clearStoredMemory();
+		makeHaxeState("modifier", "assets/scripts/custom_menus/", "ModifierState");
 		super.create();
 	}
 	override function update(elapsed:Float) {
 		super.update(elapsed);
-		if (controls.BACK) {
-			if (isStoryMode)
-				LoadingState.loadAndSwitchState(new StoryMenuState());
-			else
-				LoadingState.loadAndSwitchState(new FreeplayState());
-		}
-		if (controls.UP_MENU)
-		{
-			changeSelection(-1);
-		}
-		if (controls.DOWN_MENU)
-		{
-			changeSelection(1);
-		}
-		if (controls.RIGHT_MENU) {
-			changeAmount(true);
-		}  else if (controls.LEFT_MENU) {
-			changeAmount(false);
-		}
-		if (controls.ACCEPT)
-			toggleSelection();
+		callAllHScript("update", [elapsed]);
 	}
-	function changeAmount(increase:Bool=false) {
-		if (!numberdisplays[curSelected].visible)
-			// not meant to be here...
-			return;
-		numberdisplays[curSelected].changeAmount(increase);
-		modifiers[curSelected].amount = numberdisplays[curSelected].value;
-		if (numberdisplays[curSelected].value == numberdisplays[curSelected].useDefaultValue && modifiers[curSelected].value) {
-			toggleSelection();
-		}
-		else if (numberdisplays[curSelected].value != numberdisplays[curSelected].useDefaultValue && !modifiers[curSelected].value) {
-			toggleSelection();
-		}
-		calculateMultiplier();
-	}
-	function changeSelection(change:Int = 0)
+	override function stepHit()
 	{
-
-		FlxG.sound.play('assets/sounds/custom_menu_sounds/'
-			+ CoolUtil.parseJson(FNFAssets.getJson("assets/sounds/custom_menu_sounds/custom_menu_sounds")).customMenuScroll+'/scrollMenu' + TitleState.soundExt, 0.4);
-
-		curSelected += change;
-
-
-
-		curSelected = Std.int(FlxMath.wrap(curSelected, 1, modifiers.length - 1));
-		var bullShit:Int = 0;
-
-		for (item in grpAlphabet.members)
-		{
-			item.targetY = bullShit - curSelected;
-			bullShit++;
-
-			item.alpha = 0.6;
-			// item.setGraphicSize(Std.int(item.width * 0.8));
-
-			if (item.targetY == 0)
-			{
-				item.alpha = 1;
-				// item.setGraphicSize(Std.int(item.width));
-			}
-		}
-		description.text = modifiers[curSelected].desc;
+		super.stepHit();
+		setAllHaxeVar('curStep', curStep);
+		callAllHScript("stepHit", [curStep]);
 	}
-	function calculateMultiplier() {
-		scoreMultiplier = 1;
-		var timesThings:Array<Float> = [];
-		var i = 0;
-		for (modifier in modifiers) {
-			if (modifier.value) {
-				if (modifier.times)
-					timesThings.push(modifier.multi);
-				else {
-					trace(numberdisplays[i].changedBy);
-					if (modifier.amount != null)
-						scoreMultiplier += numberdisplays[i].changedBy * modifier.multi;
-					else
-						scoreMultiplier += modifier.multi;
-				}
-			}
-			i++;
-		}
-		for (timesThing in timesThings) {
-			scoreMultiplier *= timesThing;
-		}
-		if (scoreMultiplier <= 0 && timesThings.length == 0) {
-			scoreMultiplier = 0.1;
-		}
-		multiTxt.text = "Multiplier: " + scoreMultiplier;
-	}
-	function toggleSelection() {			
-		switch(modifiers[curSelected].internName) {
-			case 'play':
-				if (FlxG.sound.music != null)
-					FlxG.sound.music.stop();
-				LoadingState.loadAndSwitchState(new PlayState(), true);
-			case 'chart':
-				LoadingState.loadAndSwitchState(new ChartingState());
-			case 'charselect':
-				LoadingState.loadAndSwitchState(new ChooseCharState(PlayState.SONG.player1));
-			case 'antijank':
-				// do nothi n
-			default:
-					checkmarks[curSelected].visible = !checkmarks[curSelected].visible;
-					for (conflicting in modifiers[curSelected].conflicts)
-					{
-						var coolNum = 0;
-						for (modifier in 0...modifiers.length) {
-							if (modifiers[modifier].internName == conflicting) {
-								coolNum = modifier;
-							}
-						}
-						checkmarks[coolNum].visible = false;
-						modifiers[coolNum].value = false;
-					}
-					calculateMultiplier();
-
-					modifiers[curSelected].value = checkmarks[curSelected].visible;
-				if (modifiers[curSelected].value
-					&& modifiers[curSelected].amount != null
-					&& numberdisplays[curSelected].value == numberdisplays[curSelected].useDefaultValue) {
-						numberdisplays[curSelected].changeAmount(true);
-					} else if (!modifiers[curSelected].value){
-						numberdisplays[curSelected].resetValues();
-					}
-					calculateMultiplier();
-					multiTxt.text = "Multiplier: " + scoreMultiplier;
-		}
+	override function beatHit()
+	{
+		super.beatHit();
+		setAllHaxeVar('curBeat', curBeat);
+		callAllHScript('beatHit', [curBeat]);
 	}
 }

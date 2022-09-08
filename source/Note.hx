@@ -151,6 +151,7 @@ class Note extends DynamicSprite
 	public var duoMode:Bool = false;
 	public var oppMode:Bool = false;
 	public var sustainLength:Float = 0;
+	public var alphaMultiplier:Float = 1;
 	public var isSustainNote:Bool = false;
 	public var modifiedByLua:Bool = false;
 	public var funnyMode:Bool = false;
@@ -180,6 +181,7 @@ class Note extends DynamicSprite
 	public var rating = "miss";
 	public var isLiftNote:Bool = false;
 	public var mineNote:Bool = false;
+	public var specialSinger:Null<Character> = null;
 	// like expurgation's notes; insta die lmao
 	public var nukeNote:Bool = false;
 	// tabi mod

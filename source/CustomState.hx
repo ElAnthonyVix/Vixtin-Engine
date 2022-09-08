@@ -11,6 +11,41 @@ import lime.system.System;
 import flixel.FlxSprite;
 import flixel.FlxCamera;
 import lime.utils.Assets;
+import Section.SwagSection;
+import flixel.system.FlxSound;
+import Song.SwagSong;
+import flixel.FlxBasic;
+import openfl.geom.Matrix;
+import flixel.FlxGame;
+import flixel.graphics.FlxGraphic;
+import DifficultyIcons;
+import flixel.FlxState;
+import flixel.addons.display.FlxGridOverlay;
+import flixel.addons.effects.FlxTrailArea;
+import openfl.filters.ShaderFilter;
+import flixel.math.FlxPoint;
+import Conductor.BPMChangeEvent;
+import flixel.addons.ui.FlxInputText;
+import flixel.addons.ui.FlxUI9SliceSprite;
+import flixel.addons.ui.FlxUI;
+import flixel.addons.ui.FlxUICheckBox;
+import flixel.addons.ui.FlxUIDropDownMenu;
+import flixel.addons.ui.FlxUIInputText;
+import flixel.addons.ui.FlxUINumericStepper;
+import flixel.addons.ui.FlxUITabMenu;
+import flixel.addons.ui.FlxUITooltip.FlxUITooltipStyle;
+import flixel.ui.FlxButton;
+import haxe.Json;
+import openfl.events.IOErrorEvent;
+import flixel.util.FlxSort;
+import flixel.effects.FlxFlicker;
+import flixel.util.FlxAxes;
+
+#if desktop
+import Sys;
+import sys.FileSystem;
+#end
+
 #if sys
 import sys.io.File;
 import sys.FileSystem;
@@ -30,8 +65,11 @@ import hscript.ClassDeclEx;
 import haxe.Json;
 import tjson.TJSON;
 using StringTools;
-class VictoryLoopState extends MusicBeatSubstate
+class CustomState extends MusicBeatState
 {
+	public static var customStateScriptName:String = "";
+	public static var customStateScriptPath:String = "";
+	
 	var hscriptStates:Map<String, Interp> = [];
 	var exInterp:InterpEx = new InterpEx();
 	var haxeSprites:Map<String, FlxSprite> = [];
@@ -40,6 +78,12 @@ class VictoryLoopState extends MusicBeatSubstate
 		var debugTarget = true;
 	#else
 		var debugTarget = false;
+	#end
+
+	#if sys
+		var sysTarget = true;
+	#else
+		var sysTarget = false;
 	#end
 
 	function callHscript(func_name:String, args:Array<Dynamic>, usehaxe:String) {
@@ -96,6 +140,7 @@ class VictoryLoopState extends MusicBeatSubstate
 		interp.variables.set("CategoryState", CategoryState);
 		interp.variables.set("ChartingState", ChartingState);
 		interp.variables.set("Alphabet", Alphabet);
+		interp.variables.set("AnimationDebug", AnimationDebug);
 		interp.variables.set("instance", this);
 		interp.variables.set("add", add);
 		interp.variables.set("remove", remove);
@@ -111,6 +156,7 @@ class VictoryLoopState extends MusicBeatSubstate
 		interp.variables.set("CreditsState", CreditsState);
 		interp.variables.set("SaveDataState", SaveDataState);
 		interp.variables.set("DifficultyIcons", DifficultyIcons);
+		interp.variables.set("DifficultyManager", DifficultyManager);
 		interp.variables.set("Controls", Controls);
 		interp.variables.set("Tooltip", Tooltip);
 		interp.variables.set("SongInfoPanel", SongInfoPanel);
@@ -138,26 +184,73 @@ class VictoryLoopState extends MusicBeatSubstate
 		interp.variables.set("FlxObject", FlxObject);
 		interp.variables.set("Ratings", Ratings);
 		interp.variables.set("VictoryLoopState", VictoryLoopState);
-		interp.variables.set("LOCKON", FlxCameraFollowStyle.LOCKON);
+		interp.variables.set("FlxCameraFollowStyle", FlxCameraFollowStyle);
+		interp.variables.set("CustomState", CustomState);
+		interp.variables.set("DialogueBox", DialogueBox);
+		interp.variables.set("EdtNote", EdtNote);
+		interp.variables.set("FileParser", FileParser);
+		interp.variables.set("FirstTimeState", FirstTimeState);
+		interp.variables.set("FlxShaderFix", FlxShaderFix);
+		interp.variables.set("FlxUIDropDownMenuCustom", FlxUIDropDownMenuCustom);
+		interp.variables.set("FlxVideo", FlxVideo);
+		interp.variables.set("GameOverSubstate", GameOverSubstate);
+		interp.variables.set("PauseSubState", PauseSubState);
+		interp.variables.set("HelperFunctions", HelperFunctions);
+		interp.variables.set("Judge", Judge);
+		interp.variables.set("Judgement", Judgement);
+		interp.variables.set("MenuCharacter", MenuCharacter);
+		interp.variables.set("MenuItem", MenuItem);
+		interp.variables.set("MusicBeatState", MusicBeatState);
+		interp.variables.set("Note", Note);
+		interp.variables.set("NoteSplash", NoteSplash);
+		interp.variables.set("OptionsHandler", OptionsHandler);
+		interp.variables.set("PauseSubState", PauseSubState);
+		interp.variables.set("Prompt", Prompt);
+		interp.variables.set("Ratings", Ratings);
+		interp.variables.set("Record", Record);
+		interp.variables.set("SaveFile", SaveFile);
+		interp.variables.set("Section", Section);
+		interp.variables.set("SelectSongsState", SelectSongsState);
+		interp.variables.set("ShaderCustom", ShaderCustom);
+		interp.variables.set("Signal", Signal);
+		interp.variables.set("Song", Song);
+		interp.variables.set("SongInfoPanel", SongInfoPanel);
+		interp.variables.set("SortState", SortState);
+		interp.variables.set("Song", Song);
+		interp.variables.set("FlxFlicker", FlxFlicker);
+		interp.variables.set("FlxAxes", FlxAxes);
+		interp.variables.set("FlxGridOverlay", FlxGridOverlay);
+		interp.variables.set("FlxPoint", FlxPoint);
+		interp.variables.set("FlxTrailArea", FlxTrailArea);
+		interp.variables.set("ShaderFilter", ShaderFilter);
+		interp.variables.set("FlxInputText", FlxInputText);
+		interp.variables.set("FlxUI9SliceSprite", FlxUI9SliceSprite);
+		interp.variables.set("FlxUI", FlxUI);
+		interp.variables.set("FlxUICheckBox", FlxUICheckBox);
+		interp.variables.set("FlxUIDropDownMenu", FlxUIDropDownMenu);
+		interp.variables.set("FlxUIInputText", FlxUIInputText);
+		interp.variables.set("FlxUINumericStepper", FlxUINumericStepper);
+		interp.variables.set("FlxUITabMenu", FlxUITabMenu);
+		interp.variables.set("FlxButton", FlxButton);
+		interp.variables.set("Json", Json);
+		interp.variables.set("FlxUI", FlxUI);
+		interp.variables.set("FlxSound", FlxSound);
+		interp.variables.set("sysTarget", sysTarget);
+		interp.variables.set("FlxGridOverlay", FlxGridOverlay);
+		interp.variables.set("AttachedSprite", AttachedSprite);
+		interp.variables.set("AttachedText", AttachedText);
 		
 		trace("set stuff");
 		interp.execute(program);
 		hscriptStates.set(usehaxe,interp);
-		//callHscript("create", [], usehaxe);
+		callHscript("create", [], usehaxe);
 		trace('executed');
-	}
-
-	public function new(x:Float, y:Float, gfX:Float, gfY:Float, accuracy:Float, score:Int, dadX:Float, dadY:Float)
-	{
-		makeHaxeState("victoryloop", "assets/scripts/custom_menus/", "VictoryLoopState");
-		callAllHScript("start", [x, y, gfX, gfY, accuracy, score, dadX, dadY]);
-		super();
 	}
 
 	override function create()
 	{
-		//FNFAssets.clearStoredMemory(); //Clean the stored cache to prevent crash
-		callAllHScript("create", []);
+		FNFAssets.clearStoredMemory(); //Clean the stored cache to prevent crash
+		makeHaxeState("customstate", customStateScriptPath, customStateScriptName); //Load the Custom State :D!!! POWERFULL!!
 		super.create();
 	}
 

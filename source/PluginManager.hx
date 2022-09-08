@@ -14,6 +14,7 @@ import flixel.math.FlxRect;
 import animateatlas.AtlasFrameMaker;
 import flixel.text.FlxText;
 import flixel.FlxState;
+import openfl.filters.ShaderFilter;
 import openfl.display.Stage;
 import flixel.FlxGame;
 import flixel.input.gamepad.FlxGamepadManager;
@@ -27,9 +28,14 @@ import hscript.InterpEx;
 import hscript.Interp;
 import flixel.FlxG;
 
+import hscript.Parser;
+import hscript.ParserEx;
+import hscript.ClassDeclEx;
+
 class PluginManager {
     public static var interp = new InterpEx();
     public static var hscriptClasses:Array<String> = [];
+    public static var hscriptInstances:Array<Dynamic> = [];
     //private static var nextId:Int = 1;
 	@:access(hscript.InterpEx)
     public static function init() 
@@ -61,6 +67,11 @@ class PluginManager {
         reterp = addVarsToInterp(reterp);
         return reterp;
     }
+
+    public static function instanceExClass(classname:String, args:Array<Dynamic> = null) {
+		return interp.createScriptClassInstance(classname, args);
+	}
+
     public static function addVarsToInterp<T:Interp>(interp:T):T {
 		interp.variables.set("Conductor", Conductor);
 		interp.variables.set("FlxSprite", DynamicSprite);
@@ -75,6 +86,10 @@ class PluginManager {
         interp.variables.set("CoolUtil", CoolUtil);
         interp.variables.set("Main", Main);
         interp.variables.set("AtlasFrameMaker", AtlasFrameMaker);
+        interp.variables.set("FlxCamera", FlxCamera);
+        interp.variables.set("ShaderCustom", ShaderCustom);
+        interp.variables.set("ShaderFilter", ShaderFilter);
+        interp.variables.set("FlxVideo", FlxVideo);
 
 		// : )
 		interp.variables.set("FlxG", HscriptGlobals);
@@ -89,10 +104,15 @@ class PluginManager {
 		interp.variables.set("Character", Character);
 		interp.variables.set("OptionsHandler", OptionsHandler);
         interp.variables.set("FlxText", FlxText);
+        interp.variables.set("FlxTextBorderStyle", FlxTextBorderStyle);
         interp.variables.set("FlxBackdrop", FlxBackdrop);
         interp.variables.set("LoadingState", LoadingState);
         interp.variables.set("FlxRect", FlxRect);
-        interp.variables.set("callExternClass", PluginManager.interp.createScriptClassInstance); //Call modules?? :D
+        interp.variables.set("FlixG", FlxG);
+        interp.variables.set("PluginManager", PluginManager);
+        interp.variables.set("callExternClass", instanceExClass); //Call modules?? :D
+
+        //interp.variables.set("GitarooPause", GitarooPause);
 		#if debug
 		interp.variables.set("debug", true);
 		#else

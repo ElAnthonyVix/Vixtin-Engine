@@ -461,6 +461,12 @@ class FNFAssets {
 		@:privateAccess
 		EdtNote.coolCustomGraphics = [];
 
+		@:privateAccess
+		Note.specialFramesKey = [];
+
+		@:privateAccess
+		Note.gotSpecialFrames = [];
+
 		// clear all sounds that are cached
 		for (key in currentTrackedSounds.keys()) {
 			if (key != null) {

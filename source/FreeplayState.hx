@@ -93,7 +93,6 @@ class FreeplayState extends MusicBeatState
 		var program = parser.parseString(FNFAssets.getHscript(path + filename));
 		var interp = PluginManager.createSimpleInterp();
 		// set vars
-		interp.variables.set("Sys", Sys);
 		interp.variables.set("FlxTextBorderStyle", FlxTextBorderStyle);
 		interp.variables.set("controls", controls);
 		interp.variables.set("SongMetadata", SongMetadata);

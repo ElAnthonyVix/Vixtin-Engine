@@ -403,8 +403,7 @@ class Character extends FlxSprite
 
 				if (animation.curAnim.name.endsWith('miss') && animation.curAnim.finished && !debugMode && beNormal)
 				{
-					playAnim('idle', true, false, 10);
-					trace("idle after miss");
+					dance();
 				}
 
 				if (animation.curAnim.name == 'firstDeath' && animation.curAnim.finished)
@@ -469,7 +468,7 @@ class Character extends FlxSprite
 			if (interp != null)
 				callInterp("dance", [this]);
 			else
-				playAnim('idle');
+				playAnim('idle' + idleSuffix);
 			if (color != FlxColor.WHITE && forceColor)
 			{
 				color = FlxColor.WHITE;
