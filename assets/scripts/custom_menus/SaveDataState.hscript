@@ -229,7 +229,7 @@ function update(elapsed) {
 				// sounds like someone farted into the mic. perfect for a delete sfx
 				FlxG.sound.play('assets/sounds/freshIntro.ogg');
 				flixelSave.data.songScores = ["tutorial" => 0];
-				flixelSave.bind(oldSave, "bulbyVR");
+				flixelSave.bind(oldSave, "ElAnthonyVixtin");
 				Highscore.load();
 			}
 		} else if (!inOptionsMenu) {
@@ -274,12 +274,18 @@ function update(elapsed) {
 				case "Credits": 
 					saveOptions();
 					LoadingState.loadAndSwitchState(new CreditsState());
+				case "Show FPS and Memory Counter":
+					if (OptionsHandler.options.allowEditOptions){
+						checkmarks.members[optionsSelected].visible = !checkmarks.members[optionsSelected].visible;
+						SaveDataState.optionList[activedOptions[optionsSelected]].value = checkmarks.members[optionsSelected].visible;
+						Main.fpsVar.visible = checkmarks.members[optionsSelected].visible;
+						Main.memoryVar.visible = checkmarks.members[optionsSelected].visible;
+					}
 				default:
 					if (OptionsHandler.options.allowEditOptions){
 						checkmarks.members[optionsSelected].visible = !checkmarks.members[optionsSelected].visible;
 						SaveDataState.optionList[activedOptions[optionsSelected]].value = checkmarks.members[optionsSelected].visible;
 					}
-					
 			}
 
 			FlxG.sound.play('assets/sounds/custom_menu_sounds/'
@@ -448,6 +454,13 @@ function toggleSelection() {
 		case "Credits":
 			saveOptions();
 			LoadingState.loadAndSwitchState(new CreditsState());
+		case "Show FPS and Memory Counter":
+			if (OptionsHandler.options.allowEditOptions){
+				checkmarks.members[optionsSelected].visible = !checkmarks.members[optionsSelected].visible;
+				SaveDataState.optionList[activedOptions[optionsSelected]].value = checkmarks.members[optionsSelected].visible;
+				Main.fpsVar.visible = checkmarks.members[optionsSelected].visible;
+				Main.memoryVar.visible = checkmarks.members[optionsSelected].visible;
+			}
 		default:
 			if (OptionsHandler.options.allowEditOptions)
 			{

@@ -118,6 +118,7 @@ class SaveDataState extends MusicBeatState
 		interp.variables.set("insert", insert);
 		interp.variables.set("pi", Math.PI);
 		interp.variables.set("curMusicName", Main.curMusicName);
+		interp.variables.set("Main", Main);
 		interp.variables.set("Highscore", Highscore);
 		interp.variables.set("HealthIcon", HealthIcon);
 		interp.variables.set("debugTarget", debugTarget);
@@ -232,6 +233,8 @@ class SaveDataState extends MusicBeatState
 			{name: "Toggle Title Background", value: true, intName:'titleToggle', desc:"Turn on/off the title screen background.", ignore: true,},
 			{name: "Modding Plus Rating Recs", value: false, intName:'ratingColorRecs', desc:"Turn on/off the rating color rectangles on game.",},
 			{name: "Show Splashes", value: true, intName:'showSplashes', desc:"Turn on/off the Note Splashes.",},
+			{name: "Show FPS and Memory Counter", value: true, intName:'showFPS', desc:"Turn on/off the FPS and Memory Counter.",},
+			{name: "Show Haxe Splash Intro", value: true, intName:'showHaxeSplash', desc:"Show Haxe Splash Intro (Like the OLD FNF Builds).",},
 			{name:"New Character...", value: false, intName:'newchar', desc: "Make a new character!", ignore: true,},
 			{name:"New Stage...", value:false, intName:'newstage', desc: "Make a new stage!", ignore: true, },
 			{name: "New Song...", value: false, intName:'newsong', desc: "Make a new song!", ignore: true, },
