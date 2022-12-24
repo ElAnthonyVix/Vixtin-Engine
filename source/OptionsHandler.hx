@@ -47,12 +47,12 @@ typedef TOptions = {
     var allowDonate:Bool;
     var hitSounds:Bool;
     var titleToggle:Bool;
-    var fpsCap:Int;
+    var fpsCap:Null<Int>;
     var ignoreVile:Bool;
     var ratingColorRecs:Bool;
     var showSplashes:Bool;
-    var showFPS:Bool;
-    var showHaxeSplash:Bool;
+    var showFPS:Null<Bool>;
+    var showHaxeSplash:Null<Bool>;
 }
 /**
  * All options that can display on the savedatamenu. Used with mask
