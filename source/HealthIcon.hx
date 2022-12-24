@@ -94,10 +94,10 @@ class HealthIcon extends FlxSprite
 		var charJson:Dynamic = CoolUtil.parseJson(FNFAssets.getJson("assets/images/custom_chars/custom_chars"));
 		var iconJson:Dynamic = CoolUtil.parseJson(FNFAssets.getJson("assets/images/custom_chars/icon_only_chars"));
 		var iconFrames:Array<Int> = [];
-		var isAnimated:Null<Bool> = false;
+		var isAnimated:Null<Bool>;
 		var iconAnimations:Null<Array<String>> = [];
-		var boWidth:Null<Int> = 150;
-		var boHeight:Null<Int> = 150;
+		var boWidth:Null<Int>;
+		var boHeight:Null<Int>;
 
 		if (Reflect.hasField(charJson, char))
 		{
