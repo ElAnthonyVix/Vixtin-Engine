@@ -56,7 +56,7 @@ class Main extends Sprite
 		Lib.current.stage.align = "tl";
 		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
 
-		var memoryVar = new MemoryCounter(10, 3, 0xFFFFFF);
+		memoryVar = new MemoryCounter(10, 3, 0xFFFFFF);
 		addChild(memoryVar);
 
 		if (OptionsHandler.options.showFPS != null)
