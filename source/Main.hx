@@ -46,7 +46,7 @@ class Main extends Sprite
 		if (OptionsHandler.options.showHaxeSplash != null)
 			skipSplash = !OptionsHandler.options.showHaxeSplash;
 
-		addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
+		addChild(new FlxGame(0, 0, initialState, 1, framerate, framerate, skipSplash, startFullscreen));
 		//addChild(new FlxGame(0, 0, TitleState, 1, OptionsHandler.options.fpsCap, OptionsHandler.options.fpsCap, true));
 
 		#if !mobile
@@ -62,7 +62,11 @@ class Main extends Sprite
 		if (OptionsHandler.options.showFPS != null)
 		{
 			fpsVar.visible = OptionsHandler.options.showFPS;
-			memoryVar.visible = OptionsHandler.options.showFPS;
+		}
+
+		if (OptionsHandler.options.showMemory != null)
+		{
+			memoryVar.visible = OptionsHandler.options.showMemory;
 		}
 
 		#end

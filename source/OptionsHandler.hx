@@ -52,6 +52,7 @@ typedef TOptions = {
     var ratingColorRecs:Bool;
     var showSplashes:Bool;
     var showFPS:Null<Bool>;
+    var showMemory:Null<Bool>;
     var showHaxeSplash:Null<Bool>;
 }
 /**
@@ -127,6 +128,7 @@ class OptionsHandler {
             lastOptions.ratingColorRecs = true;
             lastOptions.showSplashes = true;
             lastOptions.showFPS = true;
+            lastOptions.showMemory = true;
             lastOptions.showHaxeSplash = false;
 
         }
