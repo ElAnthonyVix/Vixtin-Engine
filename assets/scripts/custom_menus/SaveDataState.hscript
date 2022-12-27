@@ -274,13 +274,18 @@ function update(elapsed) {
 				case "Credits": 
 					saveOptions();
 					LoadingState.loadAndSwitchState(new CreditsState());
-				case "Show FPS and Memory Counter":
+				case "Show FPS":
 					if (OptionsHandler.options.allowEditOptions){
 						checkmarks.members[optionsSelected].visible = !checkmarks.members[optionsSelected].visible;
 						SaveDataState.optionList[activedOptions[optionsSelected]].value = checkmarks.members[optionsSelected].visible;
 						Main.fpsVar.visible = checkmarks.members[optionsSelected].visible;
-						Main.memoryVar.visible = checkmarks.members[optionsSelected].visible;
 					}
+				case "Show Memory Counter":
+					if (OptionsHandler.options.allowEditOptions){
+						checkmarks.members[optionsSelected].visible = !checkmarks.members[optionsSelected].visible;
+						SaveDataState.optionList[activedOptions[optionsSelected]].value = checkmarks.members[optionsSelected].visible;
+						Main.memoryVar.visible = checkmarks.members[optionsSelected].visible;
+					}	
 				default:
 					if (OptionsHandler.options.allowEditOptions){
 						checkmarks.members[optionsSelected].visible = !checkmarks.members[optionsSelected].visible;
@@ -454,13 +459,18 @@ function toggleSelection() {
 		case "Credits":
 			saveOptions();
 			LoadingState.loadAndSwitchState(new CreditsState());
-		case "Show FPS and Memory Counter":
+		case "Show FPS":
 			if (OptionsHandler.options.allowEditOptions){
 				checkmarks.members[optionsSelected].visible = !checkmarks.members[optionsSelected].visible;
 				SaveDataState.optionList[activedOptions[optionsSelected]].value = checkmarks.members[optionsSelected].visible;
 				Main.fpsVar.visible = checkmarks.members[optionsSelected].visible;
-				Main.memoryVar.visible = checkmarks.members[optionsSelected].visible;
 			}
+		case "Show Memory Counter":
+			if (OptionsHandler.options.allowEditOptions){
+				checkmarks.members[optionsSelected].visible = !checkmarks.members[optionsSelected].visible;
+				SaveDataState.optionList[activedOptions[optionsSelected]].value = checkmarks.members[optionsSelected].visible;
+				Main.memoryVar.visible = checkmarks.members[optionsSelected].visible;
+			}	
 		default:
 			if (OptionsHandler.options.allowEditOptions)
 			{
