@@ -41,6 +41,10 @@ var camPos;
 var CAM_OFFSET = 360;
 var curEventSelected = 0;
 var curDifficulty;
+
+var zoomTxt;
+var curZoom = 1;
+var zoomList = [0.5, 1, 2, 4, 8, 12, 16, 24];
 //var customNoteJson:Null<Array<NoteInfo>>;
 
 var GRID_SIZE = 40;
@@ -70,6 +74,7 @@ var value1InputText;
 var value2InputText;
 var value3InputText;
 var ignoreWarnings = false;
+var allDiffs = [];
 
 var playerText;
 var gfText;
@@ -87,7 +92,8 @@ var curSelectedNote = [];
 
 var tempBpm = 0;
 
-var vocals;
+var vocals = null;
+var sfxtrack = null;
 
 var leftIcon;
 var rightIcon;
@@ -102,7 +108,7 @@ var text = "";
 function create()
 {
 	// wierd fix but might work?
-	remove(coolText);
+	//remove(coolText);
 	curSection = ChartingState.lastSection;
 
 	var bg = new FlxSprite().loadGraphic(FNFAssets.getBitmapData('assets/images/menuDesat.png'));
@@ -131,12 +137,6 @@ function create()
 	add(eventIcon);
 	add(leftIcon);
 	add(rightIcon);
-
-	leftIcon.setPosition(GRID_SIZE + 10, -100);
-	rightIcon.setPosition(GRID_SIZE * 5.2, -100);
-
-	//var gridBlackLine:FlxSprite = new FlxSprite(gridBG.x + gridBG.width / 2).makeGraphic(2, Std.int(gridBG.height), FlxColor.BLACK);
-	//add(gridBlackLine);
 
 	curRenderedNotes = new FlxTypedGroup();
 	curRenderedSustains = new FlxTypedGroup();
@@ -190,15 +190,23 @@ function create()
 		{
 			difficultyChoices.push(i.name);
 		}
+
+		allDiffs.push(i.name);
 	}
-	curDifficulty = difficultyChoices[PlayState.storyDifficulty];
+	curDifficulty = allDiffs[PlayState.storyDifficulty];
 
 	FlixG.mouse.visible = true;
 	//FlxG.save.bind('save1', 'bulbyVR');
 	// i don't know why we need to rebind our save
 	tempBpm = _song.bpm;
-	leftIcon.switchAnim(_song.player1);
-	rightIcon.switchAnim(_song.player2);
+
+	var top1 = _song.player1;
+	var top2 = _song.player2;
+
+	leftIcon.switchAnim(top1);
+
+	rightIcon.switchAnim(top2);
+
 	leftIcon.scrollFactor.set(1, 1);
 	rightIcon.scrollFactor.set(1, 1);
 	ignoreWarnings = FlixG.save.data.ignoreWarnings;
@@ -248,6 +256,7 @@ function create()
 	\n
 	\nEnter - Play your chart
 	\nQ/E - Decrease/Increase Note Sustain Length
+	\nI/O - Changes The Notetype
 	\nSpace - Stop/Resume song";
 
 	var tipTextArray = text.split('\n');
@@ -279,9 +288,11 @@ function create()
 	add(curRenderedSustains);
 	add(curRenderedNoteType);
 
-	changeSection(0, true);
+	vocals.play();
+	changeSection(curSection, true);
 
 	updateGrid();
+	updateHeads();
 }
 
 var playSoundBf = null;
@@ -372,9 +383,9 @@ function addSongUI()
 	diffDropDown = new FlxUIDropDownMenuCustom(10, 135, FlxUIDropDownMenuCustom.makeStrIdLabelArray(difficultyChoices, true), function(pressed)
 	{
 		var selectedDiff = Std.parseInt(pressed);
-		curDifficulty = difficultyChoices[selectedDiff];
+		curDifficulty = getDiffByArray(difficultyChoices[selectedDiff]);
 	});
-	diffDropDown.selectedLabel = DifficultyManager.getDiffName(PlayState.storyDifficulty);
+	diffDropDown.selectedLabel = allDiffs[PlayState.storyDifficulty];
 
 	var stepperMania = new FlxUINumericStepper(100, 70, 1, 0, 0, 3, 1);
 	stepperMania.value = _song.mania;
@@ -424,6 +435,17 @@ function addSongUI()
 	UI_box.scrollFactor.set();
 
 	FlxG.camera.follow(camPos);
+}
+
+function getDiffByArray(daDiffName)
+{
+	for (i in 0...allDiffs.length)
+	{
+		if (allDiffs[i] == daDiffName)
+			return i;
+	}
+
+	//return 4;
 }
 
 function addCharsUI()
@@ -894,13 +916,6 @@ function loadSong(daSong)
 		FlxG.sound.music.stop();
 		// vocals.stop();
 	}
-	
-	if (sysTarget)
-		FlxG.sound.playMusic(FNFAssets.getSound("assets/music/"+daSong+"_Inst"+TitleState.soundExt), 0.6);
-	else
-		FlxG.sound.playMusic('assets/music/' + daSong + "_Inst" + TitleState.soundExt, 0.6);
-
-	if (instVolume != null) FlxG.sound.music.volume = instVolume.value;
 
 	// WONT WORK FOR TUTORIAL OR TEST SONG!!! REDO LATER
 	if (_song.needsVoices) {
@@ -915,16 +930,45 @@ function loadSong(daSong)
 		FlxG.sound.list.add(vocals);
 	}
 
+	if (FNFAssets.exists('assets/music/' + daSong + "_Sounds" + TitleState.soundExt))
+	{
+		if (sysTarget)
+		{
+			var sfxSound = FNFAssets.getSound("assets/music/"+daSong+"_Sounds"+TitleState.soundExt);
+			sfxtrack = new FlxSound().loadEmbedded(sfxSound);
+		}
+		else
+			sfxtrack = new FlxSound().loadEmbedded("assets/music/" + daSong + "_Sounds" + TitleState.soundExt);
+		
+		FlxG.sound.list.add(sfxtrack);
+	}
+
+	if (sysTarget)
+		FlxG.sound.playMusic(FNFAssets.getSound("assets/music/"+daSong+"_Inst"+TitleState.soundExt), 0.6);
+	else
+		FlxG.sound.playMusic('assets/music/' + daSong + "_Inst" + TitleState.soundExt, 0.6);
+
+	if (instVolume != null) FlxG.sound.music.volume = instVolume.value;
+	
 	FlxG.sound.music.pause();
 	if (_song.needsVoices) {
 		vocals.pause();
 	}
+
+	if (sfxtrack != null)
+		sfxtrack.pause();
 
 	FlxG.sound.music.onComplete = function()
 	{
 		if (_song.needsVoices) {
 			vocals.pause();
 			vocals.time = 0;
+		}
+
+		if (sfxtrack != null)
+		{
+			sfxtrack.pause();
+			sfxtrack.time = 0;
 		}
 
 		FlxG.sound.music.pause();
@@ -1108,10 +1152,10 @@ function update(elapsed)
 	strumLine.width = gWidth;
 	//rightIcon.x = gWidth / 2 + GRID_SIZE * 2;
 
-	if (controls.BACK)
+	/*if (controls.BACK)
 	{
 		FlixG.resetState();
-	}
+	}*/
 
 	remove(coolText);
 	coolText.text = 'curStep: ' + Std.string(curStep);
@@ -1137,17 +1181,42 @@ function update(elapsed)
 	_song.uiType = uiTextField.text;
 	strumLine.y = getYfromStrum((Conductor.songPosition - sectionStartTime(0)) % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps));
 	camPos.y = strumLine.y;
-	
-	if (temlicon != _song.player1)
+
+	var top1 = _song.player1;
+	var top2 = _song.player2;
+
+	if (PlayState.SONG.song.toLowerCase() == 'intermission')
 	{
-		temlicon = _song.player1;
-		leftIcon.switchAnim(_song.player1);
+		if (instance.curStep >= 272)
+			top2 = 'carol-core';
+		if (instance.curStep >= 432)
+			top2 = 'kapi-core';
+		if (instance.curStep >= 656)
+			top2 = 'sunday-sp';
+		if (instance.curStep >= 1104)
+			top2 = 'carol-core';
+		if (instance.curStep >= 1160)
+			top2 = 'sunday-sp';
+		if (instance.curStep >= 1232)
+			top2 = 'carol-core';
+		if (instance.curStep >= 1328)
+			top2 = 'sunday-sp';
+		if (instance.curStep >= 1360)
+			top2 = 'kapi-core';
+		if (instance.curStep >= 1416)
+			top2 = 'sunday-sp';
+	}
+
+	if (temlicon != top1)
+	{
+		temlicon = top1;
+		leftIcon.switchAnim(temlicon);
 	}
 	
-	if (temricon != _song.player2)
+	if (temricon != top2)
 	{
-		temricon = _song.player2;
-		rightIcon.switchAnim(_song.player2);
+		temricon = top2;
+		rightIcon.switchAnim(temricon);/*_song.player2);*/
 	}
 
 	if (curBeat % 4 == 0 && curStep >= 16 * (curSection + 1))
@@ -1220,6 +1289,10 @@ function update(elapsed)
 		if (_song.needsVoices) {
 			vocals.stop();
 		}
+
+		if (sfxtrack != null)
+			sfxtrack.stop();
+
 		FlixG.mouse.visible = false;
 		LoadingState.loadAndSwitchState(new PlayState());
 	}
@@ -1299,6 +1372,9 @@ function update(elapsed)
 					vocals.pause();
 				}
 
+				if (sfxtrack != null)
+					sfxtrack.pause();
+
 			}
 			else
 			{
@@ -1306,6 +1382,9 @@ function update(elapsed)
 					vocals.play();
 				}
 				FlxG.sound.music.play();
+
+				if (sfxtrack != null)
+					sfxtrack.play();
 			}
 		}
 
@@ -1324,11 +1403,16 @@ function update(elapsed)
 				vocals.pause();
 			}
 
+			if (sfxtrack != null)
+				sfxtrack.pause();
 
 			FlxG.sound.music.time -= (FlixG.mouse.wheel * Conductor.stepCrochet * 0.4);
 			if (_song.needsVoices) {
 				vocals.time = FlxG.sound.music.time;
 			}
+
+			if (sfxtrack != null)
+				sfxtrack.time = FlxG.sound.music.time;
 
 		}
 		if (FlxG.keys.pressed.SHIFT)
@@ -1348,6 +1432,8 @@ function update(elapsed)
 					vocals.pause();
 				}
 
+				if (sfxtrack != null)
+					sfxtrack.pause();
 
 				var daTime = 700 * FlxG.elapsed;
 
@@ -1361,6 +1447,9 @@ function update(elapsed)
 					vocals.time = FlxG.sound.music.time;
 				}
 
+				if (sfxtrack != null)
+					sfxtrack.time = FlxG.sound.music.time;
+
 			}
 		}
 		else
@@ -1372,6 +1461,8 @@ function update(elapsed)
 					vocals.pause();
 				}
 
+				if (sfxtrack != null)
+					sfxtrack.pause();
 
 				var daTime = Conductor.stepCrochet * 2;
 
@@ -1384,6 +1475,9 @@ function update(elapsed)
 				if (_song.needsVoices) {
 					vocals.time = FlxG.sound.music.time;
 				}
+
+				if (sfxtrack != null)
+					sfxtrack.time = FlxG.sound.music.time;
 
 			}
 		}
@@ -1532,6 +1626,8 @@ function resetSection(songBeginning)
 		vocals.pause();
 	}
 
+	if (sfxtrack != null)
+		sfxtrack.pause();
 
 	// Basically old shit from changeSection???
 	FlxG.sound.music.time = sectionStartTime(0);
@@ -1544,6 +1640,9 @@ function resetSection(songBeginning)
 	if (_song.needsVoices) {
 		vocals.time = FlxG.sound.music.time;
 	}
+
+	if (sfxtrack != null)
+		sfxtrack.time = FlxG.sound.music.time;
 
 	//updateCurStep();
 
@@ -1564,14 +1663,21 @@ function changeSection(sec, updateMusic)
 		if (updateMusic)
 		{
 			FlxG.sound.music.pause();
-
+			
 			FlxG.sound.music.time = sectionStartTime(0);
+			
 			if (_song.needsVoices) {
 				vocals.pause();
 				vocals.time = FlxG.sound.music.time;
 			}
 
-			updateCurStep();
+			if (sfxtrack != null)
+			{
+				sfxtrack.pause();
+				sfxtrack.time = FlxG.sound.music.time;
+			}
+
+			//updateCurStep();
 		}
 
 		updateGrid();
@@ -1603,11 +1709,24 @@ function updateSectionUI()
 {
 	var sec = _song.notes[curSection];
 
+	if (sec.lengthInSteps == null)
+		sec.lengthInSteps = 16;
+
 	stepperLength.value = sec.lengthInSteps;
+
 	check_mustHitSection.checked = sec.mustHitSection;
 	check_altAnim.checked = sec.altAnim;
-	check_crossfadeBf.checked = sec.crossfadeBf;
-	check_crossfadeDad.checked = sec.crossfadeDad;
+
+	if (check_crossfadeBf.checked == null)
+		check_crossfadeBf.checked = false;
+	else
+		check_crossfadeBf.checked = sec.crossfadeBf;
+
+	if (check_crossfadeDad.checked == null)
+		check_crossfadeDad.checked = false;
+	else
+		check_crossfadeDad.checked = sec.crossfadeDad;
+
 	check_changeBPM.checked = sec.changeBPM;
 	// note that 0 implies regular anim and 1 implies default alt 
 	if (sec.altAnimNum == null) {
@@ -1624,20 +1743,20 @@ function updateSectionUI()
 function updateHeads()
 {
 	var sustr = Main.ammo[_song.mania] - 4;
-	var spacing = GRID_SIZE * sustr - (sustr);
+	var maniaSep = (GRID_SIZE * (sustr / 2));
 
-	rightIcon.visible = false;
+	var daSpace = 26;
 	
-	//if (check_mustHitSection.checked)
-	//{
-		leftIcon.setPosition(GRID_SIZE + (spacing), -100);
-	//	rightIcon.setPosition(GRID_SIZE + gridBG.width / 2, -100);
-	//}
-	//else
-	//{
-	//	rightIcon.setPosition(GRID_SIZE + 0, -100);
-	//	leftIcon.setPosition(GRID_SIZE + gridBG.width / 2, -100);
-	//}
+	if (check_mustHitSection.checked)
+	{
+		leftIcon.setPosition((GRID_SIZE / 2) + daSpace + maniaSep, -100);
+		rightIcon.setPosition((gridBG.width / 2) + daSpace + maniaSep, -100);
+	}
+	else
+	{
+		rightIcon.setPosition((GRID_SIZE / 2) + daSpace + maniaSep, -100);
+		leftIcon.setPosition((gridBG.width / 2) + daSpace + maniaSep, -100);
+	}
 }
 
 function updateNoteUI()
@@ -1789,7 +1908,14 @@ function setupNoteData(i)
 	note.setGraphicSize(GRID_SIZE, GRID_SIZE);
 	note.updateHitbox();
 	note.x = Math.floor((daNoteInfo % (Main.ammo[_song.mania] * 2)) * GRID_SIZE) + GRID_SIZE;
-	note.y = Math.floor(getYfromStrum((daStrumTime - sectionStartTime(0)) % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps)));
+
+	var leinst;
+	leinst = _song.notes[curSection].lengthInSteps;
+
+	if (leinst == null)
+		leinst = 16;
+
+	note.y = Math.floor(getYfromStrum((daStrumTime - sectionStartTime(0)) % (Conductor.stepCrochet * leinst)));
 
 	return note;
 }
@@ -1929,8 +2055,8 @@ function addNote()
 				noteData += limit*2;
 			case Death: 
 				noteData += limit*3;
-			case key: 
-				noteData += limit * key;
+			default: 
+				noteData += limit * noteType;
 		}
 	}
 
@@ -1996,12 +2122,33 @@ function getNotes()
 
 function loadJson(song)
 {
+	var proceed = true;
 	var diffSuxx = '-' + diffDropDown.selectedLabel.toLowerCase();
 	if (diffSuxx == '-normal') {diffSuxx = '';}
-	var poop = song.toLowerCase() + diffSuxx;
-	PlayState.SONG = Song.loadFromJson(poop, song.toLowerCase());
-	PlayState.storyDifficulty = Std.parseInt(diffDropDown.selectedId);
-	FlixG.resetState();
+
+	if (_song.song.toLowerCase() == 'amnesia')
+		proceed = false;
+
+	if (_song.song.toLowerCase() == 'discharge')
+		proceed = false;
+
+	if (_song.song.toLowerCase() == 'triple-trouble')
+		proceed = false;
+
+	if (!FNFAssets.exists('assets/data/' + _song.song.toLowerCase() + '/' + _song.song.toLowerCase() + diffSuxx + '.json'))
+		proceed = false;
+	
+	if (proceed)
+	{
+		var poop = song.toLowerCase() + diffSuxx;
+		PlayState.SONG = Song.loadFromJson(poop, song.toLowerCase());
+		PlayState.storyDifficulty = curDifficulty; //Std.parseInt(diffDropDown.selectedId);
+		FlixG.resetState();
+	}
+	else //Prevents enter to the song in charting mode (i catched bitches)
+	{
+		FlxG.sound.play(FNFAssets.getSound('assets/sounds/ANGRY.ogg'));
+	}
 }
 
 function loadAutosave()
@@ -2082,7 +2229,7 @@ function saveEvents()
 		song: eventsSong
 	}
 
-	var data = Json.stringify(json, "\t");
+	var data = CoolUtil.stringifyJson(json);
 
 	if ((data != null) && (data.length > 0))
 	{
