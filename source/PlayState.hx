@@ -113,6 +113,7 @@ class PlayState extends MusicBeatState
 	public static var gOverSuffix:String = "";
 	public var forceAlphaStrum:Bool = true;
 	public var endingCutscene = false;
+	public var hasDefaultBoom = true;
 
 	#if (haxe >= "4.0.0")
 	public var boyfriendMap:Map<String, Character> = new Map();
@@ -5695,7 +5696,7 @@ class PlayState extends MusicBeatState
 		}
 		// FlxG.log.add('change bpm' + SONG.notes[Std.int(curStep / 16)].changeBPM);
 		
-		if (!endingSong && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0)
+		if (!endingSong && camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0 && hasDefaultBoom)
 		{
 			FlxG.camera.zoom += 0.015;
 			camHUD.zoom += 0.03;
