@@ -114,6 +114,9 @@ class PlayState extends MusicBeatState
 	public var forceAlphaStrum:Bool = true;
 	public var endingCutscene = false;
 	public var hasDefaultBoom = true;
+	
+	public var modTweens:Array<FlxTween> = [];
+	public var modTimers:Array<FlxTimer> = [];
 
 	#if (haxe >= "4.0.0")
 	public var boyfriendMap:Map<String, Character> = new Map();
@@ -3023,6 +3026,14 @@ class PlayState extends MusicBeatState
 			if (!startTimer.finished)
 				startTimer.active = false;
 		}
+		
+		for (tween in modTweens) {
+			tween.active = false;
+		}
+		
+		for (timer in modTimers) {
+			timer.active = false;
+		}
 
 		super.openSubState(SubState);
 	}
@@ -3109,6 +3120,14 @@ class PlayState extends MusicBeatState
 					playingAsRpc);
 			}
 			#end
+		}
+		
+		for (tween in modTweens) {
+			tween.active = true;
+		}
+		
+		for (timer in modTimers) {
+			timer.active = true;
 		}
 
 		super.closeSubState();

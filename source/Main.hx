@@ -16,6 +16,12 @@ class Main extends Sprite
 	public static var curMusicName:String = "";
 	public static var fpsVar:FPS;
 	public static var memoryVar:MemoryCounter;
+	
+	#if (haxe >= "4.0.0")
+	public static var globalVars:Map<String, Dynamic> = new Map();
+	#else
+	public static var globalVars:Map<String, Dynamic> = new Map<String, Dynamic>();
+	#end
 
 	var gameWidth:Int = 1280; // Width of the game in pixels (might be less / more in actual pixels depending on your zoom).
 	var gameHeight:Int = 720; // Height of the game in pixels (might be less / more in actual pixels depending on your zoom).
