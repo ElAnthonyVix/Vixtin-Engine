@@ -10,9 +10,14 @@ class DiscordClient
 	public function new()
 	{
         #if cpp
+		
+		var client:String = "959138138951913554";
+		if (FNFAssets.exists("assets/discord/clientID.txt"))
+			client = FNFAssets.getText("assets/discord/clientID.txt"));
+		
 		trace("Discord Client starting...");
 		DiscordRpc.start({
-			clientID: "959138138951913554",
+			clientID: client,
 			onReady: onReady,
 			onError: onError,
 			onDisconnected: onDisconnected
