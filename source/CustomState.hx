@@ -158,6 +158,7 @@ class CustomState extends MusicBeatState
 		interp.variables.set("DifficultyIcons", DifficultyIcons);
 		interp.variables.set("DifficultyManager", DifficultyManager);
 		interp.variables.set("Controls", Controls);
+		interp.variables.set("Map", haxe.ds.StringMap);
 		interp.variables.set("Tooltip", Tooltip);
 		interp.variables.set("SongInfoPanel", SongInfoPanel);
 		interp.variables.set("DifficultyManager", DifficultyManager);
