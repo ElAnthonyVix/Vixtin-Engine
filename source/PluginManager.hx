@@ -112,6 +112,7 @@ class PluginManager {
         interp.variables.set("PluginManager", PluginManager);
         interp.variables.set("callExternClass", instanceExClass); //Call modules?? :D
 		interp.variables.set("globalVars", Main.globalVars);
+		
 
         //interp.variables.set("GitarooPause", GitarooPause);
 		#if debug

@@ -181,10 +181,13 @@ class CustomState extends MusicBeatState
 		interp.variables.set("ControlsState", ControlsState);
 		interp.variables.set("NumberDisplay", NumberDisplay);
 		interp.variables.set("controls", controls);
+		interp.variables.set("controlsPlayerTwo", controlsPlayerTwo);
+		interp.variables.set("setKeyScheme", setKeyScheme);
 		interp.variables.set("ModifierState", ModifierState);
 		interp.variables.set("SortState", SortState);
 		interp.variables.set("FlxObject", FlxObject);
 		interp.variables.set("Ratings", Ratings);
+		interp.variables.set("FlxSort", FlxSort);
 		interp.variables.set("VictoryLoopState", VictoryLoopState);
 		interp.variables.set("FlxCameraFollowStyle", FlxCameraFollowStyle);
 		interp.variables.set("CustomState", CustomState);
@@ -209,6 +212,7 @@ class CustomState extends MusicBeatState
 		interp.variables.set("PauseSubState", PauseSubState);
 		interp.variables.set("Prompt", Prompt);
 		interp.variables.set("Ratings", Ratings);
+		interp.variables.set("ConvertScore", ConvertScore);
 		interp.variables.set("Record", Record);
 		interp.variables.set("SaveFile", SaveFile);
 		interp.variables.set("Section", Section);
@@ -274,5 +278,37 @@ class CustomState extends MusicBeatState
 		super.stepHit();
 		setAllHaxeVar('curStep', curStep);
 		callAllHScript("stepHit", [curStep]);
+	}
+	
+	public function setKeyScheme(isPlayerOne:Bool = true, mode:String = "solo"):Void
+	{
+		if (isPlayerOne)
+		{
+			switch (mode.toLowerCase())
+			{
+				case "duo-false":
+					controls.setKeyboardScheme(Duo(false));
+				case "duo-true":
+					controls.setKeyboardScheme(Duo(true));
+				case "solo-true":
+					controls.setKeyboardScheme(Solo(true));
+				default:
+					controls.setKeyboardScheme(Solo(false));
+			}
+		}
+		else
+		{
+			switch (mode.toLowerCase())
+			{
+				case "duo-false":
+					controlsPlayerTwo.setKeyboardScheme(Duo(false));
+				case "duo-true":
+					controlsPlayerTwo.setKeyboardScheme(Duo(true));
+				case "solo-true":
+					controlsPlayerTwo.setKeyboardScheme(Solo(true));
+				default:
+					controlsPlayerTwo.setKeyboardScheme(Solo(false));
+			}
+		}
 	}
 }
