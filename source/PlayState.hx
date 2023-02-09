@@ -2178,6 +2178,7 @@ class PlayState extends MusicBeatState
 				var gottaHitNote:Bool = section.mustHitSection;
 				var altNote:Bool = false;
 				var crossFade:Bool = false;
+				var altNoteNum:Int = 0;
 
 				if (songNotes[1] % (Main.ammo[mania] * 2) > Main.ammo[mania] - 1)
 				{
@@ -2230,7 +2231,12 @@ class PlayState extends MusicBeatState
 				// altNote
 				swagNote.altNote = altNote;
 				swagNote.crossFade = crossFade;
-				swagNote.altNum = songNotes[3] == null ? (swagNote.altNote ? 1 : 0) : songNotes[3];
+				
+				if (!section.altAnim)
+					swagNote.altNum = songNotes[3] == null ? (swagNote.altNote ? 1 : 0) : songNotes[3];
+				else
+					swagNote.altNum = section.altAnimNum == null ? (section.altAnim ? 1 : 0) : section.altAnimNum;
+				
 				// so much more complicated but makes playstation like shit work
 				if (flippedNotes) {
 					if (swagNote.animation.curAnim.name == 'greenScroll') {
@@ -3846,14 +3852,16 @@ class PlayState extends MusicBeatState
 					camZooming = true;
 					dad.altAnim = "";
 					dad.altNum = 0;
+					
 					if (daNote.altNote)
 					{
 						dad.altAnim = '-alt';
 						dad.altNum = 1;
 					}
+					
 					dad.altNum = daNote.altNum;
 
-					if (SONG.notes[Math.floor(curStep / 16)] != null)
+					/*if (SONG.notes[Math.floor(curStep / 16)] != null)
 					{
 						if ((SONG.notes[Math.floor(curStep / 16)].altAnimNum > 0 && SONG.notes[Math.floor(curStep / 16)].altAnimNum != null) || SONG.notes[Math.floor(curStep / 16)].altAnim)
 							// backwards compatibility shit
@@ -3861,7 +3869,7 @@ class PlayState extends MusicBeatState
 								dad.altNum = 1;
 							else if (SONG.notes[Math.floor(curStep / 16)].altAnimNum != 0)
 								dad.altNum = SONG.notes[Math.floor(curStep / 16)].altAnimNum;
-					}
+					}*/
 					
 					if (dad.altNum == 1) {
 						dad.altAnim = '-alt';
@@ -3924,6 +3932,7 @@ class PlayState extends MusicBeatState
 					}
 					boyfriend.altNum = daNote.altNum;
 
+					/*
 					if (SONG.notes[Math.floor(curStep / 16)] != null)
 					{
 						if ((SONG.notes[Math.floor(curStep / 16)].altAnimNum > 0 && SONG.notes[Math.floor(curStep / 16)].altAnimNum != null) || SONG.notes[Math.floor(curStep / 16)].altAnim)
@@ -3933,6 +3942,7 @@ class PlayState extends MusicBeatState
 							else if (SONG.notes[Math.floor(curStep / 16)].altAnimNum != 0)
 								boyfriend.altNum = SONG.notes[Math.floor(curStep / 16)].altAnimNum;
 					}
+					*/
 					
 					if (boyfriend.altNum == 1) {
 						boyfriend.altAnim = '-alt';
@@ -5499,6 +5509,7 @@ class PlayState extends MusicBeatState
 			actingOn.altAnim = "";
 			actingOn.altNum = 0;
 			
+			/*
 			if (SONG.notes[Math.floor(curStep / 16)] != null)
 			{
 				if (( SONG.notes[Math.floor(curStep / 16)].altAnimNum != null && SONG.notes[Math.floor(curStep / 16)].altAnimNum > 0)
@@ -5510,9 +5521,13 @@ class PlayState extends MusicBeatState
 					else if (SONG.notes[Math.floor(curStep / 16)].altAnimNum > 1)
 						actingOn.altNum = SONG.notes[Math.floor(curStep / 16)].altAnimNum;
 			}
+			/*
+			
 			if (note.altNote)
 				actingOn.altNum = 1;
+				
 			actingOn.altNum = note.altNum;
+			
 			if (actingOn.altNum == 1)
 			{
 				actingOn.altAnim = '-alt';
