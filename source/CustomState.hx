@@ -20,10 +20,12 @@ import flixel.FlxGame;
 import flixel.graphics.FlxGraphic;
 import DifficultyIcons;
 import flixel.FlxState;
+import flixel.FlxSubState;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.effects.FlxTrailArea;
 import openfl.filters.ShaderFilter;
 import flixel.math.FlxPoint;
+import flash.geom.Rectangle;
 import Conductor.BPMChangeEvent;
 import flixel.addons.ui.FlxInputText;
 import flixel.addons.ui.FlxUI9SliceSprite;
@@ -40,6 +42,10 @@ import openfl.events.IOErrorEvent;
 import flixel.util.FlxSort;
 import flixel.effects.FlxFlicker;
 import flixel.util.FlxAxes;
+import haxe.io.Bytes;
+import flixel.ui.FlxSpriteButton;
+import haxe.format.JsonParser;
+import flixel.animation.FlxAnimation;
 
 #if desktop
 import Sys;
@@ -61,6 +67,20 @@ import hscript.Parser;
 import hscript.ParserEx;
 import hscript.InterpEx;
 import hscript.ClassDeclEx;
+
+import openfl.net.FileReference;
+import flixel.util.FlxStringUtil;
+import flixel.addons.text.FlxTypeText;
+import flixel.input.FlxKeyManager;
+import flash.display.BitmapData;
+import flixel.graphics.frames.FlxFrame;
+import Discord.DiscordClient;
+import lime.app.Application;
+import openfl.Lib;
+import lime.system.Clipboard;
+import flixel.addons.ui.FlxUIState;
+import lime.ui.FileDialog;
+import lime.ui.FileDialogType;
 
 import haxe.Json;
 import tjson.TJSON;
@@ -198,6 +218,7 @@ class CustomState extends MusicBeatState
 		interp.variables.set("FlxShaderFix", FlxShaderFix);
 		interp.variables.set("FlxUIDropDownMenuCustom", FlxUIDropDownMenuCustom);
 		interp.variables.set("FlxVideo", FlxVideo);
+		interp.variables.set("FlxTypedGroup", FlxTypedGroup);
 		interp.variables.set("GameOverSubstate", GameOverSubstate);
 		interp.variables.set("PauseSubState", PauseSubState);
 		interp.variables.set("HelperFunctions", HelperFunctions);
@@ -245,6 +266,53 @@ class CustomState extends MusicBeatState
 		interp.variables.set("FlxGridOverlay", FlxGridOverlay);
 		interp.variables.set("AttachedSprite", AttachedSprite);
 		interp.variables.set("AttachedText", AttachedText);
+		interp.variables.set("getEvent", getEvent);
+		interp.variables.set("openSubState", openSubState);
+
+		#if sys
+		interp.variables.set("FileSystem", FileSystem);
+		interp.variables.set("IoPath", haxe.io.Path);
+		
+		#end
+
+		interp.variables.set("Interp", Interp);
+		interp.variables.set("Parser", Parser);
+		interp.variables.set("InterpEx", InterpEx);
+		interp.variables.set("ParserEx", ParserEx);
+		interp.variables.set("ClassDeclEx", ClassDeclEx);
+
+		interp.variables.set("Assets", Assets);
+		interp.variables.set("FlxBasic", FlxBasic);
+		interp.variables.set("FlxGame", FlxGame);
+		interp.variables.set("IOErrorEvent", IOErrorEvent);
+		interp.variables.set("Sys", Sys);
+		interp.variables.set("TJSON", TJSON);
+		interp.variables.set("FlxGraphic", FlxGraphic);
+		interp.variables.set("Rectangle", Rectangle);
+		interp.variables.set("Bytes", Bytes);
+		interp.variables.set("FlxSpriteButton", FlxSpriteButton);
+		interp.variables.set("AudioBuffer", AudioBuffer);
+		interp.variables.set("FileReference", FileReference);
+
+		interp.variables.set("FlxStringUtil", FlxStringUtil);
+		interp.variables.set("FlxTypeText", FlxTypeText);
+		interp.variables.set("FlxKeyManager", FlxKeyManager);
+		interp.variables.set("BitmapData", BitmapData);
+		interp.variables.set("FlxFrame", FlxFrame);
+		interp.variables.set("JsonParser", JsonParser);
+		interp.variables.set("DiscordClient", DiscordClient);
+		interp.variables.set("FlxState", FlxState);
+		interp.variables.set("FlxSubState", FlxSubState);
+		interp.variables.set("Application", Application);
+		interp.variables.set("IoFile", sys.io.File);
+		interp.variables.set("Lib", Lib);
+		interp.variables.set("Clipboard", Clipboard);
+		interp.variables.set("FlxAnimation", FlxAnimation);
+		interp.variables.set("FlxUIState", FlxUIState);
+		interp.variables.set("FileDialog", FileDialog);
+		interp.variables.set("FileDialogType", FileDialogType);
+		interp.variables.set("LatencyState", LatencyState);
+		
 		
 		trace("set stuff");
 		interp.execute(program);
@@ -258,6 +326,11 @@ class CustomState extends MusicBeatState
 		FNFAssets.clearStoredMemory(); //Clean the stored cache to prevent crash
 		makeHaxeState("customstate", customStateScriptPath, customStateScriptName); //Load the Custom State :D!!! POWERFULL!!
 		super.create();
+	}
+
+	override function getEvent(id:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>)
+	{
+		callAllHScript("getEvent", [id, sender, data, params]);
 	}
 
 	override function update(elapsed:Float)

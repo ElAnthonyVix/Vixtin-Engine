@@ -183,6 +183,7 @@ class Character extends FlxSprite
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false)
 	{
 		animOffsets = new Map<String, Array<Dynamic>>();
+		animOffsets2 = new Map<String, Array<Dynamic>>();
 		super(x, y);
 
 		curCharacter = character;

@@ -142,7 +142,7 @@ class HscriptGlobals {
     public static var height(get, never):Int;
     public static var initialHeight(get, never):Int;
     public static var initialWidth(get, never):Int;
-    public static var initialZoom(get, never):Float;
+    //public static var initialZoom(get, never):Float;
     public static var inputs(get, never):InputFrontEnd;
     public static var keys(get, never):FlxKeyboard;
     // no log
@@ -232,9 +232,9 @@ class HscriptGlobals {
     static function get_initialWidth():Int {
         return FlxG.initialWidth;
     }
-    static function get_initialZoom():Float {
-        return FlxG.initialZoom;
-    }
+    //static function get_initialZoom():Float {
+    //    return FlxG.initialZoom;
+    //}
     static function get_inputs() {
         return FlxG.inputs;
     }

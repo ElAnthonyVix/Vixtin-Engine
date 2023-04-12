@@ -5,6 +5,8 @@ import Song.SwagSong;
 import Conductor.BPMChangeEvent;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flash.geom.Rectangle;
+import haxe.io.Bytes;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.ui.FlxInputText;
 import flixel.addons.ui.FlxUI9SliceSprite;
@@ -36,6 +38,7 @@ import openfl.net.FileReference;
 import openfl.utils.ByteArray;
 import lime.system.System;
 import flixel.util.FlxSort;
+import lime.system.Clipboard;
 #if sys
 import sys.io.File;
 import haxe.io.Path;
@@ -214,6 +217,10 @@ class ChartingState extends MusicBeatState
 		interp.variables.set("checkBoxEvent", FlxUICheckBox.CLICK_EVENT);
 		interp.variables.set("numericStepperEvent", FlxUINumericStepper.CHANGE_EVENT);
 		interp.variables.set("inputTextEvent", FlxUIInputText.CHANGE_EVENT);
+		interp.variables.set("Rectangle", Rectangle);
+		interp.variables.set("Bytes", Bytes);
+		interp.variables.set("AudioBuffer", AudioBuffer);
+		interp.variables.set("FileReference", FileReference);
 
 		#if sys
 		interp.variables.set("FileSystem", sys.FileSystem);

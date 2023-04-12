@@ -13,7 +13,7 @@ class DiscordClient
 		
 		var client:String = "959138138951913554";
 		if (FNFAssets.exists("assets/discord/clientID.txt"))
-			client = FNFAssets.getText("assets/discord/clientID.txt"));
+			client = FNFAssets.getText("assets/discord/clientID.txt");
 		
 		trace("Discord Client starting...");
 		DiscordRpc.start({
