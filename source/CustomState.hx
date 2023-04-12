@@ -313,6 +313,16 @@ class CustomState extends MusicBeatState
 		interp.variables.set("FileDialogType", FileDialogType);
 		interp.variables.set("LatencyState", LatencyState);
 		
+		// Color Functions
+		interp.variables.set("colorFromRGB", function(red:Int, green:Int, blue:Int, alpha:Int = 255)
+		{
+			return FlxColor.fromRGB(red, green, blue, alpha);
+		});
+
+		interp.variables.set("colorFromString", function(str:String)
+		{
+			return FlxColor.fromString(str);
+		});
 		
 		trace("set stuff");
 		interp.execute(program);
