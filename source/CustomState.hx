@@ -41,6 +41,7 @@ import haxe.Json;
 import openfl.events.IOErrorEvent;
 import flixel.util.FlxSort;
 import flixel.effects.FlxFlicker;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.util.FlxAxes;
 import haxe.io.Bytes;
 import flixel.ui.FlxSpriteButton;
@@ -279,7 +280,7 @@ class CustomState extends MusicBeatState
 		interp.variables.set("Parser", Parser);
 		interp.variables.set("InterpEx", InterpEx);
 		interp.variables.set("ParserEx", ParserEx);
-		interp.variables.set("ClassDeclEx", ClassDeclEx);
+		//interp.variables.set("ClassDeclEx", ClassDeclEx);
 
 		interp.variables.set("Assets", Assets);
 		interp.variables.set("FlxBasic", FlxBasic);
