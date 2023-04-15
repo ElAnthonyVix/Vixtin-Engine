@@ -74,7 +74,7 @@ haxelib install hxcpp-debug-server
 
 Well, if you already had flixel and flixel-addons installed with a recent version, you'll have to change it in order to compile.
 
-For that you have to go to the folder '\HaxeToolkit\haxe\lib\' there look for the folder flixel and flixel-addons to modify the file called '.current', open the file and just change the numbers to the specified version.
+For that you have to go to the folder `\HaxeToolkit\haxe\lib\` there look for the folder flixel and flixel-addons to modify the file called `.current`, open the file and just change the numbers to the specified version.
 
 You'll also need to install hscript-ex. Do this with
 
