@@ -3889,7 +3889,7 @@ class PlayState extends MusicBeatState
 						daNote.specialSinger.sing(Std.int(Math.abs(daNote.noteData)), false, dad.altNum);
 					}
 
-					if (!OptionsHandler.disableCpuStrums)
+					if (!OptionsHandler.options.disableCpuStrums)
 					{
 						enemyStrums.forEach(function(spr:FlxSprite)
 						{
@@ -3975,7 +3975,7 @@ class PlayState extends MusicBeatState
 						daNote.specialSinger.sing(Std.int(Math.abs(daNote.noteData % Main.ammo[mania])), false, boyfriend.altNum);
 					}
 
-					if (!OptionsHandler.disableCpuStrums)
+					if (!OptionsHandler.options.disableCpuStrums)
 					{
 						playerStrums.forEach(function(spr:FlxSprite)
 						{
@@ -4877,12 +4877,14 @@ class PlayState extends MusicBeatState
 		comboSpr.velocity.x += FlxG.random.int(1, 10);
 		add(rating);
 		rating.setGraphicSize(Std.int(rating.width * 0.7));
+
 		var msTiming = HelperFunctions.truncateFloat(noteDiffSigned, 3);
 		if (FlxG.save.data.botplay)
 			msTiming = 0;
+		
 		timeShown = 0;
 
-		if (OptionsHandler.showNoteMsCounter)
+		if (OptionsHandler.options.showNoteMsCounter)
 		{
 			if (currentTimingShown != null)
 				remove(currentTimingShown);
@@ -4926,11 +4928,15 @@ class PlayState extends MusicBeatState
 		seperatedScore.push(Math.floor((combo / 10) % 10));
 		seperatedScore.push(combo % 10);
 
-		currentTimingShown.screenCenter();
-		currentTimingShown.x = comboSpr.x + 100;
-		currentTimingShown.y = rating.y + 100;
-		currentTimingShown.acceleration.y = 600;
-		currentTimingShown.velocity.y -= 150;
+		if (OptionsHandler.options.showNoteMsCounter)
+		{
+			currentTimingShown.screenCenter();
+			currentTimingShown.x = comboSpr.x + 100;
+			currentTimingShown.y = rating.y + 100;
+			currentTimingShown.acceleration.y = 600;
+			currentTimingShown.velocity.y -= 150;
+		}
+
 		var daLoop:Int = 0;
 		for (i in seperatedScore)
 		{
@@ -4974,7 +4980,10 @@ class PlayState extends MusicBeatState
 
 			daLoop++;
 		}
-		currentTimingShown.cameras = [camHUD];
+
+		if (OptionsHandler.options.showNoteMsCounter)
+			currentTimingShown.cameras = [camHUD];
+
 		/*
 			trace(combo);
 			trace(seperatedScore);
