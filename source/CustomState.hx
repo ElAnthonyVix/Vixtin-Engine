@@ -267,13 +267,11 @@ class CustomState extends MusicBeatState
 		interp.variables.set("FlxGridOverlay", FlxGridOverlay);
 		interp.variables.set("AttachedSprite", AttachedSprite);
 		interp.variables.set("AttachedText", AttachedText);
-		interp.variables.set("getEvent", getEvent);
-		interp.variables.set("openSubState", openSubState);
 
 		#if sys
 		interp.variables.set("FileSystem", FileSystem);
 		interp.variables.set("IoPath", haxe.io.Path);
-		
+		interp.variables.set("IoFile", sys.io.File);
 		#end
 
 		interp.variables.set("Interp", Interp);
@@ -305,7 +303,6 @@ class CustomState extends MusicBeatState
 		interp.variables.set("FlxState", FlxState);
 		interp.variables.set("FlxSubState", FlxSubState);
 		interp.variables.set("Application", Application);
-		interp.variables.set("IoFile", sys.io.File);
 		interp.variables.set("Lib", Lib);
 		interp.variables.set("Clipboard", Clipboard);
 		interp.variables.set("FlxAnimation", FlxAnimation);
@@ -315,15 +312,9 @@ class CustomState extends MusicBeatState
 		interp.variables.set("LatencyState", LatencyState);
 		
 		// Color Functions
-		interp.variables.set("colorFromRGB", function(red:Int, green:Int, blue:Int, alpha:Int = 255)
-		{
-			return FlxColor.fromRGB(red, green, blue, alpha);
-		});
+		interp.variables.set("colorFromRGB", colorFromRGB);
 
-		interp.variables.set("colorFromString", function(str:String)
-		{
-			return FlxColor.fromString(str);
-		});
+		interp.variables.set("colorFromString", colorFromString);
 		
 		trace("set stuff");
 		interp.execute(program);
@@ -342,6 +333,18 @@ class CustomState extends MusicBeatState
 	override function getEvent(id:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>)
 	{
 		callAllHScript("getEvent", [id, sender, data, params]);
+	}
+
+	override function openSubState(SubState:FlxSubState)
+	{
+		callAllHScript("openSubState", [SubState]);
+	}
+	
+	override function closeSubState()
+	{
+		callAllHScript("closeSubState", []);
+
+		super.closeSubState();
 	}
 
 	override function update(elapsed:Float)
@@ -394,5 +397,15 @@ class CustomState extends MusicBeatState
 					controlsPlayerTwo.setKeyboardScheme(Solo(false));
 			}
 		}
+	}
+
+	public function colorFromRGB(red:Int, green:Int, blue:Int, alpha:Int = 255)
+	{
+		return FlxColor.fromRGB(red, green, blue, alpha);
+	}
+
+	public function colorFromString(str:String)
+	{
+		return FlxColor.fromString(str);
 	}
 }

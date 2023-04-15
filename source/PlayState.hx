@@ -3889,14 +3889,17 @@ class PlayState extends MusicBeatState
 						daNote.specialSinger.sing(Std.int(Math.abs(daNote.noteData)), false, dad.altNum);
 					}
 
-					enemyStrums.forEach(function(spr:FlxSprite)
+					if (!OptionsHandler.disableCpuStrums)
 					{
-						if (Math.abs(daNote.noteData) == spr.ID)
+						enemyStrums.forEach(function(spr:FlxSprite)
 						{
-							spr.animation.play('confirm');
-							sustain2(spr.ID, spr, daNote);
-						}
-					});
+							if (Math.abs(daNote.noteData) == spr.ID)
+							{
+								spr.animation.play('confirm');
+								sustain2(spr.ID, spr, daNote);
+							}
+						});
+					}
 					
 					dad.holdTimer = 0;
 
@@ -3972,14 +3975,17 @@ class PlayState extends MusicBeatState
 						daNote.specialSinger.sing(Std.int(Math.abs(daNote.noteData % Main.ammo[mania])), false, boyfriend.altNum);
 					}
 
-					playerStrums.forEach(function(spr:FlxSprite)
+					if (!OptionsHandler.disableCpuStrums)
 					{
-						if (Math.abs(daNote.noteData % Main.ammo[mania]) == spr.ID)
+						playerStrums.forEach(function(spr:FlxSprite)
 						{
-							spr.animation.play('confirm');
-							sustain2(spr.ID, spr, daNote);
-						}
-					});
+							if (Math.abs(daNote.noteData % Main.ammo[mania]) == spr.ID)
+							{
+								spr.animation.play('confirm');
+								sustain2(spr.ID, spr, daNote);
+							}
+						});
+					}
 
 					boyfriend.holdTimer = 0;
 					
@@ -4875,33 +4881,38 @@ class PlayState extends MusicBeatState
 		if (FlxG.save.data.botplay)
 			msTiming = 0;
 		timeShown = 0;
-		if (currentTimingShown != null)
-			remove(currentTimingShown);
 
-		currentTimingShown = new FlxText(0, 0, 0, "0ms");
-		switch (daRating)
+		if (OptionsHandler.showNoteMsCounter)
 		{
-			case 'miss':
-				currentTimingShown.color = FlxColor.MAGENTA;
-			case 'shit' | 'bad' | 'wayoff':
-				currentTimingShown.color = FlxColor.RED;
-			case 'good':
-				currentTimingShown.color = FlxColor.GREEN;
-			case 'sick':
-				currentTimingShown.color = FlxColor.CYAN;
+			if (currentTimingShown != null)
+				remove(currentTimingShown);
+
+			currentTimingShown = new FlxText(0, 0, 0, "0ms");
+			switch (daRating)
+			{
+				case 'miss':
+					currentTimingShown.color = FlxColor.MAGENTA;
+				case 'shit' | 'bad' | 'wayoff':
+					currentTimingShown.color = FlxColor.RED;
+				case 'good':
+					currentTimingShown.color = FlxColor.GREEN;
+				case 'sick':
+					currentTimingShown.color = FlxColor.CYAN;
+			}
+			currentTimingShown.borderStyle = OUTLINE;
+			currentTimingShown.borderSize = 1;
+			currentTimingShown.borderColor = FlxColor.BLACK;
+			currentTimingShown.text = msTiming + "ms";
+			currentTimingShown.size = 20;
+
+
+			if (currentTimingShown.alpha != 1)
+				currentTimingShown.alpha = 1;
+
+			if (!demoMode)
+				add(currentTimingShown);
 		}
-		currentTimingShown.borderStyle = OUTLINE;
-		currentTimingShown.borderSize = 1;
-		currentTimingShown.borderColor = FlxColor.BLACK;
-		currentTimingShown.text = msTiming + "ms";
-		currentTimingShown.size = 20;
 
-
-		if (currentTimingShown.alpha != 1)
-			currentTimingShown.alpha = 1;
-
-		if (!demoMode)
-			add(currentTimingShown);
 		comboSpr.updateHitbox();
 		rating.updateHitbox();
 
@@ -5520,8 +5531,7 @@ class PlayState extends MusicBeatState
 						actingOn.altNum = 1;
 					else if (SONG.notes[Math.floor(curStep / 16)].altAnimNum > 1)
 						actingOn.altNum = SONG.notes[Math.floor(curStep / 16)].altAnimNum;
-			}
-			/*
+			}*/
 			
 			if (note.altNote)
 				actingOn.altNum = 1;
@@ -5549,12 +5559,10 @@ class PlayState extends MusicBeatState
 				setAllHaxeVar("combo", combo);
 			}
 			
-			/*
 			if (note.noteData >= 0)
 				health += 0.01 * healthGainMultiplier;
 			else
 				health += 0.005 * healthGainMultiplier;
-			*/
 
 			if (note.shouldBeSung) {
 				actingOn.sing(note.noteData, false, actingOn.altNum);

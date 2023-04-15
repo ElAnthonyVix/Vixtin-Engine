@@ -236,6 +236,8 @@ class SaveDataState extends MusicBeatState
 			{name: "Show FPS", value: true, intName:'showFPS', desc:"Turn on/off the FPS",},
 			{name: "Show Memory Counter", value: true, intName:'showMemory', desc:"Turn on/off the Memory Counter.",},
 			{name: "Show Haxe Splash Intro", value: true, intName:'showHaxeSplash', desc:"Show Haxe Splash Intro (Like the OLD FNF Builds).",},
+			{name: "Show Hit Notes Miliseconds", value: true, intName:'showNoteMsCounter', desc:"Show The Miliseconds to a hitted note.",},
+			{name: "Disable CPU Strums", value: true, intName:'disableCpuStrums', desc:"Disables 'Confirm' Animation for the CPU Strums (Like the FNF Vanilla).",},
 			{name:"New Character...", value: false, intName:'newchar', desc: "Make a new character!", ignore: true,},
 			{name:"New Stage...", value:false, intName:'newstage', desc: "Make a new stage!", ignore: true, },
 			{name: "New Song...", value: false, intName:'newsong', desc: "Make a new song!", ignore: true, },

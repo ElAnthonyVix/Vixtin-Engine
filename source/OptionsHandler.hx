@@ -54,6 +54,8 @@ typedef TOptions = {
     var showFPS:Null<Bool>;
     var showMemory:Null<Bool>;
     var showHaxeSplash:Null<Bool>;
+    var showNoteMsCounter:Null<Bool>;
+    var disableCpuStrums:Null<Bool>;
 }
 /**
  * All options that can display on the savedatamenu. Used with mask
@@ -130,7 +132,8 @@ class OptionsHandler {
             lastOptions.showFPS = true;
             lastOptions.showMemory = true;
             lastOptions.showHaxeSplash = false;
-
+            lastOptions.showNoteMsCounter = false;
+            lastOptions.disableCpuStrums = false;
         }
 		return lastOptions;
         #else
