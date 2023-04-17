@@ -252,6 +252,7 @@ class PlayState extends MusicBeatState
 	 */
 	public var camHUD:FlxCamera;
 	private var camGame:FlxCamera;
+	public var camOther:FlxCamera;
 
 	public var doof:DialogueBox;
 	public var forceCamera:Bool = false;
@@ -999,9 +1000,14 @@ class PlayState extends MusicBeatState
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
+		camOther = new FlxCamera();
+
 		camHUD.bgColor.alpha = 0;
+		camOther.bgColor.alpha = 0;
+
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD);
+		FlxG.cameras.add(camOther);
 
 		FlxCamera.defaultCameras = [camGame];
 		persistentUpdate = true;
