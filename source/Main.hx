@@ -10,6 +10,7 @@ import flixel.FlxState;
 import plugins.ExamplePlugin;
 import plugins.ExamplePlugin.ExampleCharPlugin;
 #end
+
 class Main extends Sprite
 {
 	public static var ammo:Array<Int> = [4, 6, 7, 9];
@@ -34,6 +35,7 @@ class Main extends Sprite
 	#if sys
 	public static var cwd:String;
 	#end
+
 	public function new()
 	{
 		#if typebuild
@@ -52,8 +54,7 @@ class Main extends Sprite
 		if (OptionsHandler.options.showHaxeSplash != null)
 			skipSplash = !OptionsHandler.options.showHaxeSplash;
 
-		addChild(new FlxGame(0, 0, initialState, 1, framerate, framerate, skipSplash, startFullscreen));
-		//addChild(new FlxGame(0, 0, TitleState, 1, OptionsHandler.options.fpsCap, OptionsHandler.options.fpsCap, true));
+		addChild(new FlxGame(0, 0, initialState, #if (flixel < "5.0.0") 1, #end framerate, framerate, skipSplash, startFullscreen));
 
 		#if !mobile
 		fpsVar = new FPS(10, 3, 0xFFFFFF);
@@ -74,7 +75,6 @@ class Main extends Sprite
 		{
 			memoryVar.visible = OptionsHandler.options.showMemory;
 		}
-
 		#end
 	}
 }
