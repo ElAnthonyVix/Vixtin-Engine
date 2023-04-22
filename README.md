@@ -29,12 +29,18 @@ take down mods that don't follow this rule.
 
 - [BulbyVR](https://github.com/TheDrawingCoder-Gamer) - Owner/Programmer
 - [DJ Popsicle](https://gamebanana.com/members/1780306) - Co-Owner/Additional Programmer
-- [Matheus L/Mlops](https://gamebanana.com/members/1767306), [AndreDoodles](https://gamebanana.com/members/1764840), [riko](https://github.com/rikokitsu), Raf, ElBartSinsoJaJa, and [plum](https://www.youtube.com/channel/UCXbiI4MJD9Y3FpjW61lG8ZQ) - Artist & Animation
+- [Matheus L/Mlops](https://gamebanana.com/members/1767306), [AndreDoodles](https://gamebanana.com/members/1764840), riko, Raf, ElBartSinsoJaJa, and [plum](https://www.youtube.com/channel/UCXbiI4MJD9Y3FpjW61lG8ZQ) - Artist & Animation
 - [ThePinkPhantom/JuliettePink](https://gamebanana.com/members/1892442) - Portrait Artist
 - [Alex Director](https://gamebanana.com/members/1701629) - Icon Fixer
 - [Drippy](https://github.com/TrafficKid) - GitHub Wikipedia
 - [GwebDev](https://github.com/GrowtopiaFli) - Edited WebM code
 - [Axy](https://github.com/timeless13GH) - Poggers help
+
+## Vixtin Engine Credits
+- [Vixtin](https://github.com/ElAnthonyVix) - Main programmer
+- [DANI24](https://github.com/DANI002428) - Coding helper
+
+
 ## Build instructions
 
 THESE INSTRUCTIONS ARE FOR COMPILING THE GAME'S SOURCE CODE!!!
@@ -55,15 +61,20 @@ The link to that is on the [HaxeFlixel website](https://haxeflixel.com/documenta
 Other installations you'd need is the additional libraries, a fully updated list will be in `Project.xml` in the project root, but here are the one's I'm using as of writing.
 
 ```
-hscript
-flixel-ui
-tjson
-json2object
-uniontypes
-hxcpp-debug-server
+haxelib install flixel 4.11.0
+haxelib install flixel-addons 2.11.0
+
+haxelib install hscript
+haxelib install flixel-ui
+haxelib install tjson
+haxelib install json2object
+haxelib install uniontypes
+haxelib install hxcpp-debug-server
 ```
 
-So for each of those type `haxelib install [library]` so shit like `haxelib install hscript`
+Well, if you already had flixel and flixel-addons installed with a recent version, you'll have to change it in order to compile.
+
+For that you have to go to the folder `\HaxeToolkit\haxe\lib\` there look for the folder flixel and flixel-addons to modify the file called `.current`, open the file and just change the numbers to the specified version.
 
 You'll also need to install hscript-ex. Do this with
 
