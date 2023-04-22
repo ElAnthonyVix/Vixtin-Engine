@@ -1,0 +1,264 @@
+var version = [[]];
+var name_1 = [[]];
+var name_2 = [[]];
+var name_3 = [[]];
+
+var curSelected = 0;
+var customMenuConfirm = [[]];
+var customMenuScroll = [[]];
+var parsedcustomMenuConfirmJson = [[]];
+var menuItems;
+
+var optionShit = [];
+
+var menuSoundJson;
+var scrollSound;
+var magenta;
+var camFollow;
+var camFollowPos;
+
+function create()
+{
+    if (!switchTarget)
+        optionShit = ['story mode', 'freeplay', 'credits', 'donate', 'options'];
+    else
+        optionShit = ['story mode', 'freeplay'];
+
+    menuSoundJson = CoolUtil.parseJson(FNFAssets.getText("assets/sounds/custom_menu_sounds/custom_menu_sounds.json"));
+    scrollSound = menuSoundJson.customMenuScroll;
+    MainMenuState.transIn = FlxTransitionableState.defaultTransIn;
+    MainMenuState.transOut = FlxTransitionableState.defaultTransOut;
+
+    if (!OptionsHandler.options.allowStoryMode) 
+        optionShit.remove("story mode");
+    if (!OptionsHandler.options.allowFreeplay) 
+        optionShit.remove("freeplay");
+    if (!OptionsHandler.options.allowDonate) 
+        optionShit.remove("donate");
+    if (!OptionsHandler.options.useSaveDataMenu && !OptionsHandler.options.allowEditOptions) 
+        optionShit.remove("options");
+
+    FlxG.sound.playMusic(FNFAssets.getSound('assets/music/custom_menu_music/'
+    + CoolUtil.parseJson(FNFAssets.getText("assets/music/custom_menu_music/custom_menu_music.json")).Menu+'/freakyMenu' + TitleState.soundExt));
+
+    togglePersistUpdate(true);
+    togglePersistDraw(true);
+
+    var bg = new FlxSprite(-80).loadGraphic(FNFAssets.getBitmapData('assets/images/menuBG.png'));
+    bg.scrollFactor.x = 0;
+    bg.scrollFactor.y = 0.18;
+    bg.setGraphicSize(Std.int(bg.width * 1.2));
+    bg.updateHitbox();
+    bg.screenCenter();
+    bg.antialiasing = true;
+    add(bg);
+    
+
+    camFollow = new FlxObject(0, 0, 1, 1);
+    camFollowPos = new FlxObject(0, 0, 1, 1);
+    add(camFollow);
+    add(camFollowPos);
+
+    magenta = new FlxSprite(-80).loadGraphic('assets/images/menuDesat.png');
+    magenta.scrollFactor.x = 0;
+    magenta.scrollFactor.y = 0.18;
+    magenta.setGraphicSize(Std.int(magenta.width * 1.2));
+    magenta.updateHitbox();
+    magenta.screenCenter();
+    magenta.visible = false;
+    magenta.antialiasing = true;
+    magenta.color = 0xFFfd719b;
+    add(magenta);
+    // magenta.scrollFactor.set();
+
+    menuItems = new FlxGroup();
+    add(menuItems);
+
+    var tex = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData('assets/images/FNF_main_menu_assets.png'), 'assets/images/FNF_main_menu_assets.xml');
+
+    for (i in 0...optionShit.length)
+    {
+        var menuItem = new FlxSprite(0, 100 + (i * 160));
+        menuItem.frames = tex;
+        menuItem.animation.addByPrefix('idle', optionShit[i] + " basic", 24);
+        menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
+        menuItem.animation.play('idle');
+        menuItem.ID = i;
+        menuItems.add(menuItem);
+        var scr = (optionShit.length - 4) * (0.135 * 4);
+        if(optionShit.length < 4) scr = 0;
+        menuItem.scrollFactor.set(0, scr);
+        menuItem.antialiasing = true;
+    }
+
+    FlxG.camera.follow(camFollowPos, null, 1);
+
+    var infoJson = CoolUtil.parseJson(FNFAssets.getJson("assets/data/gameInfo"));
+    if (infoJson.version != "") {
+        infoJson.version = " - " + infoJson.version; 
+    }
+    // ok, if you can't fucking code then don't edit the fucking code
+    var versionShit = new FlxText(5, FlxG.height - 18, 0, "v"+ Application.current.meta.get("version") + infoJson.version, 12);
+    versionShit.text += "-" + FNFAssets.getText('VERSION');
+    setVersion(versionShit.text);
+    var usingSave = new FlxText(5, FlxG.height - 36, 0, flixelSave.name, 12);
+    versionShit.scrollFactor.set();
+    versionShit.setFormat("VCR OSD Mono", 16, 0xFFffffff, "left", FlxTextBorderStyle.OUTLINE, 0xFF000000);
+    usingSave.scrollFactor.set();
+    usingSave.setFormat("VCR OSD Mono", 16, 0xFFffffff, "left", FlxTextBorderStyle.OUTLINE, 0xFF000000);
+    add(versionShit);
+    if (OptionsHandler.options.useSaveDataMenu)
+        add(usingSave);
+    switch (flixelSave.name) {
+        case "save0":
+            usingSave.text = "bf";
+        case "save1":
+            usingSave.text = "classic";
+        case "save2":
+            usingSave.text = "bf-pixel";
+        case "save3":
+            usingSave.text = "spooky";
+        case "save4":
+            usingSave.text = "dad";
+        case "save5":
+            usingSave.text = "pico";
+        case "save6":
+            usingSave.text = "mom";
+        case "save7":
+            usingSave.text = "gf";
+        case "save8":
+            usingSave.text = "lemon";
+        case "save9":
+            usingSave.text = "senpai";
+    }
+    changeItem(0);
+}
+
+var selectedSomethin = false;
+function update(elapsed)
+{
+    if (FlxG.sound.music.volume < 0.8)
+    {
+        FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
+    }
+
+    var lerpVal = CoolUtil.boundTo(elapsed * 7.5, 0, 1);
+    camFollowPos.setPosition(FlxMath.lerp(camFollowPos.x, camFollow.x, lerpVal), FlxMath.lerp(camFollowPos.y, camFollow.y, lerpVal));
+
+    if (!selectedSomethin)
+    {
+        if (controls.UP_MENU)
+        {
+            FlxG.sound.play('assets/sounds/custom_menu_sounds/'
+            + menuSoundJson.customMenuScroll +'/scrollMenu' + TitleState.soundExt);
+            changeItem(-1);
+        }
+
+        if (controls.DOWN_MENU)
+        {
+            FlxG.sound.play('assets/sounds/custom_menu_sounds/'
+            + menuSoundJson.customMenuScroll +'/scrollMenu' + TitleState.soundExt);
+            changeItem(1);
+        }
+
+        if (controls.BACK)
+        {
+            LoadingState.loadAndSwitchState(new TitleState());
+        }
+
+        if (controls.ACCEPT)
+        {
+            if (optionShit[curSelected] == 'donate')
+            {
+                if (linuxTarget)
+                    Sys.command('/usr/bin/xdg-open', [FNFAssets.getText("assets/data/donate_button_link.txt"), "&"]);
+                else
+                    coolURL(FNFAssets.getText("assets/data/donate_button_link.txt"));
+            }
+            else
+            {
+                selectedSomethin = true;
+                FlxG.sound.play('assets/sounds/custom_menu_sounds/'
+                + menuSoundJson.customMenuConfirm+'/confirmMenu' + TitleState.soundExt);
+
+                FlxFlicker.flicker(magenta, 1.1, 0.15, false);
+
+                menuItems.forEach(function(spr)
+                {
+                    if (curSelected != spr.ID)
+                    {
+                        FlxTween.tween(spr, {alpha: 0}, 0.4, {
+                            ease: FlxEase.quadOut,
+                            onComplete: function(twn)
+                            {
+                                spr.kill();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick)
+                        {
+                            var daChoice = optionShit[curSelected];
+
+                            switch (daChoice)
+                            {
+                                case 'story mode':
+                                    LoadingState.loadAndSwitchState(new StoryMenuState());
+                                    trace("Story Menu Selected");
+                                case 'freeplay':
+                                    CategoryState.choosingFor = "freeplay";
+                                    var epicCategoryJs = CoolUtil.parseJson(FNFAssets.getJson('assets/data/freeplaySongJson'));
+                                    FreeplayState.soundTest = false;
+                                    if (epicCategoryJs.length > 1)
+                                    {
+                                        LoadingState.loadAndSwitchState(new CategoryState());
+                                    }  else {
+                                        FreeplayState.currentSongList = epicCategoryJs[0].songs;
+                                        LoadingState.loadAndSwitchState(new FreeplayState());
+                                    }
+                                case 'credits':
+                                    LoadingState.loadAndSwitchState(new CreditsState());	
+                                case 'options':
+                                    LoadingState.loadAndSwitchState(new SaveDataState());
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    }
+
+    menuItems.forEach(function(spr)
+    {
+        spr.screenCenter(X);
+    });
+}
+
+function changeItem(huh)
+{
+    curSelected += huh;
+
+    if (curSelected >= menuItems.length)
+        curSelected = 0;
+    if (curSelected < 0)
+        curSelected = menuItems.length - 1;
+
+    menuItems.forEach(function(spr)
+    {
+        spr.animation.play('idle');
+
+        if (spr.ID == curSelected)
+        {
+            spr.animation.play('selected');
+            var add = 0;
+            if(menuItems.length > 4) {
+                add = menuItems.length * 8;
+            }
+            camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y - add);
+            spr.centerOffsets();
+        }
+
+        spr.updateHitbox();
+    });
+}
