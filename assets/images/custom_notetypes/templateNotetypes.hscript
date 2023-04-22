@@ -1,0 +1,28 @@
+function start(song) 
+{
+    //to load graphics (no used for the moment)
+}
+
+function update(elapsed)
+{
+    //Note Update
+}
+
+//id is the Note for get his other properties
+//direction is the note direction:
+    //0 = purple left
+    //1 = blue down
+    //2 = green up
+    //3 = red right
+//noteType is the type of the notes, to get this name you must put the name in noteInfo.json in "id": "notename"
+//isSustainNote if it is a note that is sustained
+//isPlayer 1 for the player 0 for the enemy
+function goodNoteHit(id, direcion, notetype, isSustainNote, isPlayer)
+{
+    //when the Note is GOOD
+}
+
+function noteMiss(id, direction, notetype, isSustainNote, isPlayer)
+{
+    //when the Note is MISS
+}

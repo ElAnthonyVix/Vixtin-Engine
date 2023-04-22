@@ -1,0 +1,176 @@
+// this ui layout is based off Psych Engine
+// all credit goes to the cool people who made it
+// highly recommend downloading it
+// https://gamebanana.com/mods/309789
+
+var songLength;
+var botplayTxt;
+var botplaySine = 0;
+function start(song) {
+	disableScoreChange(true);
+
+	difficTxt.text = 'Psych Replica UI';
+
+        scoreTxt.x = 0;
+        scoreTxt.fieldWidth = FlxG.width;
+        scoreTxt.alignment = 'center';
+	scoreTxt.borderSize = 1.25;
+
+	//songName.x = 0;
+	//songName.fieldWidth = FlxG.width;
+	songName.x = 42 + (FlxG.width / 2) - 248;
+	songName.fieldWidth = 400;
+	songName.alignment = 'center';
+	songName.size = 32;
+	songName.borderSize = 2;
+	if (downscroll) songName.y = FlxG.height - 45;
+
+	var timeBarBG = new FlxSprite(songName.x, songName.y + (songName.height / 4));
+	timeBarBG.loadGraphic(hscriptPath + 'timeBar.png');
+	timeBarBG.scrollFactor.set();
+	timeBarBG.cameras = [camHUD];
+	timeBarBG.color = 0xFF000000; //FlxColor.BLACK
+
+	var timeBar = NewBar(timeBarBG.x + 4, timeBarBG.y + 4, Std.int(timeBarBG.width - 8), Std.int(timeBarBG.height - 8), 0, 1, false);
+	timeBar.scrollFactor.set();
+	timeBar.numDivisions = 800;
+	timeBar.cameras = [camHUD];
+
+	songPosBG.visible = false;
+	songPosBar.visible = false;
+	removeSprite(songName);
+	if (useSongBar) {
+	    addSprite(timeBarBG);
+	    addSprite(timeBar);
+	    addSprite(songName);
+	}
+
+	botplayTxt = new FlxText(400, timeBarBG.y + 55, FlxG.width - 800, "BOTPLAY", 32);
+	if (downscroll) botplayTxt.y = timeBarBG.y - 78;
+	botplayTxt.font = "assets/fonts/vcr.ttf";
+	botplayTxt.alignment = 'center';
+	botplayTxt.borderStyle = songName.borderStyle;
+	botplayTxt.borderColor = songName.borderColor;
+	botplayTxt.scrollFactor.set();
+	botplayTxt.borderSize = 1.25;
+	botplayTxt.visible = demoMode;
+	botplayTxt.cameras = [camHUD];
+	addSprite(botplayTxt);
+}
+
+function stepHit(step) {
+	if (step == 1)
+	    songLength = FlxG.sound.music.length;
+}
+
+function update(elapsed) {
+        if (demoMode)
+	    scoreTxt.text = 'Score: ' + songScore + ' | Misses: ' + PlayState.misses + ' | Rating: ' + GenerateRank(accuracy);
+	else
+	    scoreTxt.text = 'Score: ' + songScore + ' | Misses: ' + PlayState.misses + ' | Rating: ' + GenerateRank(accuracy) + ' (' + HelperFunctions.truncateFloat(accuracy, 2) + '%)' + getFC();
+
+	var curTime = FlxG.sound.music.time;
+	if (curTime < 0) curTime = 0;
+
+	var secondsTotal = Math.floor((songLength - curTime) / 1000);
+	if (secondsTotal < 0) secondsTotal = 0;
+
+	var minutesRemaining = Math.floor(secondsTotal / 60);
+	var secondsRemaining = '' + secondsTotal % 60;
+	if (secondsRemaining.length < 2) secondsRemaining = '0' + secondsRemaining; //Dunno how to make it display a zero first in Haxe lol
+	songName.text = minutesRemaining + ':' + secondsRemaining;
+
+	if (demoMode) {
+		botplaySine += 180 * elapsed;
+		botplayTxt.alpha = 1 - Math.sin((Math.PI * botplaySine) / 180);
+	}
+}
+
+var scoreTxtTween = false;
+function playerOneSing() {
+	scoreTxtTween = false;
+	scoreTxt.scale.x = 1.1;
+	scoreTxt.scale.y = 1.1;
+	scoreTxtTween = true;
+	new FlxTimer().start(0.025, function(tmr) {
+		scoreTxt.scale.x -= 0.0125;
+		scoreTxt.scale.y -= 0.0125;
+
+		if (scoreTxt.scale.x > 1 && scoreTxtTween == true) {
+			tmr.reset(0.025);
+		} else {
+			scoreTxt.scale.x = 1;
+			scoreTxt.scale.y = 1;
+		}
+	});
+}
+
+function getFC() {
+    var ratingFC = '';
+
+    if (PlayState.sicks > 0) ratingFC = "SFC";
+    if (PlayState.goods > 0) ratingFC = "GFC";
+    if (PlayState.bads > 0 || PlayState.shits > 0) ratingFC = "FC";
+    if (PlayState.misses > 0 && PlayState.misses < 10) ratingFC = "SDCB";
+    else if (PlayState.misses >= 10) ratingFC = "Clear";
+
+    var daDash = '';
+    if (ratingFC != '')
+	daDash = ' - ';
+    	
+    return daDash + ratingFC;
+}
+
+function GenerateRank(accuracy) {
+	var ranking = "";
+
+	var psychConditions = [
+		accuracy >= 100, // Perfect!!
+		accuracy >= 90, // Sick!
+		accuracy >= 80, // Great
+		accuracy >= 70, // Good
+		accuracy >= 69, // Nice
+		accuracy >= 60, // Meh
+		accuracy >= 50, // Bruh
+		accuracy >= 40, // Bad
+		accuracy >= 20, // Shit
+		accuracy >= 0, // You Suck!
+	];
+
+	for (i in 0...psychConditions.length)
+	{
+		var b = psychConditions[i];
+		if (b)
+		{
+			switch (i)
+			{
+				case 0:
+					ranking += "Perfect!!";
+				case 1:
+					ranking += "Sick!";
+				case 2:
+					ranking += "Great";
+				case 3:
+					ranking += "Good";
+				case 4:
+					ranking += "Nice";
+				case 5:
+					ranking += "Meh";
+				case 6:
+					ranking += "Bruh";
+				case 7:
+					ranking += "Bad";
+				case 8:
+					ranking += "Shit";
+				case 9:
+					ranking += "You Suck!";
+			}
+			break;
+		}
+	}
+
+	if (demoMode || accuracy == 0)
+	    ranking = "N/A";
+
+	return ranking;
+}

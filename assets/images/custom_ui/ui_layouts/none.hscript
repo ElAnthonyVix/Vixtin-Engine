@@ -1,0 +1,3 @@
+function start(song) {
+    // I was too lazy to code in a failsafe lol
+}

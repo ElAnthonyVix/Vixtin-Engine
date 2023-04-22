@@ -1,0 +1,45 @@
+var healthTxt;
+var accuracyTxt;
+function start(song) {
+    difficTxt.text = "HARD";
+    difficTxt.size = 20;
+    difficTxt.y = FlxG.height - difficTxt.height;
+
+    disableScoreChange(true);
+    songPosBar.visible = false;
+    songPosBG.visible = false;
+    songName.visible = false;
+
+    scoreTxt.x = healthBarBG.x + healthBarBG.width - 90;
+    //scoreTxt.setFormat("assets/fonts/vcr.ttf", 20, FlxColor.WHITE, RIGHT);
+    scoreTxt.size = 20;
+    if (downscroll)
+	    scoreTxt.y = healthBarBG.y - 30;
+    else
+	    scoreTxt.y = healthBarBG.y + 30;
+
+    healthTxt = new FlxText(healthBarBG.x + healthBarBG.width - 300, scoreTxt.y, 0, "", 200);
+    //healthTxt.setFormat("assets/fonts/vcr.ttf", 20, FlxColor.WHITE, RIGHT);
+    healthTxt.size = 20;
+    healthTxt.font = "assets/fonts/vcr.ttf";
+    healthTxt.scrollFactor.set();
+    healthTxt.cameras = [camHUD];
+    addSprite(healthTxt);
+
+    accuracyTxt = new FlxText(healthBarBG.x, scoreTxt.y, 0, "", 200);
+    //accuracyTxt.setFormat("assets/fonts/vcr.ttf", 20, FlxColor.WHITE, RIGHT);
+    accuracyTxt.size = 20;
+    accuracyTxt.font = "assets/fonts/vcr.ttf";
+    accuracyTxt.scrollFactor.set();
+    accuracyTxt.cameras = [camHUD];
+    addSprite(accuracyTxt);
+}
+
+function update(elapsed) {
+    scoreTxt.text = "Score:" + songScore + "(" + songScoreDef + ")";
+    healthTxt.text = "Health:" + Math.round(health * 50) + "%";
+    if (PlayState.misses == 0)
+	    accuracyTxt.text = "Accuracy:100%";
+    else
+	    accuracyTxt.text = "Accuracy:" + Math.round(accuracy) + "%";
+}
