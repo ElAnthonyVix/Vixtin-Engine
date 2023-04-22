@@ -16,6 +16,7 @@ typedef SwagSong =
 {
 	var song:String;
 	var notes:Array<SwagSection>;
+	var events:Array<Dynamic>;
 	var bpm:Float;
 	var needsVoices:Bool;
 	var speed:Float;
@@ -40,6 +41,7 @@ class Song
 {
 	public var song:String;
 	public var notes:Array<SwagSection>;
+	public var events:Array<Dynamic>;
 	public var bpm:Int;
 	public var needsVoices:Bool = true;
 	public var speed:Float = 1;
@@ -70,6 +72,11 @@ class Song
 
 			rawJson = FNFAssets.getText("assets/data/"+folder.toLowerCase()+"/"+folder.toLowerCase()+".json").trim();
 		} else {
+			rawJson = FNFAssets.getText("assets/data/" + folder.toLowerCase() + "/" + jsonInput.toLowerCase() + '.json').trim();
+		}
+
+		if (jsonInput == 'events')
+		{
 			rawJson = FNFAssets.getText("assets/data/" + folder.toLowerCase() + "/" + jsonInput.toLowerCase() + '.json').trim();
 		}
 		
@@ -108,6 +115,31 @@ class Song
 			if (parsedJson.song.toLowerCase() == 'bopeebo')
 				parsedJson.isHey = true;
 		}
+
+		if(parsedJson.events == null)
+		{
+			parsedJson.events = [];
+			for (secNum in 0...parsedJson.notes.length)
+			{
+				var sec:SwagSection = parsedJson.notes[secNum];
+
+				var i:Int = 0;
+				var notes:Array<Dynamic> = sec.sectionNotes;
+				var len:Int = notes.length;
+				while(i < len)
+				{
+					var note:Array<Dynamic> = notes[i];
+					if(note[1] < 0)
+					{
+						parsedJson.events.push([note[0], [[note[2], note[3], note[4]]]]);
+						notes.remove(note);
+						len = notes.length;
+					}
+					else i++;
+				}
+			}
+		}
+
 		if (parsedJson.isCheer = null) {
 			parsedJson.isCheer = false;
 			if (parsedJson.song.toLowerCase() == "tutorial") {
@@ -119,6 +151,8 @@ class Song
 				case 1:
 					parsedJson.preferredNoteAmount = 6;
 				case 2:
+					parsedJson.preferredNoteAmount = 7;
+				case 3:
 					parsedJson.preferredNoteAmount = 9;
 				default:
 					parsedJson.preferredNoteAmount = 4;
@@ -130,8 +164,10 @@ class Song
 					parsedJson.mania = 0;
 				case 6:
 					parsedJson.mania = 1;
-				case 9:
+				case 7:
 					parsedJson.mania = 2;
+				case 9:
+					parsedJson.mania = 3;
 				default:
 					parsedJson.mania = 0;
 			}
@@ -238,6 +274,7 @@ class Song
 			parsedJson.bpm = realJson.bpm;
 			parsedJson.needsVoices = realJson.needsVoices;
 			parsedJson.speed = realJson.speed;
+			//parsedJson.events = realJson.events;
 		}
 		return parsedJson;
 	}

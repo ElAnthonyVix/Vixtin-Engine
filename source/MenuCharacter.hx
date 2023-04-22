@@ -5,6 +5,7 @@ import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import lime.system.System;
 import lime.utils.Assets;
+import flixel.graphics.FlxGraphic;
 #if sys
 import sys.io.File;
 import haxe.io.Path;

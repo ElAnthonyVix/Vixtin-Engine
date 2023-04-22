@@ -8,6 +8,7 @@ import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import flixel.util.FlxColor;
 import flixel.FlxSprite;
 import openfl.display.BlendMode;
+import flixel.graphics.FlxGraphic;
 import Highscore.FCLevel;
 // :wink: "inspired" by exr
 

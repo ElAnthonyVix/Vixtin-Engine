@@ -1,9 +1,11 @@
 package;
 
+import flixel.FlxG;
 import openfl.display.BitmapData;
 import flixel.FlxSprite;
 import lime.utils.Assets;
 import lime.system.System;
+import flixel.graphics.FlxGraphic;
 import tjson.TJSON;
 using StringTools;
 
@@ -28,6 +30,9 @@ class CoolUtil
 	public static function coolDynamicTextFile(path:String):Array<String>
 	{
 		return coolTextFile(path);
+	}
+	inline public static function boundTo(value:Float, min:Float, max:Float):Float {
+		return Math.max(min, Math.min(max, value));
 	}
 	public static function numberArray(max:Int, ?min = 0):Array<Int>
 	{
@@ -70,6 +75,13 @@ class CoolUtil
 	public static function wife3(maxms:Float, ts:Float)
 	{
 		return HelperFunctions.wife3(maxms, ts);
+	}
+	public static function browserLoad(site:String) {
+		#if linux
+		Sys.command('/usr/bin/xdg-open', [site]);
+		#else
+		FlxG.openURL(site);
+		#end
 	}
 }
 

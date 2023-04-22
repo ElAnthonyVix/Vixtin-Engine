@@ -10,9 +10,14 @@ class DiscordClient
 	public function new()
 	{
         #if cpp
+		
+		var client:String = "959138138951913554";
+		if (FNFAssets.exists("assets/discord/clientID.txt"))
+			client = FNFAssets.getText("assets/discord/clientID.txt");
+		
 		trace("Discord Client starting...");
 		DiscordRpc.start({
-			clientID: "840632338949210114",
+			clientID: client,
 			onReady: onReady,
 			onError: onError,
 			onDisconnected: onDisconnected
@@ -44,7 +49,7 @@ class DiscordClient
 			details: "In the Menus",
 			state: null,
 			largeImageKey: 'icon',
-			largeImageText: "Friday Night Funkin' Modding Plus"
+			largeImageText: "Friday Night Funkin' Vixtin Engine"
 		});
         #end
 	}
@@ -84,7 +89,7 @@ class DiscordClient
 			smallImageKey = "icon";
 		}
 		if (smallImageString == null) {
-			smallImageString = "Friday Night Funkin' Modding Plus";
+			smallImageString = "Friday Night Funkin' Vixtin Engine";
 		}
 		DiscordRpc.presence({
 			details: details,

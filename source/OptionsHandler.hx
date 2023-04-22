@@ -47,8 +47,15 @@ typedef TOptions = {
     var allowDonate:Bool;
     var hitSounds:Bool;
     var titleToggle:Bool;
-    var fpsCap:Int;
+    var fpsCap:Null<Int>;
     var ignoreVile:Bool;
+    var ratingColorRecs:Bool;
+    var showSplashes:Bool;
+    var showFPS:Null<Bool>;
+    var showMemory:Null<Bool>;
+    var showHaxeSplash:Null<Bool>;
+    var showNoteMsCounter:Bool;
+    var disableCpuStrums:Bool;
 }
 /**
  * All options that can display on the savedatamenu. Used with mask
@@ -120,7 +127,13 @@ class OptionsHandler {
             lastOptions.hitSounds = false;
             lastOptions.titleToggle = true;
             lastOptions.fpsCap = 60;
-
+            lastOptions.ratingColorRecs = true;
+            lastOptions.showSplashes = true;
+            lastOptions.showFPS = true;
+            lastOptions.showMemory = true;
+            lastOptions.showHaxeSplash = false;
+            lastOptions.showNoteMsCounter = false;
+            lastOptions.disableCpuStrums = false;
         }
 		return lastOptions;
         #else

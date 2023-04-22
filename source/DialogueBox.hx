@@ -178,7 +178,7 @@ class DialogueBox extends FlxSpriteGroup
 		swagDialogue = new FlxTypeText(240, 480, Std.int(FlxG.width * 0.6), "", curFontScale);
 		swagDialogue.font = curFont;
 		swagDialogue.color = dialogueColor;
-		swagDialogue.sounds = [FlxG.sound.load(FNFAssets.getSound('assets/images/custom_dialogs/$curSound.ogg'), 0.6)];
+		swagDialogue.sounds = [FlxG.sound.load(FNFAssets.getSound('assets/images/custom_dialogs/dialogSounds/$curSound.ogg'), 0.6)];
 		add(swagDialogue);
 
 		dialogue = new Alphabet(0, 80, "", false, true);
@@ -212,6 +212,7 @@ class DialogueBox extends FlxSpriteGroup
 		handSprite = dialogueFile.defines.textboxSprite;
 		clickSound = dialogueFile.defines.acceptSound;
 		curSound = dialogueFile.info[0].dialogueSound;
+		//curSound = dialogueFile.defines.dialogueSound;
 	}
 	override function update(elapsed:Float)
 	{
@@ -376,8 +377,8 @@ class DialogueBox extends FlxSpriteGroup
 			remove(box);
 			box = new FlxSprite(-20, 45);
 
-			box.frames = FlxAtlasFrames.fromSparrow('assets/images/custom_dialogs/dialogBoxes/$curBox.png',
-				'assets/images/custom_dialogs/dialogBoxes/$curBox.xml');
+			box.frames = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData('assets/images/custom_dialogs/dialogBoxes/$curBox.png'),
+				FNFAssets.getText('assets/images/custom_dialogs/dialogBoxes/$curBox.xml'));
 			box.animation.addByPrefix('open', 'open', 24, false);
 			box.animation.addByPrefix('normal', 'normal', 24, true);
 
@@ -403,9 +404,7 @@ class DialogueBox extends FlxSpriteGroup
 		dropText.font = swagDialogue.font = curFont;
 		dropText.size = swagDialogue.size = curFontScale;
 
-		swagDialogue.sounds = [
-			FlxG.sound.load('assets/images/custom_dialogs/dialogSounds/$curSound.ogg', 0.6)
-		];
+		swagDialogue.sounds = swagDialogue.sounds = [FlxG.sound.load(FNFAssets.getSound('assets/images/custom_dialogs/dialogSounds/$curSound.ogg'), 0.6)];
 
 		dropText.color = shadowColor;
 		swagDialogue.color = dialogueColor;

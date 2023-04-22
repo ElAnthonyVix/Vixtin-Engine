@@ -7,6 +7,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flash.display.BitmapData;
 import lime.utils.Assets;
 import lime.system.System;
+import flixel.graphics.FlxGraphic;
 #if sys
 import sys.io.File;
 import haxe.io.Path;

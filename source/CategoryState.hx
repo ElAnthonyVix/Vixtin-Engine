@@ -2,10 +2,17 @@ package;
 
 import flixel.util.typeLimit.OneOfTwo;
 import FreeplayState.JsonMetadata;
+import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.math.FlxMath;
 import flixel.text.FlxText;
+import flixel.util.FlxColor;
+import lime.utils.Assets;
+import DifficultyIcons;
+import lime.system.System;
 #if sys
 import haxe.io.Path;
 import openfl.utils.ByteArray;
@@ -13,19 +20,136 @@ import lime.media.AudioBuffer;
 import sys.FileSystem;
 import flash.media.Sound;
 #end
+
+import hscript.Interp;
+import hscript.Parser;
+import hscript.ParserEx;
+import hscript.InterpEx;
+import hscript.ClassDeclEx;
+
+import haxe.Json;
+import tjson.TJSON;
 using StringTools;
 
 class CategoryState extends MusicBeatState
 {
-	var categories:Array<String> = [];
 	public static var choosingFor:String = "freeplay";
-	var categorySongs:Array<Array<OneOfTwo<JsonMetadata, String>>> =[];
-	var categorybgs:Array<Array<String>> =[];
-	var selector:FlxText;
-	var curSelected:Int = 0;
 
-	private var grpSongs:FlxTypedGroup<Alphabet>;
-	private var curPlaying:Bool = false;
+	var hscriptStates:Map<String, Interp> = [];
+	var exInterp:InterpEx = new InterpEx();
+	var haxeSprites:Map<String, FlxSprite> = [];
+
+	#if debug
+		var debugTarget = true;
+	#else
+		var debugTarget = false;
+	#end
+
+	function callHscript(func_name:String, args:Array<Dynamic>, usehaxe:String) {
+		// if function doesn't exist
+		if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
+			trace("Function doesn't exist, silently skipping...");
+			return;
+		}
+		var method = hscriptStates.get(usehaxe).variables.get(func_name);
+		switch(args.length) {
+			case 0:
+				method();
+			case 1:
+				method(args[0]);
+			case 2:
+				method(args[0], args[1]);
+			case 3:
+				method(args[0], args[1], args[2]);
+			case 4:
+				method(args[0], args[1], args[2], args[3]);
+			case 5:
+				method(args[0], args[1], args[2], args[3], args[4]);
+		}
+	}
+	function callAllHScript(func_name:String, args:Array<Dynamic>) {
+		for (key in hscriptStates.keys()) {
+			callHscript(func_name, args, key);
+		}
+	}
+	function setHaxeVar(name:String, value:Dynamic, usehaxe:String) {
+		hscriptStates.get(usehaxe).variables.set(name,value);
+	}
+	function getHaxeVar(name:String, usehaxe:String):Dynamic {
+		return hscriptStates.get(usehaxe).variables.get(name);
+	}
+	function setAllHaxeVar(name:String, value:Dynamic) {
+		for (key in hscriptStates.keys())
+			setHaxeVar(name, value, key);
+	}
+	function makeHaxeState(usehaxe:String, path:String, filename:String) {
+		trace("opening a haxe state (because we are cool :))");
+		var parser = new ParserEx();
+		var program = parser.parseString(FNFAssets.getHscript(path + filename));
+		var interp = PluginManager.createSimpleInterp();
+		// set vars
+		interp.variables.set("FlxTextBorderStyle", FlxTextBorderStyle);
+		interp.variables.set("MainMenuState", MainMenuState);
+		interp.variables.set("CategoryState", CategoryState);
+		interp.variables.set("ChartingState", ChartingState);
+		interp.variables.set("Alphabet", Alphabet);
+		interp.variables.set("instance", this);
+		interp.variables.set("add", add);
+		interp.variables.set("remove", remove);
+		interp.variables.set("insert", insert);
+        interp.variables.set("replace", replace);
+		interp.variables.set("pi", Math.PI);
+		interp.variables.set("curMusicName", Main.curMusicName);
+		interp.variables.set("Highscore", Highscore);
+		interp.variables.set("HealthIcon", HealthIcon);
+		interp.variables.set("debugTarget", debugTarget);
+		interp.variables.set("StoryMenuState", StoryMenuState);
+		interp.variables.set("FreeplayState", FreeplayState);
+		interp.variables.set("CreditsState", CreditsState);
+		interp.variables.set("SaveDataState", SaveDataState);
+		interp.variables.set("DifficultyIcons", DifficultyIcons);
+		interp.variables.set("Controls", Controls);
+		interp.variables.set("Tooltip", Tooltip);
+		interp.variables.set("SongInfoPanel", SongInfoPanel);
+		interp.variables.set("DifficultyManager", DifficultyManager);
+		interp.variables.set("flixelSave", FlxG.save);
+		interp.variables.set("Record", Record);
+		interp.variables.set("Math", Math);
+		interp.variables.set("Song", Song);
+		interp.variables.set("ModifierState", ModifierState);
+        interp.variables.set("ChooseCharState", ChooseCharState);
+		interp.variables.set("Reflect", Reflect);
+		interp.variables.set("colorFromString", FlxColor.fromString);
+		interp.variables.set("PlayState", PlayState);
+		interp.variables.set("NewCharacterState", NewCharacterState);
+		interp.variables.set("NewStageState", NewStageState);
+		interp.variables.set("NewSongState", NewSongState);
+		interp.variables.set("NewWeekState", NewWeekState);
+		interp.variables.set("SelectSortState", SelectSortState);
+		interp.variables.set("CategoryState", CategoryState);
+		interp.variables.set("ControlsState", ControlsState);
+		interp.variables.set("NumberDisplay", NumberDisplay);
+		interp.variables.set("controls", controls);
+		interp.variables.set("ModifierState", ModifierState);
+		interp.variables.set("FlxTypedGroup", FlxTypedGroup);
+		interp.variables.set("SortState", SortState);
+		interp.variables.set("varIsString", varIsString);
+		interp.variables.set("choosingFor", choosingFor);
+		
+		trace("set stuff");
+		interp.execute(program);
+		hscriptStates.set(usehaxe,interp);
+		callHscript("create", [], usehaxe);
+		trace('executed');
+	}
+
+	function varIsString(value:Dynamic):Bool
+	{
+		if (value is String)
+			return true;
+		else
+			return false;
+	}
 
 	override function create()
 	{
@@ -34,179 +158,27 @@ class CategoryState extends MusicBeatState
 		// Updating Discord Rich Presence
 		Discord.DiscordClient.changePresence("In the Freeplay Menu", null);
 		#end
-		var epicCategoryJs:Array<Dynamic> = CoolUtil.parseJson(FNFAssets.getJson('assets/data/freeplaySongJson'));
-		if (epicCategoryJs.length > 1 || choosingFor != "freeplay") {
-			for (category in epicCategoryJs) {
-				categories.push(category.name);
-				categorySongs.push(category.songs);
-				categorybgs.push(category.bgs);
-			}
-		} else {
-			// just set freeplay states songs to the only category
-			trace(epicCategoryJs[0].songs);
-			trace(epicCategoryJs[0].Bg);
-			FreeplayState.currentSongList = epicCategoryJs[0].songs;
-			LoadingState.loadAndSwitchState(new FreeplayState());
-		}
-
-		/*
-			if (FlxG.sound.music != null)
-			{
-				if (!FlxG.sound.music.playing)
-					FlxG.sound.playMusic('assets/music/freakyMenu' + TitleState.soundExt);
-			}
-		 */
-
-
-		// LOAD MUSIC
-
-		// LOAD CHARACTERS
-
-		var bg:FlxSprite = new FlxSprite().loadGraphic('assets/images/menuBGBlue.png');
-		add(bg);
-
-		grpSongs = new FlxTypedGroup<Alphabet>();
-		add(grpSongs);
-
-		for (i in 0...categories.length)
-		{
-			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, categories[i], true, false);
-			songText.isMenuItem = true;
-			songText.targetY = i;
-			grpSongs.add(songText);
-			// songText.x += 40;
-			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
-			// songText.screenCenter(X);
-		}
-
-
-
-
-
-		changeSelection();
-		// FlxG.sound.playMusic('assets/music/title' + TitleState.soundExt, 0);
-		// FlxG.sound.music.fadeIn(2, 0, 0.8);
-		selector = new FlxText();
-
-		selector.size = 40;
-		selector.text = ">";
-		// add(selector);
-
-		var swag:Alphabet = new Alphabet(1, 0, "swag");
-
-		// JUST DOIN THIS SHIT FOR TESTING!!!
-		/*
-			var md:String = Markdown.markdownToHtml(Assets.getText('CHANGELOG.md'));
-
-			var texFel:TextField = new TextField();
-			texFel.width = FlxG.width;
-			texFel.height = FlxG.height;
-			// texFel.
-			texFel.htmlText = md;
-
-			FlxG.stage.addChild(texFel);
-
-			// scoreText.textField.htmlText = md;
-
-			trace(md);
-		 */
-
+		FNFAssets.clearStoredMemory();
+		makeHaxeState("category", "assets/scripts/custom_menus/", "CategoryState");
 		super.create();
 	}
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-
-		if (FlxG.sound.music.volume < 0.7)
-		{
-			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
-		}
-
-
-		var upP = controls.UP_MENU;
-		var downP = controls.DOWN_MENU;
-		var accepted = controls.ACCEPT;
-
-		if (upP)
-		{
-			changeSelection(-1);
-		}
-		if (downP)
-		{
-			changeSelection(1);
-		}
-
-
-		if (controls.BACK)
-		{
-			LoadingState.loadAndSwitchState(new MainMenuState());
-		}
-		// make sure it isn't a header
-		
-		if (accepted && categorySongs[curSelected].length > 0 && choosingFor == "freeplay")
-		{
-			var songsButData:Array<JsonMetadata> = [];
-			for (song in categorySongs[curSelected])
-			{
-				if ((song is String))
-				{
-					// we have to generate our own metadata
-					songsButData.push({name: song, week: -1, character: "face"});
-				}
-				else
-				{
-					songsButData.push(cast(song : JsonMetadata));
-				}
-			}
-			FreeplayState.currentSongList = songsButData;
-			LoadingState.loadAndSwitchState(new FreeplayState());
-
-		} else if (accepted && categorySongs[curSelected].length > 0) {
-			var songsButData:Array<JsonMetadata> = [];
-			for (song in categorySongs[curSelected]) {
-				if ((song is String)) {
-					// we have to generate our own metadata
-					songsButData.push({name: song, week: -1, character: "face"});
-				} else {
-					songsButData.push(cast (song : JsonMetadata));
-				}
-			}
-			SortState.stuffToSort = songsButData;
-			SortState.category = categories[curSelected];
-			LoadingState.loadAndSwitchState(new SortState());
-		} 
+		callAllHScript("update", [elapsed]);
 	}
 
-
-	function changeSelection(change:Int = 0)
+	override function stepHit()
 	{
-
-		FlxG.sound.play('assets/sounds/scrollMenu' + TitleState.soundExt, 0.4);
-
-		curSelected += change;
-
-		if (curSelected < 0)
-			curSelected = categories.length - 1;
-		if (curSelected >= categories.length)
-			curSelected = 0;
-
-		// selector.y = (70 * curSelected) + 30;
-		var bullShit:Int = 0;
-
-		for (item in grpSongs.members)
-		{
-			item.targetY = bullShit - curSelected;
-			bullShit++;
-
-			item.alpha = 0.6;
-			// item.setGraphicSize(Std.int(item.width * 0.8));
-
-			if (item.targetY == 0)
-			{
-				item.alpha = 1;
-				// item.setGraphicSize(Std.int(item.width));
-			}
-		}
+		super.stepHit();
+		setAllHaxeVar('curStep', curStep);
+		callAllHScript("stepHit", [curStep]);
+	}
+	override function beatHit()
+	{
+		super.beatHit();
+		setAllHaxeVar('curBeat', curBeat);
+		callAllHScript('beatHit', [curBeat]);
 	}
 }

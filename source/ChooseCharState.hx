@@ -9,6 +9,7 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+import flixel.tweens.FlxTween;
 import DifficultyIcons;
 import flixel.addons.ui.FlxInputText;
 import flixel.addons.ui.FlxUI9SliceSprite;
@@ -26,18 +27,121 @@ import haxe.Json;
 import tjson.TJSON;
 using StringTools;
 
+import hscript.Interp;
+import hscript.Parser;
+import hscript.ParserEx;
+import hscript.InterpEx;
 
 class ChooseCharState extends MusicBeatState
 {
     public static var characters:Array<String>;
-    var char:Character;
-    var anim:String = PlayState.SONG.player1;
-    var grpAlphabet:FlxTypedGroup<Alphabet>;
+	var anim:String = PlayState.SONG.player1;
 
-    var curSelected:Int = 0;
-    var curChar:String = PlayState.SONG.player1;
+	var hscriptStates:Map<String, Interp> = [];
+	var exInterp:InterpEx = new InterpEx();
+	var haxeSprites:Map<String, FlxSprite> = [];
 
-    var dadMenu:Bool = false;
+	#if debug
+		var debugTarget = true;
+	#else
+		var debugTarget = false;
+	#end
+
+	function callHscript(func_name:String, args:Array<Dynamic>, usehaxe:String) {
+		// if function doesn't exist
+		if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
+			trace("Function doesn't exist, silently skipping...");
+			return;
+		}
+		var method = hscriptStates.get(usehaxe).variables.get(func_name);
+		switch(args.length) {
+			case 0:
+				method();
+			case 1:
+				method(args[0]);
+			case 2:
+				method(args[0], args[1]);
+			case 3:
+				method(args[0], args[1], args[2]);
+			case 4:
+				method(args[0], args[1], args[2], args[3]);
+			case 5:
+				method(args[0], args[1], args[2], args[3], args[4]);
+		}
+	}
+	function callAllHScript(func_name:String, args:Array<Dynamic>) {
+		for (key in hscriptStates.keys()) {
+			callHscript(func_name, args, key);
+		}
+	}
+	function setHaxeVar(name:String, value:Dynamic, usehaxe:String) {
+		hscriptStates.get(usehaxe).variables.set(name,value);
+	}
+	function getHaxeVar(name:String, usehaxe:String):Dynamic {
+		return hscriptStates.get(usehaxe).variables.get(name);
+	}
+	function setAllHaxeVar(name:String, value:Dynamic) {
+		for (key in hscriptStates.keys())
+			setHaxeVar(name, value, key);
+	}
+	function makeHaxeState(usehaxe:String, path:String, filename:String) {
+		trace("opening a haxe state (because we are cool :))");
+		var parser = new ParserEx();
+		var program = parser.parseString(FNFAssets.getHscript(path + filename));
+		var interp = PluginManager.createSimpleInterp();
+		// set vars
+		interp.variables.set("FlxTextBorderStyle", FlxTextBorderStyle);
+		interp.variables.set("controls", controls);
+		interp.variables.set("MainMenuState", MainMenuState);
+		interp.variables.set("CategoryState", CategoryState);
+		interp.variables.set("ChartingState", ChartingState);
+		interp.variables.set("Alphabet", Alphabet);
+		interp.variables.set("curBeat", 0);
+		interp.variables.set("instance", this);
+		interp.variables.set("add", add);
+		interp.variables.set("remove", remove);
+		interp.variables.set("insert", insert);
+        interp.variables.set("replace", replace);
+		interp.variables.set("pi", Math.PI);
+		interp.variables.set("curMusicName", Main.curMusicName);
+		interp.variables.set("Highscore", Highscore);
+		interp.variables.set("HealthIcon", HealthIcon);
+		interp.variables.set("debugTarget", debugTarget);
+		interp.variables.set("StoryMenuState", StoryMenuState);
+		interp.variables.set("FreeplayState", FreeplayState);
+		interp.variables.set("CreditsState", CreditsState);
+		interp.variables.set("SaveDataState", SaveDataState);
+		interp.variables.set("DifficultyIcons", DifficultyIcons);
+		interp.variables.set("Controls", Controls);
+		interp.variables.set("Tooltip", Tooltip);
+		interp.variables.set("SongInfoPanel", SongInfoPanel);
+		interp.variables.set("DifficultyManager", DifficultyManager);
+		interp.variables.set("flixelSave", FlxG.save);
+		interp.variables.set("Record", Record);
+		interp.variables.set("Math", Math);
+		interp.variables.set("Song", Song);
+		interp.variables.set("ModifierState", ModifierState);
+        interp.variables.set("ChooseCharState", ChooseCharState);
+		interp.variables.set("Reflect", Reflect);
+		interp.variables.set("curStep", curStep);
+		interp.variables.set("curBeat", curBeat);
+		interp.variables.set("colorFromString", FlxColor.fromString);
+		interp.variables.set("PlayState", PlayState);
+		interp.variables.set("NewCharacterState", NewCharacterState);
+		interp.variables.set("NewStageState", NewStageState);
+		interp.variables.set("NewSongState", NewSongState);
+		interp.variables.set("NewWeekState", NewWeekState);
+		interp.variables.set("SelectSortState", SelectSortState);
+		interp.variables.set("CategoryState", CategoryState);
+		interp.variables.set("ControlsState", ControlsState);
+        interp.variables.set("characters", characters);
+		
+		trace("set stuff");
+		interp.execute(program);
+		hscriptStates.set(usehaxe,interp);
+		callHscript("create", [], usehaxe);
+		trace('executed');
+	}
 
 
     public function new(anim:String = "bf")
@@ -48,143 +152,27 @@ class ChooseCharState extends MusicBeatState
 
     override function create()
     {
-        var menuBG:FlxSprite = new FlxSprite().loadGraphic('assets/images/menuDesat.png');
-        menuBG.color = 0xFFea71fd;
-        grpAlphabet = new FlxTypedGroup<Alphabet>();
-        menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
-        menuBG.updateHitbox();
-        menuBG.screenCenter();
-        menuBG.antialiasing = true;
-        add(menuBG);
-
-        var charJson:Dynamic = null;
-
-        char = new Character(400, 100, anim);
-        add(char);
-
-        char.flipX = false;
-
-
-    
-        charJson = CoolUtil.parseJson(FNFAssets.getJson('assets/images/custom_chars/custom_chars'));
-
-        if (characters == null) {
-            // that is not how arrays work
-            // characters = mergeArray(Reflect.fields(charJson), Reflect.fields(regCharacters)); // this doesn't work, try to make this work or just ignore it
-            // reg characters should be first
-            characters = Reflect.fields(charJson);
-        }
-
-
-        for(character in 0...characters.length){ //add chars
-            var awesomeChar = new Alphabet(0, 10, "   "+characters[character], true, false, false);
-            awesomeChar.isMenuItem = true;
-            awesomeChar.targetY = character;
-            grpAlphabet.add(awesomeChar);
-        }
-
-        add(grpAlphabet);
-        trace("it's 11 pm"); //it's 12 pm
-
+        FNFAssets.clearStoredMemory();
+        makeHaxeState("choosechar", "assets/scripts/custom_menus/", "ChooseCharState");	
         super.create();
-
-    }
-    // i'd recommend moving smth like this to coolutil but w/e
-    function mergeArray(base:Dynamic, ext:Dynamic){ //need this to combine regular chars and customs, CHANGE THIS if you know a better way
-        var res = Reflect.copy(base);
-        for(f in Reflect.fields(ext)) Reflect.setField(res,f,Reflect.field(res,f));
-        return res;
     }
 
     override function update(elapsed:Float) {
         super.update(elapsed);
-        if (controls.BACK) {
-			LoadingState.loadAndSwitchState(new ModifierState());
-        }
-        if (controls.UP_MENU)
-        {
-            changeSelection(-1);
-        }
-        if (controls.DOWN_MENU)
-        {
-            changeSelection(1);
-        }
-
-        if (controls.RIGHT_MENU || controls.LEFT_MENU) {
-                swapMenus();
-        }
-
-        if (controls.ACCEPT)
-            chooseSelection();
+        callAllHScript("update", [elapsed]);
     }
 
-    function changeSelection(change:Int = 0)
-    {
+    override function stepHit()
+	{
+		super.stepHit();
+		setAllHaxeVar('curStep', curStep);
+		callAllHScript("stepHit", [curStep]);
+	}
 
-        FlxG.sound.play('assets/sounds/scrollMenu' + TitleState.soundExt, 0.4);
-
-        curSelected += change;
-        curChar = characters[curSelected].toString();
-
-        if (curSelected < 0)
-            curSelected = characters.length - 1;
-        if (curSelected >= characters.length)
-            curSelected = 0;
-
-
-        var bullShit:Int = 0;
-
-        for (item in grpAlphabet.members)
-        {
-            item.targetY = bullShit - curSelected;
-            bullShit++;
-
-            item.alpha = 0.6;
-            // item.setGraphicSize(Std.int(item.width * 0.8));
-
-            if (item.targetY == 0)
-            {
-                item.alpha = 1;
-                // item.setGraphicSize(Std.int(item.width));
-            }
-        }
-    }
-
-    function chooseSelection()
-    {
-        remove(char);
-        char = new Character(400, 100, curChar);
-        if (!dadMenu) //cleaned up
-        {
-            char.flipX = true;
-            PlayState.SONG.player1 = curChar;
-            trace("BF is now " + curChar);
-        }
-        else
-        {
-            char.flipX = false;
-            PlayState.SONG.player2 = curChar;
-            trace("DAD is now " + curChar);
-        }
-        if (curChar == null)
-            curChar = "bf";
-        add(char);
-
-    }
-    // well yeah it lags you are creating a new character
-    function swapMenus() { //this lags somewhat on my end so please try to optimize it
-        FlxG.sound.play('assets/sounds/scrollMenu' + TitleState.soundExt, 0.4);
-        dadMenu = !dadMenu;
-        remove(char);
-        if (!dadMenu){ //cleaned this too
-            char = new Character(400, 100, PlayState.SONG.player1);
-            char.flipX = true;
-        }
-        else{
-            char = new Character(400, 100, PlayState.SONG.player2);
-            char.flipX = false;
-        }
-        add(char);
-        trace('switchin the swag');
-    }
+	override function beatHit()
+	{
+		super.beatHit();
+		setAllHaxeVar('curBeat', curBeat);
+		callAllHScript('beatHit', [curBeat]);
+	}
 }

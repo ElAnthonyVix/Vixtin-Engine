@@ -54,9 +54,11 @@ typedef TCharacterRefJson = {
 class Character extends FlxSprite
 {
 	public var animOffsets:Map<String, Array<Dynamic>>;
+	public var animOffsets2:Map<String, Array<Dynamic>>;
 	public var debugMode:Bool = false;
 
 	public var isPlayer:Bool = false;
+	public var useOtherOffsets:Bool = false;
 	public var curCharacter:String = 'bf';
 	public var altAnim:String = "";
 	public var altNum:Int = 0;
@@ -75,6 +77,19 @@ class Character extends FlxSprite
 	public var animationNotes:Array<Dynamic> = [];
 	public var like:String = "bf";
 	public var beNormal:Bool = true;
+	public var forceColor:Bool = false;
+	public var syncFrames:Bool = false;
+
+	public var heyTimer:Float = 0;
+	public var specialAnim:Bool = false;
+	public var idleSuffix:String = '';
+
+	//Extra parameters for more fun!
+	public var paramA:Int = 0;
+	public var paramB:Int = 0;
+	public var paramC:Int = 0;
+	public var canSing:Bool = true;
+	public var noSkipGOver:Bool = false;
 	/**
 	 * Color used by default for enemy, when not in duo mode or oppnt play.
 	 */
@@ -99,6 +114,10 @@ class Character extends FlxSprite
 	 * Color used by player in duo mode or oppnt play.
 	 */
 	public var bfColor:FlxColor = 0xFF149DFF;
+	/**
+	 * Color used for the Cross Fades ;3.
+	 */
+	public var crossFadeColor:FlxColor = 0xFF00FFFF;
 	// sits on speakers, replaces gf
 	public var likeGf:Bool = false;
 	// uses animation notes
@@ -140,9 +159,31 @@ class Character extends FlxSprite
 				method(args[0], args[1]);
 		}
 	}
+	function mixtex(frames1:FlxAtlasFrames, frames2:FlxAtlasFrames) {
+		for (frame in frames2.frames){
+			frames1.pushFrame(frame);
+		}
+		return frames1;
+	}
+	/* coming soon flipping offsets
+	public function flipChar(animRef:String = "idle"):Void
+	{
+		playAnim(animRef);
+		var widthCenter = frameWidth;
+		flipX = !flipX;
+		for (anim => offsets in animOffsets)
+		{
+			var daAnim = animOffsets.get(anim);
+			var daOffX = daAnim[0];
+			daAnim[0] = widthCenter - daOffX * -1;
+			animOffsets.set(anim, daAnim);
+		}
+	}
+	*/
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false)
 	{
 		animOffsets = new Map<String, Array<Dynamic>>();
+		animOffsets2 = new Map<String, Array<Dynamic>>();
 		super(x, y);
 
 		curCharacter = character;
@@ -191,16 +232,83 @@ class Character extends FlxSprite
 	public function sing(direction:Int, ?miss:Bool=false, ?alt:Int=0) {
 		var directName:String = "";
 		var missName:String = "";
-		switch (direction) {
-			case 0:
-				directName = "singLEFT";
-			case 1:
-				directName = "singDOWN";
-			case 2:
-				directName = "singUP";
-			case 3:
-				directName = "singRIGHT";
+
+		if (Main.ammo[PlayState.mania] == 4)
+		{
+			switch (direction) {
+				case 0:
+					directName = "singLEFT";
+				case 1:
+					directName = "singDOWN";
+				case 2:
+					directName = "singUP";
+				case 3:
+					directName = "singRIGHT";
+			}
 		}
+
+		if (Main.ammo[PlayState.mania] == 6)
+		{
+			switch (direction) {
+				case 0:
+					directName = "singLEFT";
+				case 1:
+					directName = "singUP";
+				case 2:
+					directName = "singRIGHT";
+				case 3:
+					directName = "singLEFT";
+				case 4:
+					directName = "singDOWN";
+				case 5:
+					directName = "singRIGHT";
+			}
+		}
+
+		if (Main.ammo[PlayState.mania] == 7)
+		{
+			switch (direction) {
+				case 0:
+					directName = "singLEFT";
+				case 1:
+					directName = "singUP";
+				case 2:
+					directName = "singRIGHT";
+				case 3:
+					directName = "singUP";
+				case 4:
+					directName = "singLEFT";
+				case 5:
+					directName = "singDOWN";
+				case 6:
+					directName = "singRIGHT";
+			}
+		}
+
+		if (Main.ammo[PlayState.mania] == 9)
+		{
+			switch (direction) {
+				case 0:
+					directName = "singLEFT";
+				case 1:
+					directName = "singDOWN";
+				case 2:
+					directName = "singUP";
+				case 3:
+					directName = "singRIGHT";
+				case 4:
+					directName = "singUP";
+				case 5:
+					directName = "singLEFT";
+				case 6:
+					directName = "singDOWN";
+				case 7:
+					directName = "singUP";
+				case 8:
+					directName = "singRIGHT";
+			}
+		}
+
 		var missSupported:Bool = false;
 		var missAltSupported:Bool = false;
 		if (miss) {
@@ -234,13 +342,13 @@ class Character extends FlxSprite
 			}
 		}
 		// if we have to miss, but miss isn't supported...
-		if (miss && !(missSupported)) {
+		if (miss && !(missSupported) && forceColor) {
 			// first, we don't want to be using alt, which is already handled.
 			// second, we don't want no animation to be played, which again is handled.
 			// third, we want character to turn purple, which is handled here.
 			color = 0xCFAFFF;
 		}
-		else if (color != FlxColor.WHITE)
+		else if (color != FlxColor.WHITE && forceColor)
 		{
 			color = FlxColor.WHITE;
 		}
@@ -251,7 +359,9 @@ class Character extends FlxSprite
 				directName += "-" + alt + "alt";
 			}
 		}
-		playAnim(directName, true);
+
+		if (canSing)
+			playAnim(directName, true);
 	}
 	override function update(elapsed:Float)
 	{
@@ -259,6 +369,28 @@ class Character extends FlxSprite
 		//curCharacter = curCharacter.trim();
 		//var charJson:Dynamic = Json.parse(Assets.getText('assets/images/custom_chars/custom_chars.json'));
 		//var animJson = File.getContent("assets/images/custom_chars/"+Reflect.field(charJson,curCharacter).like+".json");
+
+		if(!debugMode && animation.curAnim != null)
+		{
+			if(heyTimer > 0)
+			{
+				heyTimer -= elapsed;
+				if(heyTimer <= 0)
+				{
+					if(specialAnim && animation.curAnim.name == 'hey' || animation.curAnim.name == 'cheer')
+					{
+						specialAnim = false;
+						dance();
+					}
+					heyTimer = 0;
+				}
+			} else if(specialAnim && animation.curAnim.finished)
+			{
+				specialAnim = false;
+				dance();
+			}
+		}
+		
 		if (beingControlled)
 		{
 			if (!debugMode)
@@ -272,8 +404,7 @@ class Character extends FlxSprite
 
 				if (animation.curAnim.name.endsWith('miss') && animation.curAnim.finished && !debugMode && beNormal)
 				{
-					playAnim('idle', true, false, 10);
-					trace("idle after miss");
+					dance();
 				}
 
 				if (animation.curAnim.name == 'firstDeath' && animation.curAnim.finished)
@@ -333,13 +464,13 @@ class Character extends FlxSprite
 	 */
 	public function dance()
 	{
-		if (!debugMode && beNormal)
+		if (!debugMode && beNormal && !specialAnim)
 		{
 			if (interp != null)
 				callInterp("dance", [this]);
 			else
-				playAnim('idle');
-			if (color != FlxColor.WHITE)
+				playAnim('idle' + idleSuffix);
+			if (color != FlxColor.WHITE && forceColor)
 			{
 				color = FlxColor.WHITE;
 			}
@@ -348,7 +479,11 @@ class Character extends FlxSprite
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
 	{
-		animation.play(AnimName, Force, Reversed, Frame);
+		if (!syncFrames)
+			animation.play(AnimName, Force, Reversed, Frame);
+		else
+			animation.play(AnimName, Force, Reversed, animation.curAnim.curFrame); //Plays from the Last Animation Frame
+
 		var animName = "";
 		if (animation.curAnim == null) {
 			// P A N I K
@@ -361,13 +496,28 @@ class Character extends FlxSprite
 			// kalm
 			animName = animation.curAnim.name;
 		}
-		if (animOffsets.exists(animName))
+
+		if (!useOtherOffsets)
 		{
-			var daOffset = animOffsets.get(animName);
-			offset.set(daOffset[0], daOffset[1]);
+			if (animOffsets.exists(animName))
+			{
+				var daOffset = animOffsets.get(animName);
+				offset.set(daOffset[0], daOffset[1]);
+			}
+			else
+				offset.set(0, 0);
 		}
 		else
-			offset.set(0, 0);
+		{
+			if (animOffsets2.exists(animName))
+			{
+				var daOffset = animOffsets2.get(animName);
+				offset.set(daOffset[0], daOffset[1]);
+			}
+			else
+				offset.set(0, 0);
+		}
+
 		// should spooky be on this?
 		if (likeGf)
 		{
@@ -403,9 +553,12 @@ class Character extends FlxSprite
 		var bThing = b[0];
 		return aThing < bThing ? -1 : 1;
 	}
-	public function addOffset(name:String, x:Float = 0, y:Float = 0)
+	public function addOffset(name:String, x:Float = 0, y:Float = 0, ?isMain:Bool = true)
 	{
-		animOffsets[name] = [x, y];
+		if (isMain == true)
+			animOffsets[name] = [x, y];
+		else
+			animOffsets2[name] = [x, y];
 	}
 	public static function getAnimInterp(char:String):Interp {
 		var interp = PluginManager.createSimpleInterp();

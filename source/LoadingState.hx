@@ -14,7 +14,19 @@ class LoadingState extends FlxState {
         }
         
     }
+
     override function create() {
         FlxG.switchState(new ChartingState());
+    }
+
+    public static function loadAndSwitchCustomState(scriptName:String, scriptPath:String = 'assets/scripts/custom_menus/')
+    {
+        if (FNFAssets.exists(scriptPath + scriptName + '.hscript'))
+        {
+            CustomState.customStateScriptPath = scriptPath;
+            CustomState.customStateScriptName = scriptName;
+            PlayerSettings.player1.controls.setKeyboardScheme(Solo(false));
+            FlxG.switchState(new CustomState());
+        }
     }
 }
