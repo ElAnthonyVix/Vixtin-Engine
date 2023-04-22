@@ -27,7 +27,7 @@ jobs:
 
       - uses: krdlab/setup-haxe@master
         with:
-          haxe-version: 4.2.5
+          haxe-version: 4.2.0
       # Runs a set of commands using the runners shell
       - name: Install Haxelib
         run: |
@@ -35,18 +35,14 @@ jobs:
           haxelib install hxcpp > /dev/null
           haxelib install lime
           haxelib install openfl
-          
           haxelib install flixel 4.11.0
-          haxelib install flixel-addons 2.11.0
-
-          haxelib install json2object
-          haxelib install uniontypes
-          
           haxelib run lime setup flixel
           haxelib run lime setup
           haxelib install flixel-tools
           haxelib install flixel-ui
-          haxelib install flixel-addons
+          haxelib install flixel-addons 2.11.0
+          haxelib install json2object
+          haxelib install uniontypes
           haxelib install tjson
           haxelib install hxjsonast
           haxelib install linc_luajit
@@ -99,21 +95,18 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Install Haxelib
         run: |
-          haxelib setup ~/haxelib
-          haxelib install hxcpp > /dev/null
+          haxelib setup C:/haxelib
+          haxelib install hxcpp > nul
           haxelib install lime
           haxelib install openfl
-          
           haxelib install flixel 4.11.0
-          haxelib install flixel-addons 2.11.0
-          haxelib install json2object
-          haxelib install uniontypes
-          
           haxelib run lime setup flixel
           haxelib run lime setup
           haxelib install flixel-tools
           haxelib install flixel-ui
-          haxelib install flixel-addons
+          haxelib install flixel-addons 2.11.0
+          haxelib install json2object
+          haxelib install uniontypes
           haxelib install tjson
           haxelib install hxjsonast
           haxelib install linc_luajit
@@ -122,6 +115,7 @@ jobs:
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
           haxelib install hxcpp-debug-server
           haxelib list
+        shell: cmd
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
       - name: Compile
@@ -169,17 +163,14 @@ jobs:
           haxelib install hxcpp > /dev/null
           haxelib install lime
           haxelib install openfl
-          
           haxelib install flixel 4.11.0
-          haxelib install flixel-addons 2.11.0
-          haxelib install json2object
-          haxelib install uniontypes
-          
           haxelib run lime setup flixel
           haxelib run lime setup
           haxelib install flixel-tools
           haxelib install flixel-ui
-          haxelib install flixel-addons
+          haxelib install flixel-addons 2.11.0
+          haxelib install json2object
+          haxelib install uniontypes
           haxelib install tjson
           haxelib install hxjsonast
           haxelib install linc_luajit
