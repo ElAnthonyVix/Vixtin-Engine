@@ -7,7 +7,7 @@ import openfl.Lib;
 import openfl.display.StageScaleMode;
 import flixel.FlxState;
 import openfl.events.Event;
-
+import SUtil;
 #if CRASH_HANDLER
 import lime.app.Application;
 import openfl.events.UncaughtErrorEvent;
@@ -53,7 +53,7 @@ class Main extends Sprite
 		public function new()
 		{
 			super();
-		
+			SUtil.gameCrashCheck();
 			if (stage != null)
 			{
 				init();
