@@ -33,24 +33,24 @@ class DifficultyIcons {
     group = new FlxTypedGroup<FlxSprite>();
     difficulties = diff;
     defaultDiff = defaultDifficulty;
-    var diffJson = CoolUtil.parseJson(Assets.getText("assets/images/custom_difficulties/difficulties.json"));
+    var diffJson = CoolUtil.parseJson(Assets.getText(SUtil.getPath() + "assets/images/custom_difficulties/difficulties.json"));
     trace(diff.length);
     for( level in 0...difficulties.length ) {
       var sprDiff = new FlxSprite(x,y);
       sprDiff.offset.x = diffJson.difficulties[level].offset;
       var diffPic:BitmapData;
       var diffXml:String;
-      if (FNFAssets.exists('assets/images/custom_difficulties/'+diffJson.difficulties[level].name+".png")) {
-         diffPic = FNFAssets.getBitmapData('assets/images/custom_difficulties/'+diffJson.difficulties[level].name+".png");
+      if (FNFAssets.exists(SUtil.getPath() + 'assets/images/custom_difficulties/'+diffJson.difficulties[level].name+".png")) {
+         diffPic = FNFAssets.getBitmapData(SUtil.getPath() + 'assets/images/custom_difficulties/'+diffJson.difficulties[level].name+".png");
       } else {
          // fall back on base game file to avoid crashes
-         diffPic = FNFAssets.getBitmapData("assets/images/campaign_menu_UI_assets.png");
+         diffPic = FNFAssets.getBitmapData(SUtil.getPath() + "assets/images/campaign_menu_UI_assets.png");
       }
-      if (FNFAssets.exists('assets/images/custom_difficulties/'+diffJson.difficulties[level].name+".xml")) {
-         diffXml = FNFAssets.getText('assets/images/custom_difficulties/'+diffJson.difficulties[level].name+".xml");
+      if (FNFAssets.exists(SUtil.getPath() + 'assets/images/custom_difficulties/'+diffJson.difficulties[level].name+".xml")) {
+         diffXml = FNFAssets.getText(SUtil.getPath() + 'assets/images/custom_difficulties/'+diffJson.difficulties[level].name+".xml");
       } else {
          // fall back on base game file to avoid crashes
-         diffXml = Assets.getText("assets/images/campaign_menu_UI_assets.xml");
+         diffXml = Assets.getText(SUtil.getPath() + "assets/images/campaign_menu_UI_assets.xml");
       }
       sprDiff.frames = FlxAtlasFrames.fromSparrow(diffPic,diffXml);
       sprDiff.animation.addByPrefix('diff', diffJson.difficulties[level].anim);

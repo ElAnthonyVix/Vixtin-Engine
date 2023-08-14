@@ -33,7 +33,7 @@ function init(char) {
 
         char.playAnim('idle');
     } else {
-        var tex = FlxAtlasFrames.fromSparrow('assets/images/custom_chars/bf/char.png', 'assets/images/custom_chars/bf/char.xml');
+        var tex = FlxAtlasFrames.fromSparrow(SUtil.getPath() + 'assets/images/custom_chars/bf/char.png', SUtil.getPath() + 'assets/images/custom_chars/bf/char.xml');
         
         char.frames = tex;
         char.animation.addByPrefix('firstDeath', 'BF dies', 24, false);

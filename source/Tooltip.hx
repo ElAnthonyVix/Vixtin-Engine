@@ -50,10 +50,10 @@ class FnkButton extends FlxTypedSpriteGroup<FlxSprite> {
 		switch (platform)
 		{
 			case Keyboard:
-				buttonImage.loadGraphic('assets/images/keycap.png');
+				buttonImage.loadGraphic(SUtil.getPath() + 'assets/images/keycap.png');
 			default:
 				// waiting for assets
-				buttonImage.loadGraphic('assets/images/keycap.png');
+				buttonImage.loadGraphic(SUtil.getPath() + 'assets/images/keycap.png');
 		}
 		buttonImage.setGraphicSize(50);
 		buttonImage.updateHitbox();

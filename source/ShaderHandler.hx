@@ -87,7 +87,7 @@ class ShaderHandler
 
 	public function new(shader:String):Void
 	{
-		makeHaxeState("shader", "assets/shaders/" + shader + "/", "shader");
+		makeHaxeState("shader", SUtil.getPath() + "assets/shaders/" + shader + "/", "shader");
 		callAllHScript("create", []);
 	}
 

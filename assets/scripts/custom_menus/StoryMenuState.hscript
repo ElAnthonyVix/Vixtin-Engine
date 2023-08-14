@@ -36,16 +36,17 @@ var yellowBG;
 
 function create()
 {
+
     trace(DifficultyIcons.getDefaultDiffFP());
     curDifficulty = DifficultyIcons.getDefaultDiffFP();
     transIn = FlxTransitionableState.defaultTransIn;
     transOut = FlxTransitionableState.defaultTransOut;
 
-    if (FlxG.sound.music != null)
-    {
-        FlxG.sound.playMusic(FNFAssets.getSound('assets/music/weekTheme/CMENU0' + TitleState.soundExt));
-    }
-    var storySongJson = CoolUtil.parseJson(FNFAssets.getText('assets/data/storySonglist.json'));
+    if (!FlxG.sound.music.playing){
+        FlxG.sound.playMusic(FNFAssets.getSound(SUtil.getPath() + 'assets/music/custom_menu_music/'
+        + CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/music/custom_menu_music/custom_menu_music.json")).Menu+'/freakyMenu' + TitleState.soundExt));
+        }
+    var storySongJson = CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + 'assets/data/storySonglist.json'));
     var versionJson = 0;
     if (storySongJson.version == null) {
         versionJson = 1;
@@ -57,7 +58,7 @@ function create()
     var songsParsed = [[]];
     var titlesParsed = [];
     var charsParsed = [[]];
-    var flagsParsed = [[]];
+    var flagsParsed = [];
     var colorsParsed = [];
     if (versionJson == 2) {
         var useWeek = 0;
@@ -79,9 +80,9 @@ function create()
                                 canUse = false;
                                 break;
                             }
-                        case reg.match(flag):
+                        case (reg.match(flag)):
                             var week = Std.parseInt(reg.matched(1));
-                            var diffJson = CoolUtil.parseJson(FNFAssets.getText("assets/images/custom_difficulties/difficulties.json"));
+                            var diffJson = CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/images/custom_difficulties/difficulties.json"));
                             var difficultiesFP = diffJson.difficulties;
                             var existsWeek = false;
                             for (diff in 0...difficultiesFP.length)
@@ -151,9 +152,11 @@ function create()
             charArray.push(gfInfo);
             coolors.push(coolorInfo);
             charsParsed.push(charArray);
-            weekInfo.flags = flagsInfo;
-            var flagArray = weekInfo;
-            flagsParsed.push(flagArray);
+            if (weekInfo.flags == null)
+            flagsParsed.push([]);
+            else
+            flagsParsed.push(weekInfo.flags);
+            trace(flagsParsed);
             weekNums.push(useWeek);
             useWeek++;
         }
@@ -213,9 +216,10 @@ function create()
                         }
                     case (reg.match(flag)):
                         var week = Std.parseInt(reg.matched(1));
-                        var diffJson = CoolUtil.parseJson(FNFAssets.getText("assets/images/custom_difficulties/difficulties.json"));
+                        var diffJson = CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/images/custom_difficulties/difficulties.json"));
                         var difficultiesFP = diffJson.difficulties;
                         var existsWeek = false;
+                        trace('helped');
                         for (diff in 0...difficultiesFP.length)
                         {
                             if (Highscore.getWeekScore(week, diff) != 0)
@@ -255,11 +259,11 @@ function create()
 
     var rankText = new FlxText(0, 10);
     rankText.text = 'RANK: GREAT';
-    rankText.setFormat("assets/fonts/vcr.ttf", 32);
+    rankText.setFormat(SUtil.getPath() + "assets/fonts/vcr.ttf", 32);
     rankText.size = scoreText.size;
     rankText.x = (FlxG.width - rankText.width) / 2;
 
-    var ui_tex = FlxAtlasFrames.fromSparrow('assets/images/campaign_menu_UI_assets.png', 'assets/images/campaign_menu_UI_assets.xml');
+    var ui_tex = FlxAtlasFrames.fromSparrow(SUtil.getPath() + 'assets/images/campaign_menu_UI_assets.png', SUtil.getPath() + 'assets/images/campaign_menu_UI_assets.xml');
     yellowBG = new FlxSprite(0, 56).makeGraphic(FlxG.width, 400, 0xFFffffff);
 
     grpWeekText = new FlxGroup();
@@ -327,7 +331,7 @@ function create()
     add(difficultySelectors);
 
     trace("Line 124");
-    var diffJson = CoolUtil.parseJson(FNFAssets.getText("assets/images/custom_difficulties/difficulties.json"));
+    var diffJson = CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/images/custom_difficulties/difficulties.json"));
     leftArrow = new FlxSprite(grpWeekText.members[0].x + grpWeekText.members[0].width + 10, grpWeekText.members[0].y + 10);
     leftArrow.frames = ui_tex;
     leftArrow.animation.addByPrefix('idle', "arrow left");
@@ -377,7 +381,10 @@ function create()
     add(txtWeekTitle);
 
     updateText();
-
+	if (mobile){
+		addVirtualPads('full', 'a_b');
+		addPadcam();
+}
     trace("Line 165");
 }
 
@@ -391,6 +398,10 @@ var stopspamming = false;
 
 function update(elapsed)
 {
+    if (FlxG.sound.music.volume < 0.8)
+        {
+            FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
+        }
     // scoreText.setFormat('VCR OSD Mono', 32);
     lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, 0.5));
 
@@ -445,7 +456,7 @@ function update(elapsed)
 
     if (controls.BACK && !movedBack && !selectedWeek)
     {
-        FlxG.sound.play('assets/sounds/cancelMenu' + TitleState.soundExt);
+        FlxG.sound.play(SUtil.getPath() + 'assets/sounds/cancelMenu' + TitleState.soundExt);
         movedBack = true;
         LoadingState.loadAndSwitchState(new MainMenuState());
     }
@@ -458,7 +469,7 @@ function selectWeek()
     
     if (stopspamming == false)
     {
-        FlxG.sound.play('assets/sounds/confirmMenu' + TitleState.soundExt);
+        FlxG.sound.play(SUtil.getPath() + 'assets/sounds/confirmMenu' + TitleState.soundExt);
 
         weekCharactersArray.members[curWeek+1].members[0].animation.play('dadConfirm');
         weekCharactersArray.members[curWeek+1].members[1].animation.play('bfConfirm');
@@ -478,7 +489,7 @@ function selectWeek()
 
     PlayState.storyDifficulty = curDifficulty;
     for (peckUpAblePath in PlayState.storyPlaylist) {
-        if (!FNFAssets.exists('assets/data/'+peckUpAblePath.toLowerCase()+'/'+peckUpAblePath.toLowerCase() + diffic+'.json')) {
+        if (!FNFAssets.exists(SUtil.getPath() + 'assets/data/'+peckUpAblePath.toLowerCase()+'/'+peckUpAblePath.toLowerCase() + diffic+'.json')) {
             // probably messed up difficulty
             trace("UH OH DIFFICULTY DOESN'T EXIST FOR A SONG");
             trace("CHANGING TO DEFAULT DIFFICULTY");
@@ -533,7 +544,7 @@ function changeWeek(change)
         bullShit++;
     }
 
-    FlxG.sound.play('assets/sounds/scrollMenu' + TitleState.soundExt);
+    FlxG.sound.play(SUtil.getPath() + 'assets/sounds/scrollMenu' + TitleState.soundExt);
     updateText();
 }
 
@@ -574,8 +585,7 @@ function updateText()
     {
         txtTracklist.text += "\n" + i;
     }
-    txtTracklist.text += "\n shitty workaround but ok";
-    trace(txtTracklist.text);
+  
     txtTracklist.text = StringTools.replace(txtTracklist.text.toUpperCase(), "-", " ");
     trace(txtTracklist.text);
     txtTracklist.x = (FlxG.width - txtTracklist.width) / 2;

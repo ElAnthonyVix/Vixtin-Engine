@@ -63,7 +63,7 @@ function create()
 	rating.text = Ratings.GenerateLetterRank(accuracy);
 	rating.addText();
 	accuracyTxt = new FlxText(10, rating.y + rating.height,0 , "ACCURACY: "+accuracy + "%");
-	accuracyTxt.setFormat("assets/fonts/vcr.ttf", 26, 0xFFffffff, "right");
+	accuracyTxt.setFormat(SUtil.getPath() + "assets/fonts/vcr.ttf", 26, 0xFFffffff, "right");
 	var interp = Character.getAnimInterp(p1);
 	if (interp.variables.exists("isPixel") && interp.variables.get("isPixel")) {
 		stageSuffix = '-pixel';
@@ -112,13 +112,13 @@ function create()
 	// make files seperate to allow modding
 	if (accuracy >= 65) {
 		Conductor.changeBPM(140);
-		FlxG.sound.playMusic('assets/music/goodScore' + TitleState.soundExt);
+		FlxG.sound.playMusic(SUtil.getPath() + 'assets/music/goodScore' + TitleState.soundExt);
 	} else if (accuracy >= 50) {
 		Conductor.changeBPM(100);
-		FlxG.sound.playMusic('assets/music/mehScore' + TitleState.soundExt);
+		FlxG.sound.playMusic(SUtil.getPath() + 'assets/music/mehScore' + TitleState.soundExt);
 	} else {
 		Conductor.changeBPM(100);
-		FlxG.sound.playMusic('assets/music/badScore' + TitleState.soundExt);
+		FlxG.sound.playMusic(SUtil.getPath() + 'assets/music/badScore' + TitleState.soundExt);
 	}
 
 	trace('oh yeah');
@@ -131,6 +131,8 @@ function create()
 	FlxG.camera.x = camFollow.x;
 	FlxG.camera.y = camFollow.y;
 	bf.playAnim('idle');
+	if (mobile)
+		addVirtualPads('up_down', 'a_b');
 }
 
 function update(elapsed)
@@ -228,14 +230,14 @@ function endBullshit()
 	{
 		isEnding = true;
 		FlxG.sound.music.stop();
-		FlxG.sound.play(FNFAssets.getSound('assets/music/gameOverEnd' + stageSuffix + TitleState.soundExt));
+		FlxG.sound.play(FNFAssets.getSound(SUtil.getPath() + 'assets/music/gameOverEnd' + stageSuffix + TitleState.soundExt));
 		if (PlayState.isStoryMode) {
 			// most variables should already be set?
 			PlayState.storyPlaylist = StoryMenuState.storySongPlaylist;
 			trace(PlayState.storyPlaylist);
 			var diffic = DifficultyIcons.getEndingFP(PlayState.storyDifficulty);
 			for (peckUpAblePath in PlayState.storyPlaylist) {
-				if (!FNFAssets.exists('assets/data/'+peckUpAblePath.toLowerCase()+'/'+peckUpAblePath.toLowerCase() + diffic+'.json')) {
+				if (!FNFAssets.exists(SUtil.getPath() + 'assets/data/'+peckUpAblePath.toLowerCase()+'/'+peckUpAblePath.toLowerCase() + diffic+'.json')) {
 					// probably messed up difficulty
 					trace("UH OH DIFFICULTY DOESN'T EXIST FOR A SONG");
 					trace("CHANGING TO DEFAULT DIFFICULTY");

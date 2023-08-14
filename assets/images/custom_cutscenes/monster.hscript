@@ -7,7 +7,7 @@ function start(song) {
     new FlxTimer().start(0.1, function(tmr)
     {
         FlxG.camera.visible = true;
-        FlxG.sound.play(FNFAssets.getSound('assets/sounds/Lights_Turn_On' + TitleState.soundExt));
+        FlxG.sound.play(FNFAssets.getSound(SUtil.getPath() + 'assets/sounds/Lights_Turn_On' + TitleState.soundExt));
         currentPlayState.camFollow.y = -2050;
         currentPlayState.camFollow.x += 200;
         FlxG.camera.focusOn(currentPlayState.camFollow.getPosition());

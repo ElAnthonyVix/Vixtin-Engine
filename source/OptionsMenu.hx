@@ -23,8 +23,8 @@ class OptionsMenu extends MusicBeatState
 
 	override function create()
 	{
-		var menuBG:FlxSprite = new FlxSprite().loadGraphic('assets/images/menuDesat.png');
-		controlsStrings = CoolUtil.coolTextFile('assets/data/controls.txt');
+		var menuBG:FlxSprite = new FlxSprite().loadGraphic(SUtil.getPath() + 'assets/images/menuDesat.png');
+		controlsStrings = CoolUtil.coolTextFile(SUtil.getPath() + 'assets/data/controls.txt');
 		menuBG.color = 0xFFea71fd;
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
 		menuBG.updateHitbox();
@@ -93,7 +93,7 @@ class OptionsMenu extends MusicBeatState
 	function changeSelection(change:Int = 0)
 	{
 
-		FlxG.sound.play('assets/sounds/scrollMenu' + TitleState.soundExt, 0.4);
+		FlxG.sound.play(SUtil.getPath() + 'assets/sounds/scrollMenu' + TitleState.soundExt, 0.4);
 
 		curSelected += change;
 

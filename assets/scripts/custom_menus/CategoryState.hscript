@@ -9,7 +9,7 @@ var curPlaying = false;
 
 function create()
 {
-	var epicCategoryJs = CoolUtil.parseJson(FNFAssets.getJson('assets/data/freeplaySongJson'));
+	var epicCategoryJs = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + 'assets/data/freeplaySongJson'));
 	if (epicCategoryJs.length > 1 || choosingFor != "freeplay") {
 		for (category in epicCategoryJs) {
 			categories.push(category.name);
@@ -28,7 +28,7 @@ function create()
 		if (FlxG.sound.music != null)
 		{
 			if (!FlxG.sound.music.playing)
-				FlxG.sound.playMusic('assets/music/freakyMenu' + TitleState.soundExt);
+				FlxG.sound.playMusic(SUtil.getPath() + 'assets/music/freakyMenu' + TitleState.soundExt);
 		}
 		*/
 
@@ -37,7 +37,7 @@ function create()
 
 	// LOAD CHARACTERS
 
-	var bg = new FlxSprite().loadGraphic('assets/images/menuBGBlue.png');
+	var bg = new FlxSprite().loadGraphic(SUtil.getPath() + 'assets/images/menuBGBlue.png');
 	add(bg);
 
 	grpSongs = new FlxTypedGroup();
@@ -55,7 +55,7 @@ function create()
 	}
 
 	changeSelection(0);
-	// FlxG.sound.playMusic('assets/music/title' + TitleState.soundExt, 0);
+	// FlxG.sound.playMusic(SUtil.getPath() + 'assets/music/title' + TitleState.soundExt, 0);
 	// FlxG.sound.music.fadeIn(2, 0, 0.8);
 	//selector = new FlxText();
 
@@ -81,6 +81,8 @@ function create()
 
 		trace(md);
 		*/
+		if (mobile)
+			addVirtualPad('up_down', 'a_b');
 }
 
 function update(elapsed)
@@ -149,7 +151,7 @@ function update(elapsed)
 function changeSelection(change)
 {
 
-	FlxG.sound.play('assets/sounds/scrollMenu' + TitleState.soundExt, 0.4);
+	FlxG.sound.play(SUtil.getPath() + 'assets/sounds/scrollMenu' + TitleState.soundExt, 0.4);
 
 	curSelected += change;
 

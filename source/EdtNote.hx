@@ -118,8 +118,8 @@ class EdtNote extends FlxSprite
 				sussy = true;
 			}
 			
-			frames = DynamicAtlasFrames.fromSparrow('assets/images/custom_ui/ui_packs/normal/NOTE_assets.png',
-				'assets/images/custom_ui/ui_packs/normal/NOTE_assets.xml');
+			frames = DynamicAtlasFrames.fromSparrow(SUtil.getPath() + 'assets/images/custom_ui/ui_packs/normal/NOTE_assets.png',
+				SUtil.getPath() + 'assets/images/custom_ui/ui_packs/normal/NOTE_assets.xml');
 
 			if (sussy)
 			{
@@ -128,9 +128,9 @@ class EdtNote extends FlxSprite
 				var sussyInfo = Math.floor(noteData / (NOTE_AMOUNT * 2));
 				sussyInfo -= 5;
 				if (coolCustomGraphics[sussyInfo] == null)
-					coolCustomGraphics[sussyInfo] = FlxGraphic.fromAssetKey('assets/images/custom_ui/ui_packs/normal/NOTE_assets.png', true);
+					coolCustomGraphics[sussyInfo] = FlxGraphic.fromAssetKey(SUtil.getPath() + 'assets/images/custom_ui/ui_packs/normal/NOTE_assets.png', true);
 
-				frames = FlxAtlasFrames.fromSparrow(coolCustomGraphics[sussyInfo], 'assets/images/custom_ui/ui_packs/normal/NOTE_assets.xml');
+				frames = FlxAtlasFrames.fromSparrow(coolCustomGraphics[sussyInfo], SUtil.getPath() + 'assets/images/custom_ui/ui_packs/normal/NOTE_assets.xml');
 			}
 
 			animation.addByPrefix('greenScroll', 'green0');

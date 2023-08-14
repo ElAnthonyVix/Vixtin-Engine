@@ -27,11 +27,19 @@ import plugins.tools.MetroSprite;
 import hscript.InterpEx;
 import hscript.Interp;
 import flixel.FlxG;
-
+import Type.ValueType;
 import hscript.Parser;
 import hscript.ParserEx;
 import hscript.ClassDeclEx;
-
+#if VIDEOS_ALLOWED
+import hxcodec.flixel.FlxVideo as FlxVideo;
+#end
+import flixel.group.FlxGroup;
+#if mobile
+import android.FlxHitbox;
+import android.FlxVirtualPad;
+import flixel.ui.FlxButton;
+#end
 class PluginManager {
     public static var interp = new InterpEx();
     public static var hscriptClasses:Array<String> = [];
@@ -41,16 +49,16 @@ class PluginManager {
     public static function init() 
     {
         //checks if the text file that has the names of the classes stored exists, otherwise this function will do nothing.
-        if (!FNFAssets.exists("assets/scripts/plugin_classes/classes.txt"))
+        if (!FNFAssets.exists(SUtil.getPath() + "assets/scripts/plugin_classes/classes.txt"))
             return;
         
         //split lines of text, given to separate them into different names. something basic but powerful.
-        var filelist = hscriptClasses = CoolUtil.coolTextFile("assets/scripts/plugin_classes/classes.txt");
+        var filelist = hscriptClasses = CoolUtil.coolTextFile(SUtil.getPath() + "assets/scripts/plugin_classes/classes.txt");
 		addVarsToInterp(interp); //this little thing is responsible for adding the corresponding variables.
         HscriptGlobals.init();
         for (file in filelist) {
-            if (FNFAssets.exists("assets/scripts/plugin_classes/" + file + ".hx")) {
-				interp.addModule(FNFAssets.getText("assets/scripts/plugin_classes/" + file + '.hx'));
+            if (FNFAssets.exists(SUtil.getPath() + "assets/scripts/plugin_classes/" + file + ".hx")) {
+				interp.addModule(FNFAssets.getText(SUtil.getPath() + "assets/scripts/plugin_classes/" + file + '.hx'));
             }
         }
         trace(InterpEx._scriptClassDescriptors);
@@ -73,6 +81,11 @@ class PluginManager {
 	}
 
     public static function addVarsToInterp<T:Interp>(interp:T):T {
+        #if mobile
+        interp.variables.set("FlxActionMode", FlxActionMode);
+        interp.variables.set("FlxDPadMode", FlxDPadMode);
+        interp.variables.set("FlxVirtualPad", FlxVirtualPad);
+        #end
 		interp.variables.set("Conductor", Conductor);
 		interp.variables.set("FlxSprite", DynamicSprite);
 		interp.variables.set("FlxSound", DynamicSound);
@@ -89,13 +102,20 @@ class PluginManager {
         interp.variables.set("FlxCamera", FlxCamera);
         interp.variables.set("ShaderCustom", ShaderCustom);
         interp.variables.set("ShaderFilter", ShaderFilter);
+        #if VIDEOS_ALLOWED
         interp.variables.set("FlxVideo", FlxVideo);
-
+#end
+#if mobile
+interp.variables.set("mobile", true);
+#else
+interp.variables.set("mobile", false);
+#end
 		// : )
 		interp.variables.set("FlxG", HscriptGlobals);
 		interp.variables.set("FlxTimer", flixel.util.FlxTimer);
 		interp.variables.set("FlxTween", flixel.tweens.FlxTween);
 		interp.variables.set("Std", Std);
+        interp.variables.set("SUtil", SUtil);
 		interp.variables.set("StringTools", StringTools);
 		interp.variables.set("MetroSprite", MetroSprite);
 		interp.variables.set("FlxTrail", FlxTrail);
@@ -112,7 +132,19 @@ class PluginManager {
         interp.variables.set("PluginManager", PluginManager);
         interp.variables.set("callExternClass", instanceExClass); //Call modules?? :D
 		interp.variables.set("globalVars", Main.globalVars);
-		
+		interp.variables.set('addHaxeLibrary', function (libName:String, ?libFolder:String = '',varName:String = '') {
+			try {
+                if(varName.length == 0)
+                    varName = libName;
+				var str:String = '';
+				if(libFolder.length > 0)
+					str = libFolder + '.';
+				interp.variables.set(varName, Type.resolveClass(str + libName));
+			}
+			catch (e) {
+				openfl.Lib.application.window.alert(e.message, "ADD LIBRARY FAILED BRUH");
+			}
+		});
 
         //interp.variables.set("GitarooPause", GitarooPause);
 		#if debug

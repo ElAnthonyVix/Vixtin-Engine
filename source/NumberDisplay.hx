@@ -18,7 +18,7 @@ class NumberDisplay extends FlxText {
 		upperBound = maxi == null ? Math.POSITIVE_INFINITY : maxi;
         // lol
         text = "" + value;
-		setFormat("assets/fonts/vcr.ttf", 20, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
+		setFormat(SUtil.getPath() + "assets/fonts/vcr.ttf", 20, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
     }
     function set_value(x:Float) {
 		value = FlxMath.bound(x, lowerBound, upperBound);

@@ -1,3 +1,19 @@
+package;
+
+import lime.app.Promise;
+import lime.app.Future;
+import flixel.FlxSprite;
+import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.util.FlxTimer;
+import flixel.math.FlxMath;
+
+import openfl.utils.Assets;
+import lime.utils.Assets as LimeAssets;
+import lime.utils.AssetLibrary;
+import lime.utils.AssetManifest;
+
+import haxe.io.Path;
+
 import flixel.text.FlxText;
 import flixel.FlxState;
 import flixel.FlxG;

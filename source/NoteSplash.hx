@@ -37,13 +37,13 @@ class NoteSplash extends FlxSprite {
     private function setAnims(?c:Int) {
         var curUiType:TUI = Reflect.field(Judgement.uiJson, PlayState.SONG.uiType);
 
-        //frames = DynamicAtlasFrames.fromSparrow('assets/images/custom_ui/ui_packs/${curUiType.uses}/noteSplashes.png',
-        //'assets/images/custom_ui/ui_packs/${curUiType.uses}/noteSplashes.xml');
+        //frames = DynamicAtlasFrames.fromSparrow(SUtil.getPath() + 'assets/images/custom_ui/ui_packs/${curUiType.uses}/noteSplashes.png',
+        //SUtil.getPath() + 'assets/images/custom_ui/ui_packs/${curUiType.uses}/noteSplashes.xml');
 
         if (getFrames) {
             getFrames = false;
-            gotFrames = DynamicAtlasFrames.fromSparrow('assets/images/custom_ui/ui_packs/${curUiType.uses}/noteSplashes.png',
-            'assets/images/custom_ui/ui_packs/${curUiType.uses}/noteSplashes.xml');
+            gotFrames = DynamicAtlasFrames.fromSparrow(SUtil.getPath() + 'assets/images/custom_ui/ui_packs/${curUiType.uses}/noteSplashes.png',
+            SUtil.getPath() + 'assets/images/custom_ui/ui_packs/${curUiType.uses}/noteSplashes.xml');
         }
         frames = gotFrames;
         

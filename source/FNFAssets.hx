@@ -34,6 +34,18 @@ class FNFAssets {
     public static var _file:FileReference;
 	public static var currentTrackedAssets:Map<String, FlxGraphic> = [];
 	public static var currentTrackedSounds:Map<String, Sound> = [];
+	#if MODS_ALLOWED
+	//the
+	public static var ignoreModFolders:Array<String> = [
+		'music',
+		'sounds',
+		'shaders',
+		'videos',
+		'images',
+		'fonts',
+		'scripts'
+	];
+	#end
     /**
      * Get text content of a file. 
      * @param id Path to file.
@@ -230,6 +242,29 @@ class FNFAssets {
         #end
     }
 
+	public static function getImage(id:String):Null<FlxGraphic>
+		{
+			var newBitmap:BitmapData = null;
+			if (currentTrackedAssets.exists(id))
+				{
+					return currentTrackedAssets.get(id);
+				}
+				else{
+			if(FileSystem.exists(id)) {
+				if(!currentTrackedAssets.exists(id)) {
+					newBitmap = BitmapData.fromFile(id);
+					var newGraphic:FlxGraphic = FlxGraphic.fromBitmapData(newBitmap, false, id);
+					newGraphic.persist = true;
+			        newGraphic.destroyOnNoUse = false;
+					currentTrackedAssets.set(id, newGraphic);
+					return newGraphic;
+				}
+				
+			}
+		}
+	
+			return null;
+		}
 	/**
 	 * Get a global graphic data of a file
 	 * @param id Path of file
@@ -478,9 +513,9 @@ class FNFAssets {
 
 		// flags everything to be cleared out next unused memory clear
 		//localTrackedAssets = [];
-		openfl.Assets.cache.clear("assets");
-		openfl.Assets.cache.clear("assets/sounds");
-		openfl.Assets.cache.clear("assets/music");
+		openfl.Assets.cache.clear(SUtil.getPath() + "assets");
+		openfl.Assets.cache.clear(SUtil.getPath() + "assets/sounds");
+		openfl.Assets.cache.clear(SUtil.getPath() + "assets/music");
 		System.gc();
 	}
 }

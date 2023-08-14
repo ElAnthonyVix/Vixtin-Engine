@@ -1,4 +1,5 @@
 package;
+#if desktop
 #if cpp
 import Sys.sleep;
 import discord_rpc.DiscordRpc;
@@ -11,9 +12,9 @@ class DiscordClient
 	{
         #if cpp
 		
-		var client:String = "959138138951913554";
-		if (FNFAssets.exists("assets/discord/clientID.txt"))
-			client = FNFAssets.getText("assets/discord/clientID.txt");
+		var client:String = "1139367275732926574";
+		if (FNFAssets.exists(SUtil.getPath() + "assets/discord/clientID.txt"))
+			client = FNFAssets.getText(SUtil.getPath() + "assets/discord/clientID.txt");
 		
 		trace("Discord Client starting...");
 		DiscordRpc.start({
@@ -86,7 +87,7 @@ class DiscordClient
 			endTimestamp = startTimestamp + endTimestamp;
 		}
 		if (smallImageKey == null) {
-			smallImageKey = "icon";
+			smallImageKey = "";
 		}
 		if (smallImageString == null) {
 			smallImageString = "Friday Night Funkin' Vixtin Engine";
@@ -94,8 +95,9 @@ class DiscordClient
 		DiscordRpc.presence({
 			details: details,
 			state: state,
-			largeImageKey: smallImageKey,
+			largeImageKey: 'icon',
 			largeImageText: smallImageString,
+			smallImageKey : smallImageKey,
 			// Obtained times are in milliseconds so they are divided so Discord can use it
 			startTimestamp: Std.int(startTimestamp / 1000),
 			endTimestamp: Std.int(endTimestamp / 1000)
@@ -104,3 +106,4 @@ class DiscordClient
 		// trace('Discord RPC Updated. Arguments: $details, $state, $smallImageKey, $hasStartTimestamp, $endTimestamp');
 	}
 }
+#end

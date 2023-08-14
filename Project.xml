@@ -2,10 +2,12 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 	<!-- i think that company and file is where the save data is stored -->
-	<app title="Friday Night Funkin' Vixtin Engine" file="Funkin" packageName="com.ninjamuffin99.funkin" main="Main" version="4.0.0" company="ninjamuffin99" />
+	<app title="Friday Night Funkin' Vixtin Engine" file="Funkin" packageName="com.ninjamuffin99.funkin" package="com.ninjamuffin99.funkin" main="Main" version="4.0.0" company="ElAnthonyVixtin" />
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
+
+<haxedef name="LINC_LUA_RELATIVE_DYNAMIC_LIB"/> <!-- stable luas PUT AFTER FIRST LINE WITH APP NAME AND ETC -->
 
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file
 		or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"-->
@@ -27,27 +29,27 @@
 	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" vsync="false"/>
 
 	<!--Mobile-specific-->
-	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" />
+	<window if="mobile" orientation="landscape" fullscreen="true" width="1280" height="720" resizable="false"/>
 
 	<!--Switch-specific-->
 	<window if="switch" orientation="landscape" fullscreen="true" width="0" height="0" resizable="true" />
-	<haxeflag name="-dce" value="no" if="typebuild"/>
+
 	<!-- _____________________________ Path Settings ____________________________ -->
+    <define name="CRASH_HANDLER"/>
+	<define name="VIDEOS_ALLOWED" if="web || windows || mobile"/>
 
 	<set name="BUILD_DIR" value="export/debug" if="debug" />
 	<set name="BUILD_DIR" value="export/release" unless="debug" />
 	<set name="BUILD_DIR" value="export/32bit" if="32bit" />
 
 	<classpath name="source" />
-
 	<assets path="assets/images" />
 	<assets path="assets/data" />
 	<assets path="assets/shaders" />
 	<assets path="VERSION" />
 	<assets path='example_mods' rename='mods' embed='false'/>
 	<assets path='art/readme.txt' rename='do NOT readme.txt' />
-	<assets path='libvlc.dll'/>
-	<assets path='libvlccore.dll'/>
+
 	<!-- <template path='mods' /> -->
 
 	<!-- <library name="noPreload" preload='false'/> -->
@@ -68,6 +70,9 @@
 	<assets path="assets/scripts"/>
 	<assets path="NOTICE"/>
 	<assets path="LICENSE"/>
+		<section if="mobile">
+		<assets path='mobilePortStuffsIGuess' rename='assets/images' embed='false'/>
+		</section>
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />
@@ -76,14 +81,39 @@
 	<!--In case you want to use the addons package-->
 	<haxelib name="flixel-addons" />
 	<haxelib name="tjson"/>
+    <haxelib name="hxCodec" if ="VIDEOS_ALLOWED"/>
 	<!--In case you want to use the ui package-->
 	<haxelib name="flixel-ui" />
 	<haxelib name="faxe" if='switch'/>
 	<haxelib name="hscript"/>
+	<define name="hscriptPos" />
 	<!-- git https://github.com/ianharrigan/hscript-ex-->
 	<haxelib name="hscript-ex"/>
 	<!--haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc -->
-	<haxelib name="discord_rpc"/>
+	<haxelib name="discord_rpc" if="desktop"/>
+		<haxelib name="extension-videoview" if="android"/>
+	<haxelib name="extension-androidtools" if="android"/>
+<section if="android">
+		<!--Permissions-->
+		<config:android permission="android.permission.ACCESS_NETWORK_STATE" />
+		<config:android permission="android.permission.ACCESS_WIFI_STATE" />
+		<config:android permission="android.permission.INTERNET" />
+		<config:android permission="android.permission.WRITE_EXTERNAL_STORAGE" />
+		<config:android permission="android.permission.READ_EXTERNAL_STORAGE" />
+		<config:android permission="android.permission.VIBRATE" />
+
+		<!--Gradle-->
+		<config:android gradle-version="7.6" gradle-plugin="7.3.1" />
+
+		<!--Audio Recording Fix-->
+		<config:android target-sdk-version="29" if="${lime <= 8.0.0}" />
+	</section>
+
+	<section if="ios">
+		<!--Dependency--> 
+		<dependency name="Metal.framework" />
+		<dependency name="WebKit.framework" />
+	</section>
 	<!--haxelib name="actuate" -->
 	<!--haxelib git extension-webm https://github.com/GrowtopiaFli/extension-webm-->
 	<!--haxelib name="extension-webm" if="desktop" -->
@@ -105,9 +135,10 @@
 	<!--<haxedef name="FLX_NO_NATIVE_CURSOR" />-->
 
 	<!--Optimise inputs, be careful you will get null errors if you don't use conditionals in your game-->
-	<haxedef name="FLX_NO_MOUSE" if="mobile" />
-	<haxedef name="FLX_NO_KEYBOARD" if="mobile" />
-	<haxedef name="FLX_NO_TOUCH" if="desktop" />
+<!-- <haxedef name="FLX_NO_MOUSE" if="mobile" /> -->
+	<!-- <haxedef name="FLX_NO_KEYBOARD" if="mobile" /> -->
+	<!-- <haxedef name="FLX_NO_TOUCH" if="desktop" /> -->
+	<!--GOD DAMN IT -->
 	<!--<haxedef name="FLX_NO_GAMEPAD" />-->
 
 	<!--Disable the Flixel core sound tray-->
@@ -115,6 +146,14 @@
 
 	<!--Disable the Flixel sound management code-->
 	<!--<haxedef name="FLX_NO_SOUND_SYSTEM" />-->
+
+<!-- Show debug traces for hxCodec -->
+	<haxedef name="HXC_DEBUG_TRACE" if="debug" />
+
+	<!--Used for Izzy Engine's crash handler-->
+	<haxedef name="HXCPP_CHECK_POINTER" />
+	<haxedef name="HXCPP_STACK_LINE" />
+
 
 	<!--Disable the Flixel core focus lost screen-->
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
@@ -132,7 +171,7 @@
 	<icon path="art/icon16.png" size='16'/>
 	<icon path="art/icon32.png" size='32'/>
 	<icon path="art/icon64.png" size='64'/>
-
+	<icon path="art/icon64.png" />
 
 
 </project>

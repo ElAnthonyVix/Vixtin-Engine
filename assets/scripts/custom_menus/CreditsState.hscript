@@ -17,7 +17,7 @@ function create()
 
     // LOAD MUSIC
     /*
-    var musicUse = 'assets/music/custom_menu_music/' + CoolUtil.parseJson(FNFAssets.getText("assets/music/custom_menu_music/custom_menu_music.json")).Menu+'/freakyMenu' + TitleState.soundExt;
+    var musicUse = SUtil.getPath() + 'assets/music/custom_menu_music/' + CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/music/custom_menu_music/custom_menu_music.json")).Menu+'/freakyMenu' + TitleState.soundExt;
     if (Main.curMusicName != musicUse)
     {
         FlxG.sound.playMusic(FNFAssets.getSound(musicUse));
@@ -26,7 +26,7 @@ function create()
     */
 
     // LOAD CHARACTERS
-    bg = new FlxSprite().loadGraphic(FNFAssets.getBitmapData('assets/images/menuDesat.png'));
+    bg = new FlxSprite().loadGraphic(FNFAssets.getBitmapData(SUtil.getPath() + 'assets/images/menuDesat.png'));
     add(bg);
 
     grpSongs = new FlxGroup();
@@ -43,14 +43,14 @@ function create()
 
         if(isSelectable) 
         {
-            var icon = new AttachedSprite('assets/images/credits/' + getCreditData(i, 1));
+            var icon = new AttachedSprite(SUtil.getPath() + 'assets/images/credits/' + getCreditData(i, 1));
             icon.xAdd = songText.width + 30;
             icon.sprTracker = songText;
             icon.centerOffsets();
             icon.yAdd -= icon.height/4;
     
             // using a FlxGroup is too much fuss!
-            if (FNFAssets.exists('assets/images/credits/' + getCreditData(i, 1) + '.png'))
+            if (FNFAssets.exists(SUtil.getPath() + 'assets/images/credits/' + getCreditData(i, 1) + '.png'))
             {
                 iconArray.push(icon);
                 add(icon);
@@ -79,7 +79,8 @@ function create()
     intendedColor = bg.color;
 
     changeSelection(1);
-
+		if (mobile)
+			addVirtualPad('up_down', 'a_b');
 }
 
 function update(elapsed)
@@ -112,7 +113,7 @@ var moveTween = null;
 function changeSelection(change)
 {
 
-    FlxG.sound.play('assets/sounds/scrollMenu' + TitleState.soundExt, 0.4);
+    FlxG.sound.play(SUtil.getPath() + 'assets/sounds/scrollMenu' + TitleState.soundExt, 0.4);
 
     do {
 

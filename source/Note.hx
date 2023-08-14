@@ -150,7 +150,11 @@ class Note extends DynamicSprite
 	public var prevNote:Note;
 	public var duoMode:Bool = false;
 	public var oppMode:Bool = false;
+	public var copyAngle:Bool = false;
 	public var sustainLength:Float = 0;
+	public var offsetX:Float = 0;
+	public var offsetY:Float = 0;
+	public var offsetAngle:Float = 0;
 	public var alphaMultiplier:Float = 1;
 	public var isSustainNote:Bool = false;
 	public var modifiedByLua:Bool = false;
@@ -211,6 +215,7 @@ class Note extends DynamicSprite
 	public static var posRest:Array<Int> = [0, 35, 50, 70];
 	// altNote can be int or bool. int just determines what alt is played
 	// format: [strumTime:Float, noteDirection:Int, sustainLength:Float, altNote:Union<Bool, Int>, isLiftNote:Bool, healMultiplier:Float, damageMultipler:Float, consistentHealth:Bool, timingMultiplier:Float, shouldBeSung:Bool, ignoreHealthMods:Bool, animSuffix:Union<String, Int>]
+	var lastNoteOffsetXForPixelAutoAdjusting:Float = 0;
 	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?customImage:Null<BitmapData>, ?customXml:Null<String>, ?customEnds:Null<BitmapData>, ?LiftNote:Bool=false, ?animSuffix:String, ?numSuffix:Int)
 	{
 		super();
@@ -316,8 +321,9 @@ class Note extends DynamicSprite
 			// dontStrum = true;
 		}
 		var curUiType:TUI = Reflect.field(Judgement.uiJson, PlayState.SONG.uiType);
+		var isPixel = curUiType.isPixel;
 		// var daStage:String = PlayState.curStage;
-		if (!curUiType.isPixel)
+		if (!isPixel)
 		{	
 			if (customNotePath != null) {
 				if (getSpecialFrames) {
@@ -336,10 +342,10 @@ class Note extends DynamicSprite
 			} else {
 				if (getFrames) {
 					getFrames = false;
-					gotFrames = DynamicAtlasFrames.fromSparrow('assets/images/custom_ui/ui_packs/'
+					gotFrames = DynamicAtlasFrames.fromSparrow(SUtil.getPath() + 'assets/images/custom_ui/ui_packs/'
 						+ curUiType.uses
 						+ "/NOTE_assets.png",
-						'assets/images/custom_ui/ui_packs/'
+						SUtil.getPath() + 'assets/images/custom_ui/ui_packs/'
 						+ curUiType.uses
 						+ "/NOTE_assets.xml");
 				}
@@ -370,7 +376,7 @@ class Note extends DynamicSprite
 			if (customNotePath != null)
 				loadGraphic(customNotePath + '.png', true, 17, 17);
 			else
-				loadGraphic('assets/images/custom_ui/ui_packs/' + curUiType.uses + "/arrows-pixels.png", true, 17, 17);
+				loadGraphic(SUtil.getPath() + 'assets/images/custom_ui/ui_packs/' + curUiType.uses + "/arrows-pixels.png", true, 17, 17);
 			
 			if (animSuffix != null && numSuffix == null)
 			{
@@ -390,7 +396,7 @@ class Note extends DynamicSprite
 				animation.add('cyanScroll', [intSuffix]);
 				if (isSustainNote)
 				{
-					loadGraphic('assets/images/custom_ui/ui_packs/' + curUiType.uses + "/arrowEnds.png", true, 7, 6);
+					loadGraphic(SUtil.getPath() + 'assets/images/custom_ui/ui_packs/' + curUiType.uses + "/arrowEnds.png", true, 7, 6);
 
 					animation.add('purpleholdend', [intSuffix]);
 					animation.add('greenholdend', [intSuffix]);
@@ -427,7 +433,7 @@ class Note extends DynamicSprite
 
 				if (isSustainNote)
 				{
-					loadGraphic('assets/images/custom_ui/ui_packs/' + curUiType.uses + "/arrowEnds.png", true, 7, 6);
+					loadGraphic(SUtil.getPath() + 'assets/images/custom_ui/ui_packs/' + curUiType.uses + "/arrowEnds.png", true, 7, 6);
 
 					animation.add('purpleholdend', [4]);
 					animation.add('greenholdend', [6]);
@@ -493,23 +499,26 @@ class Note extends DynamicSprite
 			}
 			setGraphicSize(Std.int(width * PlayState.daPixelZoom * pixelscales[PlayState.SONG.mania]));
 			updateHitbox();
+			antialiasing = false;
+		
 		}
-
+		//bruh
+		x += swidths[mania] * swagWidth * (noteData % NOTE_AMOUNT);
 		if (NOTE_AMOUNT == 4)
 		{
 			switch (noteData % 4)
 			{
 				case 0:
-					x += swidths[mania] * swagWidth * 0;
+				
 					animation.play('purpleScroll');
 				case 1:
-					x += swidths[mania] * swagWidth * 1;
+					
 					animation.play('blueScroll');
 				case 2:
-					x += swidths[mania] * swagWidth * 2;
+			
 					animation.play('greenScroll');
 				case 3:
-					x += swidths[mania] * swagWidth * 3;
+
 					animation.play('redScroll');
 			}
 		}
@@ -519,22 +528,22 @@ class Note extends DynamicSprite
 			switch (noteData % 6)
 			{
 				case 0:
-					x += swidths[mania] * swagWidth * 0;
+					
 					animation.play('purpleScroll');
 				case 1:
-					x += swidths[mania] * swagWidth * 1;
+
 					animation.play('greenScroll');
 				case 2:
-					x += swidths[mania] * swagWidth * 2;
+		
 					animation.play('redScroll');
 				case 3:
-					x += swidths[mania] * swagWidth * 3;
+
 					animation.play('yellowScroll');
 				case 4:
-					x += swidths[mania] * swagWidth * 4;
+
 					animation.play('blueScroll');
 				case 5:
-					x += swidths[mania] * swagWidth * 5;
+
 					animation.play('cyanScroll');
 			}
 		}
@@ -544,25 +553,25 @@ class Note extends DynamicSprite
 			switch (noteData % 7)
 			{
 				case 0:
-					x += swidths[mania] * swagWidth * 0;
+
 					animation.play('purpleScroll');
 				case 1:
-					x += swidths[mania] * swagWidth * 1;
+
 					animation.play('greenScroll');
 				case 2:
-					x += swidths[mania] * swagWidth * 2;
+
 					animation.play('redScroll');
 				case 3:
-					x += swidths[mania] * swagWidth * 3;
+
 					animation.play('whiteScroll');
 				case 4:
-					x += swidths[mania] * swagWidth * 4;
+
 					animation.play('yellowScroll');
 				case 5:
-					x += swidths[mania] * swagWidth * 5;
+
 					animation.play('blueScroll');
 				case 6:
-					x += swidths[mania] * swagWidth * 6;
+
 					animation.play('cyanScroll');
 			}
 		}
@@ -572,31 +581,31 @@ class Note extends DynamicSprite
 			switch (noteData % 9)
 			{
 				case 0:
-					x += swidths[mania] * swagWidth * 0;
+
 					animation.play('purpleScroll');
 				case 1:
-					x += swidths[mania] * swagWidth * 1;
+
 					animation.play('blueScroll');
 				case 2:
-					x += swidths[mania] * swagWidth * 2;
+
 					animation.play('greenScroll');
 				case 3:
-					x += swidths[mania] * swagWidth * 3;
+
 					animation.play('redScroll');
 				case 4:
-					x += swidths[mania] * swagWidth * 4;
+
 					animation.play('whiteScroll');
 				case 5:
-					x += swidths[mania] * swagWidth * 5;
+
 					animation.play('yellowScroll');
 				case 6:
-					x += swidths[mania] * swagWidth * 6;
+
 					animation.play('lilaScroll');
 				case 7:
-					x += swidths[mania] * swagWidth * 7;
+
 					animation.play('cherryScroll');
 				case 8:
-					x += swidths[mania] * swagWidth * 8;
+
 					animation.play('cyanScroll');
 			}
 		}
@@ -610,7 +619,7 @@ class Note extends DynamicSprite
 			noteScore * 0.2;
 			alpha = 0.6;
 
-			x += width / 2;
+			offsetX += width / 2;
 
 			if (NOTE_AMOUNT == 4)
 			{
@@ -694,10 +703,10 @@ class Note extends DynamicSprite
 
 			updateHitbox();
 
-			x -= width / 2;
+			offsetX -= width / 2;
 
 			if (isPixel)
-				x += 30;
+				offsetX += 30;
 
 			if (prevNote.isSustainNote)
 			{
@@ -783,11 +792,15 @@ class Note extends DynamicSprite
 				}
 
 				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5;
-				prevNote.scale.y *= PlayState.daScrollSpeed;
+				if(PlayState.instance != null)
+					{
+				prevNote.scale.y *= PlayState.instance.daScrollSpeed;
+					}
 				prevNote.updateHitbox();
 				// prevNote.setGraphicSize();
 			}
 		}
+		x += offsetX;
 	}
 
 	function loadNoteAnims(?animSuffix:String)
@@ -824,9 +837,9 @@ class Note extends DynamicSprite
 			animation.addByPrefix('redholdend', 'red hold end${animSuffix}');
 			animation.addByPrefix('blueholdend', 'blue hold end${animSuffix}');
 			animation.addByPrefix('whiteholdend', 'white hold end${animSuffix}');
-			animation.addByPrefix('yellowholdend', 'yellow end hold${animSuffix}');
+			animation.addByPrefix('yellowholdend', 'yellow hold end${animSuffix}');
 			animation.addByPrefix('lilaholdend', 'lila hold end${animSuffix}');
-			animation.addByPrefix('cherryholdend', 'red hold end${animSuffix}');
+			animation.addByPrefix('cherryholdend', 'cherry hold end${animSuffix}');
 			animation.addByPrefix('cyanholdend', 'cyan hold end${animSuffix}');
 
 			if (animation.getByName('whiteholdend') == null)
@@ -881,6 +894,20 @@ class Note extends DynamicSprite
 			animation.addByPrefix('lilaScroll', 'lila lift${animSuffix}');
 			animation.addByPrefix('cherryScroll', 'cherry lift${animSuffix}');
 			animation.addByPrefix('cyanScroll', 'cyan lift${animSuffix}');
+			if (animation.getByName('whiteScroll') == null)
+				animation.addByPrefix('whiteScroll', 'green lift${animSuffix}');
+	
+			if (animation.getByName('yellowScroll') == null)
+				animation.addByPrefix('yellowScroll', 'purple lift${animSuffix}');
+	
+			if (animation.getByName('lilaScroll') == null)
+				animation.addByPrefix('lilaScroll', 'blue lift${animSuffix}');
+	
+			if (animation.getByName('cherryScroll') == null)
+				animation.addByPrefix('cherryScroll', 'green lift${animSuffix}');
+	
+			if (animation.getByName('cyanScroll') == null)
+				animation.addByPrefix('cyanScroll', 'purple lift${animSuffix}');
 		}
 		if (nukeNote)
 		{
@@ -893,6 +920,21 @@ class Note extends DynamicSprite
 			animation.addByPrefix('lilaScroll', 'lila nuke${animSuffix}');
 			animation.addByPrefix('cherryScroll', 'cherry nuke${animSuffix}');
 			animation.addByPrefix('cyanScroll', 'cyan nuke${animSuffix}');
+
+			if (animation.getByName('whiteScroll') == null)
+				animation.addByPrefix('whiteScroll', 'green nuke${animSuffix}');
+	
+			if (animation.getByName('yellowScroll') == null)
+				animation.addByPrefix('yellowScroll', 'purple nuke${animSuffix}');
+	
+			if (animation.getByName('lilaScroll') == null)
+				animation.addByPrefix('lilaScroll', 'blue nuke${animSuffix}');
+	
+			if (animation.getByName('cherryScroll') == null)
+				animation.addByPrefix('cherryScroll', 'green nuke${animSuffix}');
+	
+			if (animation.getByName('cyanScroll') == null)
+				animation.addByPrefix('cyanScroll', 'purple nuke${animSuffix}');
 		}
 		
 		if (mineNote)
@@ -906,6 +948,20 @@ class Note extends DynamicSprite
 			animation.addByPrefix('lilaScroll', 'lila mine${animSuffix}');
 			animation.addByPrefix('cherryScroll', 'cherry mine${animSuffix}');
 			animation.addByPrefix('cyanScroll', 'cyan mine${animSuffix}');
+			if (animation.getByName('whiteScroll') == null)
+				animation.addByPrefix('whiteScroll', 'green mine${animSuffix}');
+	
+			if (animation.getByName('yellowScroll') == null)
+				animation.addByPrefix('yellowScroll', 'purple mine${animSuffix}');
+	
+			if (animation.getByName('lilaScroll') == null)
+				animation.addByPrefix('lilaScroll', 'blue mine${animSuffix}');
+	
+			if (animation.getByName('cherryScroll') == null)
+				animation.addByPrefix('cherryScroll', 'green mine${animSuffix}');
+	
+			if (animation.getByName('cyanScroll') == null)
+				animation.addByPrefix('cyanScroll', 'purple mine${animSuffix}');
 		}
 		if (dontEdit) {
 			animation.addByPrefix('greenScroll', specialNoteInfo.animNames[2]);

@@ -35,7 +35,7 @@ class UIOptions extends MusicBeatState
 	var _options:Dynamic;
 	override function create()
 	{
-		var menuBG:FlxSprite = new FlxSprite().loadGraphic('assets/images/menuDesat.png');
+		var menuBG:FlxSprite = new FlxSprite().loadGraphic(SUtil.getPath() + 'assets/images/menuDesat.png');
 		var optionUI = new FlxUI();
 		menuBG.color = 0xFFea71fd;
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
@@ -68,7 +68,7 @@ class UIOptions extends MusicBeatState
 		super.update(elapsed);
 		if (controls.BACK) {
 			FlxG.mouse.visible = false;
-			File.saveContent('assets/data/options.json', Json.stringify(_options));
+			File.saveContent(SUtil.getPath() + 'assets/data/options.json', Json.stringify(_options));
 			LoadingState.loadAndSwitchState(new MainMenuState());
 		}
 

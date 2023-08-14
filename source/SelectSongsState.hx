@@ -45,7 +45,7 @@ class SelectSongsState extends MusicBeatSubstate
 
 	override function create()
 	{
-		var coolCategoryJson:Array<TCategory> = CoolUtil.parseJson(Assets.getText('assets/data/freeplaySongJson.jsonc'));
+		var coolCategoryJson:Array<TCategory> = CoolUtil.parseJson(Assets.getText(SUtil.getPath() + 'assets/data/freeplaySongJson.jsonc'));
 
 
 		for (coolCategory in coolCategoryJson) {
@@ -58,7 +58,7 @@ class SelectSongsState extends MusicBeatSubstate
 
 		// LOAD CHARACTERS
 
-		var bg:FlxSprite = new FlxSprite().loadGraphic('assets/images/menuBGBlue.png');
+		var bg:FlxSprite = new FlxSprite().loadGraphic(SUtil.getPath() + 'assets/images/menuBGBlue.png');
 		add(bg);
 
 		grpSongs = new FlxTypedGroup<Alphabet>();
@@ -69,7 +69,7 @@ class SelectSongsState extends MusicBeatSubstate
 			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, songs[i], true, false);
 			songText.isMenuItem = true;
 			songText.targetY = i;
-			var checkmark = new FlxSprite(0, 0).loadGraphic('assets/images/checkmark.png');
+			var checkmark = new FlxSprite(0, 0).loadGraphic(SUtil.getPath() + 'assets/images/checkmark.png');
 			checkmark.visible = false;
 			boolSongs[i] = false;
 			grpSongs.add(songText);
@@ -81,7 +81,7 @@ class SelectSongsState extends MusicBeatSubstate
 
 		changeSelection();
 
-		// FlxG.sound.playMusic('assets/music/title' + TitleState.soundExt, 0);
+		// FlxG.sound.playMusic(SUtil.getPath() + 'assets/music/title' + TitleState.soundExt, 0);
 		// FlxG.sound.music.fadeIn(2, 0, 0.8);
 		selector = new FlxText();
 
@@ -158,7 +158,7 @@ class SelectSongsState extends MusicBeatSubstate
 	function changeSelection(change:Int = 0)
 	{
 
-		FlxG.sound.play('assets/sounds/scrollMenu' + TitleState.soundExt, 0.4);
+		FlxG.sound.play(SUtil.getPath() + 'assets/sounds/scrollMenu' + TitleState.soundExt, 0.4);
 
 		curSelected += change;
 

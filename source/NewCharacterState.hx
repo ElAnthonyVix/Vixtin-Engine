@@ -75,7 +75,7 @@ class NewCharacterState extends MusicBeatState
 			"crazypng":null,
 			"icons": null
 		};
-		var bg:FlxSprite = new FlxSprite().loadGraphic('assets/images/menuBGBlue.png');
+		var bg:FlxSprite = new FlxSprite().loadGraphic(SUtil.getPath() + 'assets/images/menuBGBlue.png');
 		add(bg);
 		mainPngButton = new FlxButton(10,10,"char.png",function ():Void {
 			var coolDialog = new FileDialog();
@@ -174,36 +174,36 @@ class NewCharacterState extends MusicBeatState
 	function writeCharacters() {
 		// check to see if directory exists
 		#if sys
-		if (!FileSystem.exists('assets/images/custom_chars/'+nameText.text)) {
-			FileSystem.createDirectory('assets/images/custom_chars/'+nameText.text);
+		if (!FileSystem.exists(SUtil.getPath() + 'assets/images/custom_chars/'+nameText.text)) {
+			FileSystem.createDirectory(SUtil.getPath() + 'assets/images/custom_chars/'+nameText.text);
 		}
 		trace(epicFiles.charpng);
 		trace("hello");
-		File.copy(epicFiles.charpng,'assets/images/custom_chars/'+nameText.text+'/char.png');
+		File.copy(epicFiles.charpng,SUtil.getPath() + 'assets/images/custom_chars/'+nameText.text+'/char.png');
 		// if it was an xml file save it as one
 		// otherwise save it as txt
 		if (StringTools.endsWith(epicFiles.charxml,"xml"))
-			File.copy(epicFiles.charxml,'assets/images/custom_chars/'+nameText.text+'/char.xml');
+			File.copy(epicFiles.charxml,SUtil.getPath() + 'assets/images/custom_chars/'+nameText.text+'/char.xml');
 		else
-			File.copy(epicFiles.charxml,'assets/images/custom_chars/'+nameText.text+'/char.txt');
+			File.copy(epicFiles.charxml,SUtil.getPath() + 'assets/images/custom_chars/'+nameText.text+'/char.txt');
 		if (epicFiles.deadpng != null) {
-			File.copy(epicFiles.deadpng,'assets/images/custom_chars/'+nameText.text+'/dead.png');
-			File.copy(epicFiles.deadxml,'assets/images/custom_chars/'+nameText.text+'/dead.xml');
+			File.copy(epicFiles.deadpng,SUtil.getPath() + 'assets/images/custom_chars/'+nameText.text+'/dead.png');
+			File.copy(epicFiles.deadxml,SUtil.getPath() + 'assets/images/custom_chars/'+nameText.text+'/dead.xml');
 		}
 		if (epicFiles.crazypng != null) {
-			File.copy(epicFiles.crazypng,'assets/images/custom_chars/'+nameText.text+'/crazy.png');
-			File.copy(epicFiles.crazyxml,'assets/images/custom_chars/'+nameText.text+'/crazy.xml');
+			File.copy(epicFiles.crazypng,SUtil.getPath() + 'assets/images/custom_chars/'+nameText.text+'/crazy.png');
+			File.copy(epicFiles.crazyxml,SUtil.getPath() + 'assets/images/custom_chars/'+nameText.text+'/crazy.xml');
 		}
 		if (epicFiles.icons != null ) {
-			File.copy(epicFiles.icons, "assets/images/custom_chars/"+nameText.text+'/icons.png');
+			File.copy(epicFiles.icons, SUtil.getPath() + "assets/images/custom_chars/"+nameText.text+'/icons.png');
 		}
 		trace("hello");
-		var epicCharFile:Dynamic =CoolUtil.parseJson(FNFAssets.getJson('assets/images/custom_chars/custom_chars'));
+		var epicCharFile:Dynamic =CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + 'assets/images/custom_chars/custom_chars'));
 		trace("parsed");
 		var commaSeperatedColors = colorsText.text.split(",");
 		Reflect.setField(epicCharFile,nameText.text,{like:likeText.text,icons: [Std.int(iconAlive.value),Std.int(iconDead.value),Std.int(iconPoison.value)], colors: commaSeperatedColors});
 
-		File.saveContent('assets/images/custom_chars/custom_chars.jsonc', CoolUtil.stringifyJson(epicCharFile));
+		File.saveContent(SUtil.getPath() + 'assets/images/custom_chars/custom_chars.jsonc', CoolUtil.stringifyJson(epicCharFile));
 		trace("cool stuff");
 		#end
 	}

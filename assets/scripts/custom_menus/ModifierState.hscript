@@ -6,7 +6,7 @@ var multiTxt;
 var description;
 function create()
 {
-	var menuBG = new FlxSprite().loadGraphic('assets/images/menuDesat.png');
+	var menuBG = new FlxSprite().loadGraphic(SUtil.getPath() + 'assets/images/menuDesat.png');
 	menuBG.color = 0xFFea71fd;
 	grpAlphabet = new FlxTypedGroup();
 	menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
@@ -14,11 +14,11 @@ function create()
 	menuBG.screenCenter();
 	menuBG.antialiasing = true;
 	multiTxt = new FlxText(800, 60, 0, "", 200);
-	multiTxt.setFormat("assets/fonts/vcr.ttf", 40, 0xFFffffff, "right", FlxTextBorderStyle.OUTLINE, 0xFF000000);
+	multiTxt.setFormat(SUtil.getPath() + "assets/fonts/vcr.ttf", 40, 0xFFffffff, "right", FlxTextBorderStyle.OUTLINE, 0xFF000000);
 	multiTxt.text = "Multiplier: 1";
 	multiTxt.scrollFactor.set();
 	description = new FlxText(750, 150, 350, "", 90);
-	description.setFormat("assets/fonts/vcr.ttf", 32, 0xFFffffff, "left", FlxTextBorderStyle.OUTLINE, 0xFF000000);
+	description.setFormat(SUtil.getPath() + "assets/fonts/vcr.ttf", 32, 0xFFffffff, "left", FlxTextBorderStyle.OUTLINE, 0xFF000000);
 	description.text = "Instantly fail when you don't get \"Sick\"";
 	description.scrollFactor.set();
 
@@ -26,7 +26,7 @@ function create()
 		var swagModifier = new Alphabet(0, 10, "   "+modifiers[modifier].name, true, false, true);
 		swagModifier.isMenuItem = true;
 		swagModifier.targetY = modifier;
-		var coolCheckmark = new FlxSprite().loadGraphic(FNFAssets.getGraphicData('assets/images/checkmark.png'));
+		var coolCheckmark = new FlxSprite().loadGraphic(FNFAssets.getGraphicData(SUtil.getPath() + 'assets/images/checkmark.png'));
 		coolCheckmark.visible = modifiers[modifier].value;
 		var displayNum = new NumberDisplay(0, 0, modifiers[modifier].defAmount, modifiers[modifier].precision, modifiers[modifier].minimum, modifiers[modifier].maximum);
 		displayNum.visible = modifiers[modifier].amount != null;
@@ -50,6 +50,8 @@ function create()
 	calculateMultiplier();
 	multiTxt.text = "Multiplier: "+ModifierState.scoreMultiplier;
 	changeSelection(0);
+	if (mobile)
+		addVirtualPads('full', 'a_b');
 }
 function update(elapsed) {
 	if (controls.BACK) {
@@ -91,7 +93,7 @@ function changeAmount(increase) {
 function changeSelection(change)
 {
 
-	FlxG.sound.play(FNFAssets.getSound('assets/sounds/custom_menu_sounds/' + CoolUtil.parseJson(FNFAssets.getJson("assets/sounds/custom_menu_sounds/custom_menu_sounds")).customMenuScroll+'/scrollMenu' + TitleState.soundExt), 0.4);
+	FlxG.sound.play(FNFAssets.getSound(SUtil.getPath() + 'assets/sounds/custom_menu_sounds/' + CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + "assets/sounds/custom_menu_sounds/custom_menu_sounds")).customMenuScroll+'/scrollMenu' + TitleState.soundExt), 0.4);
 
 	curSelected += change;
 

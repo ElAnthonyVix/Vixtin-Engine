@@ -65,19 +65,19 @@ class Song
 	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong
 	{
 		var rawJson:String = "";
-		if (jsonInput != folder && FNFAssets.exists("assets/data/" + folder.toLowerCase() + "/" + folder.toLowerCase() + ".json"))
+		if (jsonInput != folder && FNFAssets.exists(SUtil.getPath() + "assets/data/" + folder.toLowerCase() + "/" + folder.toLowerCase() + ".json"))
 		{
 			// means this isn't normal difficulty
 			// raw json 
 
-			rawJson = FNFAssets.getText("assets/data/"+folder.toLowerCase()+"/"+folder.toLowerCase()+".json").trim();
+			rawJson = FNFAssets.getText(SUtil.getPath() + "assets/data/"+folder.toLowerCase()+"/"+folder.toLowerCase()+".json").trim();
 		} else {
-			rawJson = FNFAssets.getText("assets/data/" + folder.toLowerCase() + "/" + jsonInput.toLowerCase() + '.json').trim();
+			rawJson = FNFAssets.getText(SUtil.getPath() + "assets/data/" + folder.toLowerCase() + "/" + jsonInput.toLowerCase() + '.json').trim();
 		}
 
 		if (jsonInput == 'events')
 		{
-			rawJson = FNFAssets.getText("assets/data/" + folder.toLowerCase() + "/" + jsonInput.toLowerCase() + '.json').trim();
+			rawJson = FNFAssets.getText(SUtil.getPath() + "assets/data/" + folder.toLowerCase() + "/" + jsonInput.toLowerCase() + '.json').trim();
 		}
 		
 		while (!rawJson.endsWith("}"))
@@ -226,6 +226,12 @@ class Song
 					parsedJson.cutsceneType = 'spirit';
 				case 'winter-horrorland':
 					parsedJson.cutsceneType = 'monster';
+				case 'ugh':
+					parsedJson.cutsceneType = "ugh";
+				case 'guns':
+					parsedJson.cutsceneType = "guns";
+				case 'stress':
+					parsedJson.cutsceneType = 'stress';
 				default:
 					parsedJson.cutsceneType = 'none';
 			}
@@ -269,7 +275,7 @@ class Song
 		{
 			// means this isn't normal difficulty
 			// lets finally overwrite notes
-			var realJson = parseJSONshit(FNFAssets.getText("assets/data/" + folder.toLowerCase() + "/" + jsonInput.toLowerCase() + '.json').trim());
+			var realJson = parseJSONshit(FNFAssets.getText(SUtil.getPath() + "assets/data/" + folder.toLowerCase() + "/" + jsonInput.toLowerCase() + '.json').trim());
 			parsedJson.notes = realJson.notes;
 			parsedJson.bpm = realJson.bpm;
 			parsedJson.needsVoices = realJson.needsVoices;

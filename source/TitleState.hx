@@ -1,6 +1,6 @@
 package;
 
-#if windows
+#if desktop
 import Discord.DiscordClient;
 #end
 import flixel.FlxG;
@@ -40,6 +40,11 @@ import Song.SwagSong;
 #end
 import tjson.TJSON;
 import flixel.input.keyboard.FlxKey;
+#if mobile
+import flixel.input.actions.FlxActionInput;
+import android.AndroidControls.AndroidControls;
+import android.FlxVirtualPad;
+#end
 using StringTools;
 typedef DiscordJson = {
 	var intro:String;
@@ -60,7 +65,7 @@ class TitleState extends MusicBeatState
 	// doing this shit again because it broke in the last build :grief: (end)
 
 	// defining these variables now so i dont gotta do them later (start)
-	public static var discordStuff:DiscordJson = CoolUtil.parseJson(FNFAssets.getJson("assets/discord/presence/discord"));
+	public static var discordStuff:DiscordJson = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + "assets/discord/presence/discord"));
 	// defining these variables now so i dont gotta do them later (end)
 
 	var hscriptStates:Map<String, Interp> = [];
@@ -70,6 +75,7 @@ class TitleState extends MusicBeatState
 
 	function callHscript(func_name:String, args:Array<Dynamic>, usehaxe:String) {
 		// if function doesn't exist
+			try{
 		if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
 			trace("Function doesn't exist, silently skipping...");
 			return;
@@ -88,18 +94,34 @@ class TitleState extends MusicBeatState
 				method(args[0], args[1], args[2], args[3]);
 			case 5:
 				method(args[0], args[1], args[2], args[3], args[4]);
+			case 6:
+				method(args[0], args[1], args[2], args[3], args[4], args[5]);
+			case 7:
+				method(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+			case 8:
+				method(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
 		}
 	}
+	catch(e){
+		openfl.Lib.application.window.alert(e.message, "your function had some problem...");
+	}
+}
 	function callAllHScript(func_name:String, args:Array<Dynamic>) {
 		for (key in hscriptStates.keys()) {
 			callHscript(func_name, args, key);
 		}
 	}
 	function setHaxeVar(name:String, value:Dynamic, usehaxe:String) {
+		try{
 		hscriptStates.get(usehaxe).variables.set(name,value);
+		}
+		catch(e){
+			openfl.Lib.application.window.alert(e.message, "your variable had some problem...");
+		}
 	}
 	function getHaxeVar(name:String, usehaxe:String):Dynamic {
-		return hscriptStates.get(usehaxe).variables.get(name);
+		var theValue = hscriptStates.get(usehaxe).variables.get(name);
+		return theValue;
 	}
 	function setAllHaxeVar(name:String, value:Dynamic) {
 		for (key in hscriptStates.keys())
@@ -128,12 +150,72 @@ class TitleState extends MusicBeatState
 		interp.variables.set("insert", insert);
 		interp.variables.set("pi", Math.PI);
 		interp.variables.set("curMusicName", Main.curMusicName);
+		#if mobile
+		interp.variables.set("addVirtualPad", addVirtualPad);
+		interp.variables.set("removeVirtualPad", removeVirtualPad);
+		interp.variables.set("addPadCamera", addPadCamera);
+		interp.variables.set("addAndroidControls", addAndroidControls);
+		interp.variables.set("_virtualpad", _virtualpad);
+		interp.variables.set("dPadModeFromString", dPadModeFromString);
+		interp.variables.set("actionModeModeFromString", actionModeModeFromString);
+	
+		#end
+		interp.variables.set("addVirtualPads", addVirtualPads);
+		interp.variables.set("visPressed", visPressed);
+		try{
+			trace("set stuff");
+			interp.execute(program);
+			hscriptStates.set(usehaxe,interp);
+			callHscript("create", [], usehaxe);
+			trace('executed');
+	}
+	catch (e) {
+		openfl.Lib.application.window.alert(e.message, "THE TITLE STATE CRASHED!");
+		Sys.exit(1);
+	}
+	}
+		function addVirtualPads(dPad:String,act:String){
+		#if mobile
+		addVirtualPad(dPadModeFromString(dPad),actionModeModeFromString(act));
+		#end
+	}
+	#if mobile
+	public function dPadModeFromString(lmao:String):FlxDPadMode{
+	switch (lmao){
+	case 'up_down':return FlxDPadMode.UP_DOWN;
+	case 'left_right':return FlxDPadMode.LEFT_RIGHT;
+	case 'up_left_right':return FlxDPadMode.UP_LEFT_RIGHT;
+	case 'full':return FlxDPadMode.FULL;
+	case 'right_full':return FlxDPadMode.RIGHT_FULL;
+	case 'none':return FlxDPadMode.NONE;
+	}
+	return FlxDPadMode.NONE;
+	}
+	public function actionModeModeFromString(lmao:String):FlxActionMode{
+		switch (lmao){
+		case 'a':return FlxActionMode.A;
+		case 'b':return FlxActionMode.B;
+		case 'd':return FlxActionMode.D;
+		case 'a_b':return FlxActionMode.A_B;
+		case 'a_b_c':return FlxActionMode.A_B_C;
+		case 'a_b_e':return FlxActionMode.A_B_E;
+		case 'a_b_7':return FlxActionMode.A_B_7;
+		case 'a_b_x_y':return FlxActionMode.A_B_X_Y;
+		case 'a_b_c_x_y':return FlxActionMode.A_B_C_X_Y;
+		case 'a_b_c_x_y_z':return FlxActionMode.A_B_C_X_Y_Z;
+		case 'full':return FlxActionMode.FULL;
+		case 'none':return FlxActionMode.NONE;
+		}
+		return FlxActionMode.NONE;
+		}
+	#end
+	public function visPressed(dumbass:String = ''):Bool{
+		#if mobile
 		
-		trace("set stuff");
-		interp.execute(program);
-		hscriptStates.set(usehaxe,interp);
-		callHscript("create", [], usehaxe);
-		trace('executed');
+		return _virtualpad.returnPressed(dumbass);
+		#else
+		return false;
+		#end
 	}
 	function togglePersistUpdate(toggle:Bool)
 	{
@@ -170,7 +252,7 @@ class TitleState extends MusicBeatState
 	{
 		FNFAssets.clearStoredMemory();
 		
-		#if windows
+		#if desktop
 		DiscordClient.initialize();
 
 		Application.current.onExit.add(function(exitCode)
@@ -207,7 +289,7 @@ class TitleState extends MusicBeatState
 		#elseif CHARTING
 		LoadingState.loadAndSwitchState(new ChartingState());
 		#else
-		makeHaxeState("title", "assets/scripts/custom_menus/", "TitleState");
+		makeHaxeState("title", SUtil.getPath() + "assets/scripts/custom_menus/", "TitleState");
 		#end
 	}
 

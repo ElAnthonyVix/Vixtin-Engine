@@ -116,6 +116,8 @@ function create()
 
     FlixG.mouse.visible = true;
     FlxG.camera.follow(camFollow);
+    if (mobile)
+        addVirtualPad('full', 'a_b_c_x_y_z');
 }
 
 function genBoyOffsets(pushList)

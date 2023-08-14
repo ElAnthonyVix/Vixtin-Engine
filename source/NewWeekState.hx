@@ -65,7 +65,7 @@ class NewWeekState extends MusicBeatState
 			addCharUi = new FlxUI();
 			FlxG.mouse.visible = true;
 			epicFiles = {png: "lol", xml: "lol"};
-			var bg:FlxSprite = new FlxSprite().loadGraphic('assets/images/menuBGBlue.png');
+			var bg:FlxSprite = new FlxSprite().loadGraphic(SUtil.getPath() + 'assets/images/menuBGBlue.png');
 			add(bg);
 			mainPngButton = new FlxUIButton(10, 10, "Week Png", function():Void
 			{
@@ -129,7 +129,7 @@ class NewWeekState extends MusicBeatState
 	}
 	function writeCharacters() {
 		#if sys
-		var parsedWeekJson:StoryMenuState.StorySongsJson = CoolUtil.parseJson(FNFAssets.getJson("assets/data/storySonglist"));
+		var parsedWeekJson:StoryMenuState.StorySongsJson = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + "assets/data/storySonglist"));
 		
 		var coolSongArray:Array<String> = [];
 		coolSongArray.push(likeText.text);
@@ -139,9 +139,9 @@ class NewWeekState extends MusicBeatState
 		}
 		trace("Pog");
 		trace(epicFiles.png);
-		File.copy(epicFiles.png, 'assets/images/campaign-ui-week/week' + parsedWeekJson.songs.length + '.png');
+		File.copy(epicFiles.png, SUtil.getPath() + 'assets/images/campaign-ui-week/week' + parsedWeekJson.songs.length + '.png');
 		trace("ehh");
-		File.copy(epicFiles.xml, 'assets/images/campaign-ui-week/week' + parsedWeekJson.songs.length + '.xml');
+		File.copy(epicFiles.xml, SUtil.getPath() + 'assets/images/campaign-ui-week/week' + parsedWeekJson.songs.length + '.xml');
 		trace("parsed");
 		if (parsedWeekJson.version == 1 || parsedWeekJson.version == null) {
 			parsedWeekJson.songs.push(coolSongArray);
@@ -153,7 +153,7 @@ class NewWeekState extends MusicBeatState
 
 		}
 		
-		File.saveContent('assets/data/storySonglist.json', CoolUtil.stringifyJson(parsedWeekJson));
+		File.saveContent(SUtil.getPath() + 'assets/data/storySonglist.json', CoolUtil.stringifyJson(parsedWeekJson));
 		trace("cool stuff");
 		#end
 	}

@@ -16,7 +16,7 @@ import flixel.graphics.frames.FlxFrame;
 #if desktop
 import sys.FileSystem;
 import sys.io.File;
-#else
+#elseif !mobile
 import js.html.FileSystem;
 import js.html.File;
 #end

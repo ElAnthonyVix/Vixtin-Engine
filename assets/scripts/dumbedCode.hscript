@@ -1,0 +1,19 @@
+function update(elapsed){
+    FlixG.save.data.isFromPlayState = true;
+    for (i in 0...currentPlayState.strumLineNotes.members.length)
+        {
+              switch (i % Main.ammo[PlayState.SONG.mania] ){
+                case 0 | 5:
+         currentPlayState.strumLineNotes.members[i].animOffsets.set('confirm', [-4,-3.5]);
+         case 1 | 6:
+            currentPlayState.strumLineNotes.members[i].animOffsets.set('confirm', [-5.5,-3.5]);
+            case 2 | 7:
+                currentPlayState.strumLineNotes.members[i].animOffsets.set('confirm', [-1.5,-0.5]);
+                case 3 | 8:
+                    currentPlayState.strumLineNotes.members[i].animOffsets.set('confirm', [0.5,-1.5]);
+              }
+        }
+}
+function onEndSong(song){
+    FlixG.save.data.isFromPlayState = false;
+}

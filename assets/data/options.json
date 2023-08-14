@@ -1,31 +1,38 @@
 {
-    "skipVictoryScreen": false,
-    "skipModifierMenu": false,
-    "alwaysDoCutscenes": false,
-    "useCustomInput": true,
-    "allowEditOptions": true,
-    "useSaveDataMenu": true, 
-    "downscroll": false,
-    "preferredSave": 0,
-    "showSongPos": true,
-    "style": true,
-    "stressTankmen": false,
-    "ignoreUnlocks": false,
-    "preferJudgement": 0,
-    "judge": 9,
-    "newJudgementPos": false,
-    "emuOsuLifts": false,
-    "showComboBreaks": true,
-    "useKadeHealth": false,
-    "useMissStun": false,
-    "offset": 0,
-    "accuracyMode": 0,
-    "danceMode": false,
-    "moddingOptions": true,
-    "funnyOptions": true,
-    "allowStoryMode": true,
-    "allowFreeplay": true,
-    "allowDonate": true,
-    "fpsCap": 60,
-    "titleToggle": true
+     "skipDebugScreen" : true
+    ,"showSongPos" : true
+    ,"emuOsuLifts" : false
+    ,"showComboBreaks" : true
+    ,"preferJudgement" : 4
+    ,"dontMuteMiss" : null
+    ,"showNoteMsCounter" : true
+    ,"ratingColorRecs" : true
+    ,"allowFreeplay" : true
+    ,"fpsCap" : 60
+    ,"disableCpuStrums" : false
+    ,"showHaxeSplash" : false
+    ,"showFPS" : true
+    ,"allowStoryMode" : true
+    ,"downscroll" : false
+    ,"alwaysDoCutscenes" : true
+    ,"style" : true
+    ,"useCustomInput" : true
+    ,"showSplashes" : true
+    ,"offset" : 0
+    ,"skipModifierMenu" : false
+    ,"judge" : 9
+    ,"hitSounds" : true
+    ,"stressTankmen" : false
+    ,"allowDonate" : true
+    ,"useKadeHealth" : true
+    ,"accuracyMode" : 0
+    ,"ignoreUnlocks" : false
+    ,"useMissStun" : true
+    ,"ignoreVile" : true
+    ,"showMemory" : true
+    ,"skipVictoryScreen" : false
+    ,"newJudgementPos" : false
+    ,"preferredSave" : 9
+    ,"allowEditOptions" : true
+    ,"useSaveDataMenu" : true
 }

@@ -128,8 +128,8 @@ class Shader extends FlxShaderFix {
     }
 
     public static function create(cShader:String) {
-        var fragPath = 'assets/shaders/' + cShader + '.frag';
-        var vertPath = 'assets/shaders/' + cShader + '.vert'; 
+        var fragPath = SUtil.getPath() + 'assets/shaders/' + cShader + '.frag';
+        var vertPath = SUtil.getPath() + 'assets/shaders/' + cShader + '.vert'; 
 
         var fragExists:Bool = true;
         var vertExists:Bool = true;
@@ -363,8 +363,8 @@ class ShaderCustom extends Shader {
     public function new(cShader:String /*, values:Map<String, Any>*/ ) {
         //var mPath = Paths.modsPath;
 
-        var fragPath = "assets/shaders/" + cShader + ".frag";
-        var vertPath = "assets/shaders/" + cShader + ".vert";
+        var fragPath = SUtil.getPath() + "assets/shaders/" + cShader + ".frag";
+        var vertPath = SUtil.getPath() + "assets/shaders/" + cShader + ".vert";
 
         var glVertexSource = "#pragma header
         attribute float alpha;

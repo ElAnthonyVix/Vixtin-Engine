@@ -19,11 +19,15 @@ import hscript.Parser;
 import hscript.ParserEx;
 import hscript.InterpEx;
 import hscript.ClassDeclEx;
-
+#if mobile
+import flixel.input.actions.FlxActionInput;
+import android.AndroidControls.AndroidControls;
+import android.FlxVirtualPad;
+#end
 /**
 	*DEBUG MODE
  */
-class AnimationDebug extends FlxState
+class AnimationDebug extends MusicBeatState
 {
 	var hscriptStates:Map<String, Interp> = [];
 	var exInterp:InterpEx = new InterpEx();
@@ -37,6 +41,7 @@ class AnimationDebug extends FlxState
 
 	function callHscript(func_name:String, args:Array<Dynamic>, usehaxe:String) {
 		// if function doesn't exist
+			try{
 		if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
 			trace("Function doesn't exist, silently skipping...");
 			return;
@@ -55,22 +60,30 @@ class AnimationDebug extends FlxState
 				method(args[0], args[1], args[2], args[3]);
 			case 5:
 				method(args[0], args[1], args[2], args[3], args[4]);
+			case 6:
+				method(args[0], args[1], args[2], args[3], args[4], args[5]);
+			case 7:
+				method(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+			case 8:
+				method(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
 		}
 	}
+	catch(e){
+		openfl.Lib.application.window.alert(e.message, "your function had some problem...");
+	}
+}
 	function callAllHScript(func_name:String, args:Array<Dynamic>) {
 		for (key in hscriptStates.keys()) {
 			callHscript(func_name, args, key);
 		}
 	}
 	function setHaxeVar(name:String, value:Dynamic, usehaxe:String) {
+		try{
 		hscriptStates.get(usehaxe).variables.set(name,value);
-	}
-	function getHaxeVar(name:String, usehaxe:String):Dynamic {
-		return hscriptStates.get(usehaxe).variables.get(name);
-	}
-	function setAllHaxeVar(name:String, value:Dynamic) {
-		for (key in hscriptStates.keys())
-			setHaxeVar(name, value, key);
+		}
+		catch(e){
+			openfl.Lib.application.window.alert(e.message, "your variable had some problem...");
+		}
 	}
 	function makeHaxeState(usehaxe:String, path:String, filename:String) {
 		trace("opening a haxe state (because we are cool :))");
@@ -122,18 +135,77 @@ class AnimationDebug extends FlxState
 		interp.variables.set("FlxUIInputText", FlxUIInputText);
 		interp.variables.set("FlxButton", FlxButton);
 		interp.variables.set("FlxObject", FlxObject);
-		
-		trace("set stuff");
-		interp.execute(program);
-		hscriptStates.set(usehaxe,interp);
-		//callHscript("create", [], usehaxe);
-		trace('executed');
+		#if mobile
+		interp.variables.set("addVirtualPad", addVirtualPad);
+		interp.variables.set("removeVirtualPad", removeVirtualPad);
+		interp.variables.set("addPadCamera", addPadCamera);
+		interp.variables.set("addAndroidControls", addAndroidControls);
+		interp.variables.set("_virtualpad", _virtualpad);
+		interp.variables.set("dPadModeFromString", dPadModeFromString);
+		interp.variables.set("actionModeModeFromString", actionModeModeFromString);
+	
+		#end
+		interp.variables.set("addVirtualPads", addVirtualPads);
+		interp.variables.set("visPressed", visPressed);
+		try{
+			trace("set stuff");
+			interp.execute(program);
+			hscriptStates.set(usehaxe,interp);
+			//callHscript("create", [], usehaxe); ONLY ONE SCRIPT W
+			trace('executed');
 	}
-
+	catch (e) {
+		openfl.Lib.application.window.alert(e.message, "THE ANIMATION DEBUG STATE CRASHED!");
+		LoadingState.loadAndSwitchState(new PlayState());
+	}
+	}
+	function addVirtualPads(dPad:String,act:String){
+		#if mobile
+		addVirtualPad(dPadModeFromString(dPad),actionModeModeFromString(act));
+		#end
+	}
+	#if mobile
+	public function dPadModeFromString(lmao:String):FlxDPadMode{
+	switch (lmao){
+	case 'up_down':return FlxDPadMode.UP_DOWN;
+	case 'left_right':return FlxDPadMode.LEFT_RIGHT;
+	case 'up_left_right':return FlxDPadMode.UP_LEFT_RIGHT;
+	case 'full':return FlxDPadMode.FULL;
+	case 'right_full':return FlxDPadMode.RIGHT_FULL;
+	case 'none':return FlxDPadMode.NONE;
+	}
+	return FlxDPadMode.NONE;
+	}
+	public function actionModeModeFromString(lmao:String):FlxActionMode{
+		switch (lmao){
+		case 'a':return FlxActionMode.A;
+		case 'b':return FlxActionMode.B;
+		case 'd':return FlxActionMode.D;
+		case 'a_b':return FlxActionMode.A_B;
+		case 'a_b_c':return FlxActionMode.A_B_C;
+		case 'a_b_e':return FlxActionMode.A_B_E;
+		case 'a_b_7':return FlxActionMode.A_B_7;
+		case 'a_b_x_y':return FlxActionMode.A_B_X_Y;
+		case 'a_b_c_x_y':return FlxActionMode.A_B_C_X_Y;
+		case 'a_b_c_x_y_z':return FlxActionMode.A_B_C_X_Y_Z;
+		case 'full':return FlxActionMode.FULL;
+		case 'none':return FlxActionMode.NONE;
+		}
+		return FlxActionMode.NONE;
+		}
+	#end
+	public function visPressed(dumbass:String = ''):Bool{
+		#if mobile
+		
+		return _virtualpad.returnPressed(dumbass);
+		#else
+		return false;
+		#end
+	}
 	public function new(daAnim:String = 'spooky', daOtherAnim:String = 'bf')
 	{
 		super();
-		makeHaxeState("animationdebug", "assets/scripts/custom_menus/", "AnimationDebug");
+		makeHaxeState("animationdebug", SUtil.getPath() + "assets/scripts/custom_menus/", "AnimationDebug");
 		callAllHScript("start", [daAnim, daOtherAnim]);
 	}
 

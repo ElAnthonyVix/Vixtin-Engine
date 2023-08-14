@@ -1,0 +1,59 @@
+function start(song) {
+    currentPlayState.camFollow.y += 100;
+    var tex = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData(hscriptPath + song + '.png'), hscriptPath + song + '.xml');
+    
+    var bgMusic = new FlxSound().loadEmbedded(FNFAssets.getSound(SUtil.getPath() + 'assets/music/DISTORTO.ogg'));
+    bgMusic.play(false);
+    FlxG.sound.list.add(bgMusic);
+
+    var tightBars = new FlxSound().loadEmbedded(FNFAssets.getSound(hscriptPath + 'tankSong2.ogg'));
+
+    FlxG.sound.list.add(tightBars);
+
+
+    dad.alpha = 0.0001;
+    camHUD.alpha = 0.0001;
+    boyfriend.animation.curAnim.finish();
+
+	var johnCaptain = new FlxSprite(-20, 320);
+		johnCaptain.frames = tex;
+		johnCaptain.antialiasing = true;
+		insert(currentPlayState.members.indexOf(currentPlayState.dadGroup), johnCaptain);
+        johnCaptain.animation.addByPrefix('tightBars', 'TANK TALK 2', 24, false);
+        johnCaptain.x += 40;
+        johnCaptain.y += 10;
+        johnCaptain.animation.play('tightBars', true);
+        new FlxTimer().start(0.1, function(tmr){
+            tightBars.play(true);
+        });
+
+        
+        FlxTween.tween(FlxG.camera, {zoom: currentPlayState.defaultCamZoom * 1.2}, 4, {ease: FlxEase.quadInOut});
+        FlxTween.tween(FlxG.camera, {zoom: currentPlayState.defaultCamZoom * 1.2 * 1.2}, 0.5, {ease: FlxEase.quadInOut, startDelay: 4});
+        FlxTween.tween(FlxG.camera, {zoom: currentPlayState.defaultCamZoom * 1.2}, 1, {ease: FlxEase.quadInOut, startDelay: 4.5});
+        
+        new FlxTimer().start(4, function(tmr){
+            gf.playAnim('sad', true);
+            gf.animation.finishCallback = function(name)
+            {
+                gf.playAnim('sad', true);
+            };
+        });
+
+        new FlxTimer().start(11.5, function(tmr){
+        var timeForStuff = Conductor.crochet / 1000 * 4.5;
+        bgMusic.fadeOut(timeForStuff);
+        FlxTween.tween(FlxG.camera, {zoom: currentPlayState.defaultCamZoom}, timeForStuff, {ease: FlxEase.quadInOut});
+        currentPlayState.camFollow.setPosition(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
+        currentPlayState.startCountdown();
+        johnCaptain.kill();
+        johnCaptain.destroy();
+        dad.alpha = 1;
+        FlxTween.tween(camHUD, {alpha: 1}, timeForStuff, {ease: FlxEase.quadInOut});
+
+        boyfriend.animation.finishCallback = null;
+        gf.animation.finishCallback = null;
+        gf.dance();
+    });
+
+}

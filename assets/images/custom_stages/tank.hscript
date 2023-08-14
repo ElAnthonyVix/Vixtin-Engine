@@ -194,7 +194,18 @@ function start(song) {
     
 }
 
-
+function doDumbYcuts(addOrMinus){
+    if (addOrMinus){
+        losers.forEach(function (spr) {
+            spr.y += 100;
+        });
+    }
+    else{
+        losers.forEach(function (spr) {
+            spr.y -= 100;
+        });
+    }
+}
 
 function beatHit(beat)
 {

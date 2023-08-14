@@ -19,12 +19,13 @@ var camFollowPos;
 
 function create()
 {
+    FlixG.save.data.isFromPlayState = false;
     if (!switchTarget)
         optionShit = ['story mode', 'freeplay', 'credits', 'donate', 'options'];
     else
         optionShit = ['story mode', 'freeplay'];
 
-    menuSoundJson = CoolUtil.parseJson(FNFAssets.getText("assets/sounds/custom_menu_sounds/custom_menu_sounds.json"));
+    menuSoundJson = CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/sounds/custom_menu_sounds/custom_menu_sounds.json"));
     scrollSound = menuSoundJson.customMenuScroll;
     MainMenuState.transIn = FlxTransitionableState.defaultTransIn;
     MainMenuState.transOut = FlxTransitionableState.defaultTransOut;
@@ -37,14 +38,14 @@ function create()
         optionShit.remove("donate");
     if (!OptionsHandler.options.useSaveDataMenu && !OptionsHandler.options.allowEditOptions) 
         optionShit.remove("options");
-
-    FlxG.sound.playMusic(FNFAssets.getSound('assets/music/custom_menu_music/'
-    + CoolUtil.parseJson(FNFAssets.getText("assets/music/custom_menu_music/custom_menu_music.json")).Menu+'/freakyMenu' + TitleState.soundExt));
-
+if (!FlxG.sound.music.playing){
+    FlxG.sound.playMusic(FNFAssets.getSound(SUtil.getPath() + 'assets/music/custom_menu_music/'
+    + CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/music/custom_menu_music/custom_menu_music.json")).Menu+'/freakyMenu' + TitleState.soundExt));
+}
     togglePersistUpdate(true);
     togglePersistDraw(true);
 
-    var bg = new FlxSprite(-80).loadGraphic(FNFAssets.getBitmapData('assets/images/menuBG.png'));
+    var bg = new FlxSprite(-80).loadGraphic(FNFAssets.getBitmapData(SUtil.getPath() + 'assets/images/menuBG.png'));
     bg.scrollFactor.x = 0;
     bg.scrollFactor.y = 0.18;
     bg.setGraphicSize(Std.int(bg.width * 1.2));
@@ -59,7 +60,7 @@ function create()
     add(camFollow);
     add(camFollowPos);
 
-    magenta = new FlxSprite(-80).loadGraphic('assets/images/menuDesat.png');
+    magenta = new FlxSprite(-80).loadGraphic(SUtil.getPath() + 'assets/images/menuDesat.png');
     magenta.scrollFactor.x = 0;
     magenta.scrollFactor.y = 0.18;
     magenta.setGraphicSize(Std.int(magenta.width * 1.2));
@@ -74,11 +75,15 @@ function create()
     menuItems = new FlxGroup();
     add(menuItems);
 
-    var tex = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData('assets/images/FNF_main_menu_assets.png'), 'assets/images/FNF_main_menu_assets.xml');
-
+    var tex = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData(SUtil.getPath() + 'assets/images/FNF_main_menu_assets.png'), SUtil.getPath() + 'assets/images/FNF_main_menu_assets.xml');
+ 
     for (i in 0...optionShit.length)
     {
+        var texExtra = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData(SUtil.getPath() + 'assets/images/menu_' + optionShit[i] + '.png'), SUtil.getPath() + 'assets/images/menu_' + optionShit[i] + '.xml');
         var menuItem = new FlxSprite(0, 100 + (i * 160));
+        if (optionShit[i] == 'donate' || optionShit[i] == 'credits')
+            menuItem.frames = texExtra;
+            else
         menuItem.frames = tex;
         menuItem.animation.addByPrefix('idle', optionShit[i] + " basic", 24);
         menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
@@ -93,7 +98,7 @@ function create()
 
     FlxG.camera.follow(camFollowPos, null, 1);
 
-    var infoJson = CoolUtil.parseJson(FNFAssets.getJson("assets/data/gameInfo"));
+    var infoJson = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + "assets/data/gameInfo"));
     if (infoJson.version != "") {
         infoJson.version = " - " + infoJson.version; 
     }
@@ -132,6 +137,9 @@ function create()
             usingSave.text = "senpai";
     }
     changeItem(0);
+    addHaxeLibrary('Highscore');
+    if (mobile)
+		addVirtualPads('up_down', 'a_b');
 }
 
 var selectedSomethin = false;
@@ -149,14 +157,14 @@ function update(elapsed)
     {
         if (controls.UP_MENU)
         {
-            FlxG.sound.play('assets/sounds/custom_menu_sounds/'
+            FlxG.sound.play(SUtil.getPath() + 'assets/sounds/custom_menu_sounds/'
             + menuSoundJson.customMenuScroll +'/scrollMenu' + TitleState.soundExt);
             changeItem(-1);
         }
 
         if (controls.DOWN_MENU)
         {
-            FlxG.sound.play('assets/sounds/custom_menu_sounds/'
+            FlxG.sound.play(SUtil.getPath() + 'assets/sounds/custom_menu_sounds/'
             + menuSoundJson.customMenuScroll +'/scrollMenu' + TitleState.soundExt);
             changeItem(1);
         }
@@ -171,14 +179,14 @@ function update(elapsed)
             if (optionShit[curSelected] == 'donate')
             {
                 if (linuxTarget)
-                    Sys.command('/usr/bin/xdg-open', [FNFAssets.getText("assets/data/donate_button_link.txt"), "&"]);
+                    Sys.command('/usr/bin/xdg-open', [FNFAssets.getText(SUtil.getPath() + "assets/data/donate_button_link.txt"), "&"]);
                 else
-                    coolURL(FNFAssets.getText("assets/data/donate_button_link.txt"));
+                    coolURL(FNFAssets.getText(SUtil.getPath() + "assets/data/donate_button_link.txt"));
             }
             else
             {
                 selectedSomethin = true;
-                FlxG.sound.play('assets/sounds/custom_menu_sounds/'
+                FlxG.sound.play(SUtil.getPath() + 'assets/sounds/custom_menu_sounds/'
                 + menuSoundJson.customMenuConfirm+'/confirmMenu' + TitleState.soundExt);
 
                 FlxFlicker.flicker(magenta, 1.1, 0.15, false);
@@ -204,11 +212,13 @@ function update(elapsed)
                             switch (daChoice)
                             {
                                 case 'story mode':
+                                      Highscore.load();
                                     LoadingState.loadAndSwitchState(new StoryMenuState());
                                     trace("Story Menu Selected");
                                 case 'freeplay':
+                                    Highscore.load();
                                     CategoryState.choosingFor = "freeplay";
-                                    var epicCategoryJs = CoolUtil.parseJson(FNFAssets.getJson('assets/data/freeplaySongJson'));
+                                    var epicCategoryJs = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + 'assets/data/freeplaySongJson'));
                                     FreeplayState.soundTest = false;
                                     if (epicCategoryJs.length > 1)
                                     {

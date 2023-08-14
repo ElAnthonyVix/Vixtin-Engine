@@ -50,7 +50,7 @@ class SelectSortState extends MusicBeatState
 
 		// LOAD CHARACTERS
 
-		var bg:FlxSprite = new FlxSprite().loadGraphic('assets/images/menuBGBlue.png');
+		var bg:FlxSprite = new FlxSprite().loadGraphic(SUtil.getPath() + 'assets/images/menuBGBlue.png');
 		add(bg);
 
 		grpSongs = new FlxTypedGroup<Alphabet>();
@@ -70,7 +70,7 @@ class SelectSortState extends MusicBeatState
 
 		changeSelection();
 
-		// FlxG.sound.playMusic('assets/music/title' + TitleState.soundExt, 0);
+		// FlxG.sound.playMusic(SUtil.getPath() + 'assets/music/title' + TitleState.soundExt, 0);
 		// FlxG.sound.music.fadeIn(2, 0, 0.8);
 
 		// JUST DOIN THIS SHIT FOR TESTING!!!
@@ -129,7 +129,7 @@ class SelectSortState extends MusicBeatState
 					CategoryState.choosingFor = "sorting";
 					LoadingState.loadAndSwitchState(new CategoryState());
 				case "categories":
-					var coolCategoryJson:Array<SelectSongsState.TCategory> = CoolUtil.parseJson(Assets.getText('assets/data/freeplaySongJson.jsonc'));
+					var coolCategoryJson:Array<SelectSongsState.TCategory> = CoolUtil.parseJson(Assets.getText(SUtil.getPath() + 'assets/data/freeplaySongJson.jsonc'));
 					var coolCategories:Array<String> = [];
 					for (coolCategory in coolCategoryJson)
 					{
@@ -142,7 +142,7 @@ class SelectSortState extends MusicBeatState
 					// gonna be reallllllllll fucky renaming files
 					SortState.sorting = "weeks";
 					// gonna do weeks ourselves?
-					var coolWeekJson:StoryMenuState.StorySongsJson = CoolUtil.parseJson(Assets.getText('assets/data/storySonglist.json'));
+					var coolWeekJson:StoryMenuState.StorySongsJson = CoolUtil.parseJson(Assets.getText(SUtil.getPath() + 'assets/data/storySonglist.json'));
 					var coolWeeks:Array<String> = [];
 					if (coolWeekJson.version == 1 || coolWeekJson.version == null)
 						for (i in 0...coolWeekJson.songs.length) {
@@ -162,7 +162,7 @@ class SelectSortState extends MusicBeatState
 	function changeSelection(change:Int = 0)
 	{
 
-		FlxG.sound.play('assets/sounds/scrollMenu' + TitleState.soundExt, 0.4);
+		FlxG.sound.play(SUtil.getPath() + 'assets/sounds/scrollMenu' + TitleState.soundExt, 0.4);
 
 		curSelected += change;
 
