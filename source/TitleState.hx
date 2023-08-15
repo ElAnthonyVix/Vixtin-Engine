@@ -250,7 +250,8 @@ class TitleState extends MusicBeatState
 
 	override public function create():Void
 	{
-	
+		FNFAssets.clearStoredMemory();
+		
 		#if desktop
 		DiscordClient.initialize();
 

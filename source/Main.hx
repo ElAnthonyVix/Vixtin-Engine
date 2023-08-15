@@ -7,6 +7,7 @@ import openfl.Lib;
 import openfl.display.StageScaleMode;
 import flixel.FlxState;
 import openfl.events.Event;
+import lime.system.System;
 import SUtil;
 #if CRASH_HANDLER
 import lime.app.Application;
@@ -45,6 +46,7 @@ class Main extends Sprite
 	#if sys
 	public static var cwd:String;
 	#end
+	public static var path:String = System.applicationStorageDirectory;
 	public static function main():Void
 		{
 			Lib.current.addChild(new Main());

@@ -513,9 +513,9 @@ class FNFAssets {
 
 		// flags everything to be cleared out next unused memory clear
 		//localTrackedAssets = [];
-		openfl.Assets.cache.clear(SUtil.getPath() + "assets");
-		openfl.Assets.cache.clear(SUtil.getPath() + "assets/sounds");
-		openfl.Assets.cache.clear(SUtil.getPath() + "assets/music");
+		openfl.Assets.cache.clear("assets");
+		openfl.Assets.cache.clear("assets/sounds");
+		openfl.Assets.cache.clear("assets/music");
 		System.gc();
 	}
 }

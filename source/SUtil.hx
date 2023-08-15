@@ -25,6 +25,7 @@ using StringTools;
 
 class SUtil
 {
+	
 	#if android
 	private static var aDir:String = null; // android dir
 	#end
@@ -58,11 +59,21 @@ class SUtil
 			if (!FileSystem.exists(SUtil.getPath() + 'assets'))
 			{
 				SUtil.applicationAlert('Uncaught Error :(!', "Whoops, seems you didn't extract the files from the .APK!\nPlease watch the tutorial by pressing OK.");
+				CoolUtil.browserLoad('https://youtu.be/zjvkTmdWvfU');
 				System.exit(0);
 			}
-		
-		}
+			else
+			{
+				if (!FileSystem.exists(SUtil.getPath() + 'assets'))
+				{
+					SUtil.applicationAlert('Uncaught Error :(!', "Whoops, seems you didn't extract the assets/assets folder from the .APK!\nPlease watch the tutorial by pressing OK.");
+					CoolUtil.browserLoad('https://youtu.be/zjvkTmdWvfU');
+					System.exit(0);
+				}
+
+			}
 		#end
+	}
 	}
 
 	public static function gameCrashCheck()
@@ -120,16 +131,7 @@ class SUtil
 		File.saveContent(SUtil.getPath() + 'saves/' + fileName + fileExtension, fileData);
 		SUtil.applicationAlert('Done :)!', 'File Saved Successfully!');
 	}
-    
-    public static function AutosaveContent(fileName:String = 'file', fileExtension:String = '.json', fileData:String = 'you forgot something to add in your code')
-	{
-		if (!FileSystem.exists(SUtil.getPath() + 'saves'))
-			FileSystem.createDirectory(SUtil.getPath() + 'saves');
 
-		File.saveContent(SUtil.getPath() + 'saves/' + fileName + fileExtension, fileData);
-		//SUtil.applicationAlert('Done :)!', 'File Saved Successfully!');
-	}
-	
 	public static function saveClipboard(fileData:String = 'you forgot something to add in your code')
 	{
 		openfl.system.System.setClipboard(fileData);
@@ -142,4 +144,4 @@ class SUtil
 			File.saveBytes(savePath, OpenFlAssets.getBytes(copyPath));
 	}
 	#end
-} 
+}
