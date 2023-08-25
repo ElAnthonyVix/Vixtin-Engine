@@ -2,6 +2,7 @@ function update(elapsed){
     FlixG.save.data.isFromPlayState = true;
     for (i in 0...currentPlayState.strumLineNotes.members.length)
         {
+if (!currentPlayState.strumLineNotes.members[i].isPixelNote){
               switch (i % Main.ammo[PlayState.SONG.mania] ){
                 case 0 | 5:
          currentPlayState.strumLineNotes.members[i].animOffsets.set('confirm', [-4,-3.5]);
@@ -12,6 +13,7 @@ function update(elapsed){
                 case 3 | 8:
                     currentPlayState.strumLineNotes.members[i].animOffsets.set('confirm', [0.5,-1.5]);
               }
+           }
         }
 }
 function onEndSong(song){
