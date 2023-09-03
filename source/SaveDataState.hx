@@ -67,11 +67,13 @@ class SaveDataState extends MusicBeatState
 
 	function callHscript(func_name:String, args:Array<Dynamic>, usehaxe:String) {
 		// if function doesn't exist
+			if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
+				trace("Function doesn't exist, silently skipping...");
+				return;
+			}
+			if (OptionsHandler.options.allowCrashHandler){
 			try{
-		if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
-			trace("Function doesn't exist, silently skipping...");
-			return;
-		}
+	
 		var method = hscriptStates.get(usehaxe).variables.get(func_name);
 		switch(args.length) {
 			case 0:
@@ -98,18 +100,51 @@ class SaveDataState extends MusicBeatState
 		openfl.Lib.application.window.alert(e.message, "your function had some problem...");
 	}
 }
+else{
+	if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
+		trace("Function doesn't exist, silently skipping...");
+		return;
+	}
+	var method = hscriptStates.get(usehaxe).variables.get(func_name);
+	switch(args.length) {
+		case 0:
+			method();
+		case 1:
+			method(args[0]);
+		case 2:
+			method(args[0], args[1]);
+		case 3:
+			method(args[0], args[1], args[2]);
+		case 4:
+			method(args[0], args[1], args[2], args[3]);
+		case 5:
+			method(args[0], args[1], args[2], args[3], args[4]);
+		case 6:
+			method(args[0], args[1], args[2], args[3], args[4], args[5]);
+		case 7:
+			method(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+		case 8:
+			method(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+	}
+}
+}
+
 	function callAllHScript(func_name:String, args:Array<Dynamic>) {
 		for (key in hscriptStates.keys()) {
 			callHscript(func_name, args, key);
 		}
 	}
 	function setHaxeVar(name:String, value:Dynamic, usehaxe:String) {
+		if (OptionsHandler.options.allowCrashHandler){
 		try{
 		hscriptStates.get(usehaxe).variables.set(name,value);
 		}
 		catch(e){
 			openfl.Lib.application.window.alert(e.message, "your variable had some problem...");
 		}
+	}
+	else
+		hscriptStates.get(usehaxe).variables.set(name,value);
 	}
 	function getHaxeVar(name:String, usehaxe:String):Dynamic {
 		var theValue = hscriptStates.get(usehaxe).variables.get(name);
@@ -198,6 +233,7 @@ class SaveDataState extends MusicBeatState
 		#end
 		interp.variables.set("addVirtualPads", addVirtualPads);
 		interp.variables.set("visPressed", visPressed);
+		if (OptionsHandler.options.allowCrashHandler){
 		try{
 			trace("set stuff");
 			interp.execute(program);
@@ -209,6 +245,13 @@ class SaveDataState extends MusicBeatState
 		openfl.Lib.application.window.alert(e.message, "THE SAVE DATA STATE CRASHED!");
 		LoadingState.loadAndSwitchState(new MainMenuState());
 	}
+}else{
+	trace("set stuff");
+	interp.execute(program);
+	hscriptStates.set(usehaxe,interp);
+	callHscript("create", [], usehaxe);
+	trace('executed');
+}
 	}
 	function addVirtualPads(dPad:String,act:String){
 		#if mobile
@@ -313,10 +356,14 @@ class SaveDataState extends MusicBeatState
 			{name: "Allow Story Mode", value: false, intName:"allowStoryMode", desc: "Show story mode from the main menu."},
 			{name: "Allow Freeplay", value: false, intName:"allowFreeplay", desc: "Show freeplay from the main menu."},
 			{name: "Allow Donate Button", value: false, intName:"allowDonate", desc: "Show the donate button from the main menu."},
+			#if CRASH_HANDLER
+			{name: "Toggle Crash Handler", value: true, intName:'allowCrashHandler', desc:"Turn on/off the Crash Handler",},
+			#end
 			#if sys
 			{name: "Toggle Title Background", value: true, intName:'titleToggle', desc:"Turn on/off the title screen background.", ignore: true,},
 			{name: "Modding Plus Rating Recs", value: false, intName:'ratingColorRecs', desc:"Turn on/off the rating color rectangles on game.",},
 			{name: "Show Splashes", value: true, intName:'showSplashes', desc:"Turn on/off the Note Splashes.",},
+			
 			{name: "Show FPS", value: true, intName:'showFPS', desc:"Turn on/off the FPS",},
 			{name: "Show Memory Counter", value: true, intName:'showMemory', desc:"Turn on/off the Memory Counter.",},
 			{name: "Show Haxe Splash Intro", value: true, intName:'showHaxeSplash', desc:"Show Haxe Splash Intro (Like the OLD FNF Builds).",},

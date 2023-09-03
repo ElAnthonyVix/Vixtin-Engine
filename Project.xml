@@ -86,6 +86,7 @@
 	<haxelib name="flixel-ui" />
 	<haxelib name="faxe" if='switch'/>
 	<haxelib name="hscript"/>
+	<haxelib name="flxgif"/>
 	<define name="hscriptPos" />
 	<!-- git https://github.com/ianharrigan/hscript-ex-->
 	<haxelib name="hscript-ex"/>

@@ -35,6 +35,7 @@ import hscript.ClassDeclEx;
 import hxcodec.flixel.FlxVideo as FlxVideo;
 #end
 import flixel.group.FlxGroup;
+import flxgif.FlxGifSprite;
 #if mobile
 import android.FlxHitbox;
 import android.FlxVirtualPad;
@@ -87,6 +88,7 @@ class PluginManager {
         interp.variables.set("FlxVirtualPad", FlxVirtualPad);
         #end
 		interp.variables.set("Conductor", Conductor);
+        interp.variables.set("FlxGifSprite", FlxGifSprite);
 		interp.variables.set("FlxSprite", DynamicSprite);
 		interp.variables.set("FlxSound", DynamicSound);
 		interp.variables.set("FlxAtlasFrames", DynamicSprite.DynamicAtlasFrames);

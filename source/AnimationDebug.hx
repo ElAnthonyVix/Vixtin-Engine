@@ -41,11 +41,13 @@ class AnimationDebug extends MusicBeatState
 
 	function callHscript(func_name:String, args:Array<Dynamic>, usehaxe:String) {
 		// if function doesn't exist
+			if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
+				trace("Function doesn't exist, silently skipping...");
+				return;
+			}
+			if (OptionsHandler.options.allowCrashHandler){
 			try{
-		if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
-			trace("Function doesn't exist, silently skipping...");
-			return;
-		}
+	
 		var method = hscriptStates.get(usehaxe).variables.get(func_name);
 		switch(args.length) {
 			case 0:
@@ -72,18 +74,58 @@ class AnimationDebug extends MusicBeatState
 		openfl.Lib.application.window.alert(e.message, "your function had some problem...");
 	}
 }
+else{
+	if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
+		trace("Function doesn't exist, silently skipping...");
+		return;
+	}
+	var method = hscriptStates.get(usehaxe).variables.get(func_name);
+	switch(args.length) {
+		case 0:
+			method();
+		case 1:
+			method(args[0]);
+		case 2:
+			method(args[0], args[1]);
+		case 3:
+			method(args[0], args[1], args[2]);
+		case 4:
+			method(args[0], args[1], args[2], args[3]);
+		case 5:
+			method(args[0], args[1], args[2], args[3], args[4]);
+		case 6:
+			method(args[0], args[1], args[2], args[3], args[4], args[5]);
+		case 7:
+			method(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+		case 8:
+			method(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+	}
+}
+}
+
 	function callAllHScript(func_name:String, args:Array<Dynamic>) {
 		for (key in hscriptStates.keys()) {
 			callHscript(func_name, args, key);
 		}
 	}
 	function setHaxeVar(name:String, value:Dynamic, usehaxe:String) {
+		if (OptionsHandler.options.allowCrashHandler){
 		try{
 		hscriptStates.get(usehaxe).variables.set(name,value);
 		}
 		catch(e){
 			openfl.Lib.application.window.alert(e.message, "your variable had some problem...");
 		}
+	}
+	else
+		hscriptStates.get(usehaxe).variables.set(name,value);
+	}
+	function getHaxeVar(name:String, usehaxe:String):Dynamic {
+		return hscriptStates.get(usehaxe).variables.get(name);
+	}
+	function setAllHaxeVar(name:String, value:Dynamic) {
+		for (key in hscriptStates.keys())
+			setHaxeVar(name, value, key);
 	}
 	function makeHaxeState(usehaxe:String, path:String, filename:String) {
 		trace("opening a haxe state (because we are cool :))");
@@ -147,6 +189,7 @@ class AnimationDebug extends MusicBeatState
 		#end
 		interp.variables.set("addVirtualPads", addVirtualPads);
 		interp.variables.set("visPressed", visPressed);
+		if (OptionsHandler.options.allowCrashHandler){
 		try{
 			trace("set stuff");
 			interp.execute(program);
@@ -158,6 +201,15 @@ class AnimationDebug extends MusicBeatState
 		openfl.Lib.application.window.alert(e.message, "THE ANIMATION DEBUG STATE CRASHED!");
 		LoadingState.loadAndSwitchState(new PlayState());
 	}
+}
+else{
+	trace("set stuff");
+			interp.execute(program);
+			hscriptStates.set(usehaxe,interp);
+			//callHscript("create", [], usehaxe); ONLY ONE SCRIPT W
+			trace('executed');
+}
+
 	}
 	function addVirtualPads(dPad:String,act:String){
 		#if mobile
