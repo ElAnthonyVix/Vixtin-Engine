@@ -17,6 +17,7 @@ enum abstract AccuracyMode(Int) from Int to Int {
 typedef TOptions = {
     var skipVictoryScreen:Bool;
     var skipModifierMenu:Bool;
+    var allowCrashHandler:Null<Bool>;
     var alwaysDoCutscenes:Bool;
     var useCustomInput:Bool;
     // var DJFKKeys:Bool;
@@ -102,6 +103,7 @@ class OptionsHandler {
 			lastOptions.alwaysDoCutscenes = false;
 			lastOptions.useCustomInput = true;
             lastOptions.allowEditOptions = false;
+            lastOptions.allowCrashHandler = true;
             lastOptions.useSaveDataMenu = false;
             // lastOptions.downscroll // we are going to add this to a special new menu
             lastOptions.preferredSave = 0;

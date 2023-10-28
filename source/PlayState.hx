@@ -380,14 +380,13 @@ class PlayState extends MusicBeatState
 	var traced:Bool = false;
     public function callHscript(func_name:String, args:Array<Dynamic>, usehaxe:String) {
 		// if function doesn't exist
-			try{
-		if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
-			if (!traced){
-			trace("Function doesn't exist, silently skipping...");
-			traced = true;
+			if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
+				trace("Function doesn't exist, silently skipping...");
+				return;
 			}
-			return;
-		}
+			if (OptionsHandler.options.allowCrashHandler){
+			try{
+	
 		var method = hscriptStates.get(usehaxe).variables.get(func_name);
 		switch(args.length) {
 			case 0:
@@ -414,12 +413,42 @@ class PlayState extends MusicBeatState
 		openfl.Lib.application.window.alert(e.message, "your function had some problem...");
 	}
 }
-	public function callAllHScript(func_name:String, args:Array<Dynamic>) {
+else{
+	if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
+		trace("Function doesn't exist, silently skipping...");
+		return;
+	}
+	var method = hscriptStates.get(usehaxe).variables.get(func_name);
+	switch(args.length) {
+		case 0:
+			method();
+		case 1:
+			method(args[0]);
+		case 2:
+			method(args[0], args[1]);
+		case 3:
+			method(args[0], args[1], args[2]);
+		case 4:
+			method(args[0], args[1], args[2], args[3]);
+		case 5:
+			method(args[0], args[1], args[2], args[3], args[4]);
+		case 6:
+			method(args[0], args[1], args[2], args[3], args[4], args[5]);
+		case 7:
+			method(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+		case 8:
+			method(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+	}
+}
+}
+
+public function callAllHScript(func_name:String, args:Array<Dynamic>) {
 		for (key in hscriptStates.keys()) {
 			callHscript(func_name, args, key);
 		}
 	}
 	public function setHaxeVar(name:String, value:Dynamic, usehaxe:String) {
+		if (OptionsHandler.options.allowCrashHandler){
 		try{
 		hscriptStates.get(usehaxe).variables.set(name,value);
 		}
@@ -427,9 +456,8 @@ class PlayState extends MusicBeatState
 			openfl.Lib.application.window.alert(e.message, "your variable had some problem...");
 		}
 	}
-	public function setAllHaxeVar(name:String, value:Dynamic) {
-		for (key in hscriptStates.keys())
-			setHaxeVar(name, value, key);
+	else
+		hscriptStates.get(usehaxe).variables.set(name,value);
 	}
 	function getHaxeActor(name:String):Dynamic {
 		switch (name) {
@@ -503,6 +531,10 @@ class PlayState extends MusicBeatState
 			#else
 			return false;
 			#end
+		}
+		public function setAllHaxeVar(name:String, value:Dynamic) {
+			for (key in hscriptStates.keys())
+				setHaxeVar(name, value, key);
 		}
 	function makeHaxeState(usehaxe:String, path:String, filename:String) {
 		trace("opening a haxe state (because we are cool :))");
@@ -671,6 +703,7 @@ class PlayState extends MusicBeatState
 		//Fow Ending Cutscenes lol
 		interp.variables.set("endSong", endSong);
 		interp.variables.set("endForReal", endForReal);
+		if (OptionsHandler.options.allowCrashHandler){
 		try{
 			trace("set stuff");
 			interp.execute(program);
@@ -681,6 +714,14 @@ class PlayState extends MusicBeatState
 			catch (e) {
 				openfl.Lib.application.window.alert(e.message, "YOUR SCRIPT CRASHED!");
 			}
+		
+	}else{
+		trace("set stuff");
+			interp.execute(program);
+			hscriptStates.set(usehaxe,interp);
+			callHscript("start", [SONG.song], usehaxe);
+			trace('executed');
+	}
 		
 	}
 
@@ -774,6 +815,7 @@ class PlayState extends MusicBeatState
 		interp.variables.set("PlayState", PlayState);
 		interp.variables.set("HelperFunctions", HelperFunctions);
 		interp.variables.set("instancePluginClass", instanceExClass);
+		if (OptionsHandler.options.allowCrashHandler){
 		try{
 		trace("set stuff");
 		interp.execute(program);
@@ -784,6 +826,14 @@ class PlayState extends MusicBeatState
 		catch (e) {
 			openfl.Lib.application.window.alert(e.message, "YOUR SCRIPT CRASHED!");
 		}
+	}
+	else{
+		trace("set stuff");
+		interp.execute(program);
+		hscriptStates.set(usehaxe,interp);
+		callHscript("start", [SONG.song], usehaxe);
+		trace('executed');
+	}
 	}
 	
 	function blendModeFromString(blend:String):BlendMode {

@@ -41,6 +41,8 @@ jobs:
           haxelib install devicelanguage 1.0.0 
           haxelib run lime setup
           haxelib install flixel-tools
+           haxelib install flxgif
+                  haxelib install yagp
           haxelib install flixel-ui 2.4.0
           haxelib install flixel-addons 2.11.0
           haxelib install tjson
@@ -87,6 +89,8 @@ jobs:
           haxelib install hxcpp > nul
           haxelib install lime
           haxelib install openfl
+           haxelib install flxgif
+                  haxelib install yagp
           haxelib install flixel 4.11.0
           haxelib install devicelanguage 1.0.0 
           haxelib run lime setup
@@ -138,6 +142,8 @@ jobs:
           haxelib install hxcpp > /dev/null
           haxelib install lime
           haxelib install openfl
+           haxelib install flxgif
+                  haxelib install yagp
           haxelib  install flixel 4.11.0
           haxelib install devicelanguage 1.0.0 
           haxelib run lime setup
@@ -222,6 +228,8 @@ jobs:
                   haxelib install flixel-ui 2.4.0
                   haxelib install flixel-addons 2.11.0
                   haxelib install tjson
+                  haxelib install flxgif
+                  haxelib install yagp
                   haxelib install hxjsonast
                   haxelib install hxCodec 3.0.2
                   haxelib git linc_luajit https://github.com/Sirox228/linc_luajit

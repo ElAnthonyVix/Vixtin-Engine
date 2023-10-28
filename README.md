@@ -39,7 +39,7 @@ take down mods that don't follow this rule.
 ## Vixtin Engine Credits
 - [Vixtin](https://github.com/ElAnthonyVix) - Main programmer
 - [DANI24](https://github.com/DANI002428) - Coding helper
-
+- [RainCandy](https://github.com/kangeluwu) - BugFixer/Helper
 
 ## Build instructions
 

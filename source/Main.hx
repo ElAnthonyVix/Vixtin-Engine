@@ -55,7 +55,7 @@ class Main extends Sprite
 		public function new()
 		{
 			super();
-			SUtil.gameCrashCheck();
+
 			if (stage != null)
 			{
 				init();
