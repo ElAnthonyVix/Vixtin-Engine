@@ -64,7 +64,7 @@ Other installations you'd need is the additional libraries, a fully updated list
 haxelib install flixel 4.11.0
 haxelib install flixel-addons 2.11.0
 
-haxelib install hscript
+haxelib install hscript 2.5.0
 haxelib install flixel-ui
 haxelib install tjson
 haxelib install json2object
