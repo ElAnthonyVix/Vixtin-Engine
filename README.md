@@ -102,7 +102,8 @@ To run it from your desktop (Windows, Mac, Linux) it can be a bit more involved.
 * MSVC v140 - VS 2015 C++ build tools (v14.00)
 
 This will install about 22GB of crap, but once that is done you can open up a command line in the project's directory and run `lime test windows -debug`. Once that command finishes (it takes forever even on a higher end PC), you can run FNF from the .exe file under export\release\windows\bin
-As for Mac, 'lime test mac -debug' should work, if not the internet surely has a guide on how to compile Haxe stuff for Mac.
+
+About 'SampleDataEvent' Error,You need to set your library 'Lime' to 8.0.0 and 'OpenFl' to 9.2.0,the engine dosen't accept higher ones.
 ### Additional guides
 
 - [Command line basics](https://ninjamuffin99.newgrounds.com/news/post/1090480)
