@@ -84,7 +84,7 @@ class PluginManager {
     public static function addCamera():FlxCamera{
 	    var dummyCam = new FlxCamera();
 	    dummyCam.bgColor.alpha = 0;
-	    FlxG.cameras.add(camHUD);
+	    FlxG.cameras.add(dummyCam);
 	    return dummyCam;
     }
     public static function addVarsToInterp<T:Interp>(interp:T):T {
