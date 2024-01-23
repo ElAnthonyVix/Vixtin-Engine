@@ -81,7 +81,12 @@ class PluginManager {
     public static function instanceExClass(classname:String, args:Array<Dynamic> = null) {
 		return interp.createScriptClassInstance(classname, args);
 	}
-
+    public static function addCamera():FlxCamera{
+	    var dummyCam = new FlxCamera();
+	    dummyCam.bgColor.alpha = 0;
+	    FlxG.cameras.add(camHUD);
+	    return dummyCam;
+    }
     public static function addVarsToInterp<T:Interp>(interp:T):T {
         #if mobile
         interp.variables.set("FlxActionMode", FlxActionMode);
@@ -89,6 +94,7 @@ class PluginManager {
         interp.variables.set("FlxVirtualPad", FlxVirtualPad);
         #end
 		interp.variables.set("Conductor", Conductor);
+	    interp.variables.set("addCamera", addCamera);
         interp.variables.set("FlxGifSprite", FlxGifSprite);
 		interp.variables.set("FlxSprite", DynamicSprite);
 		interp.variables.set("FlxSound", DynamicSound);
@@ -193,7 +199,7 @@ class HscriptGlobals {
     public static var sound(default, null):HscriptSoundFrontEndWrapper;
     public static var stage(get, never):Stage;
     public static var state(get, never):FlxState;
-    // no swipes because no mobile : )
+    // no swipes because no mobile : ) YOU FOOL WE NEED MOBILE
     public static var timeScale(get, set):Float;
     // no touch because no mobile : )
     public static var updateFramerate(get,set):Int;
