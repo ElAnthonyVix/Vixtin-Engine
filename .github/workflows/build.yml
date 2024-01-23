@@ -35,7 +35,7 @@ jobs:
           sudo apt-get install libvlccore-dev
           haxelib setup ~/haxelibhaxeui-core
           haxelib install hxcpp > /dev/null
-            haxelib install lime
+          haxelib install lime 8.0.0
           haxelib install openfl 9.2.0
           haxelib install flixel 4.11.0
           haxelib install devicelanguage 1.0.0 
@@ -87,7 +87,7 @@ jobs:
         run: |
           haxelib setup C:/haxelib
           haxelib install hxcpp > nul
-          haxelib install lime
+          haxelib install lime 8.0.0
           haxelib install openfl 9.2.0
            haxelib install flxgif
                   haxelib install yagp
@@ -140,7 +140,7 @@ jobs:
         run: |
           haxelib setup ~/haxelib
           haxelib install hxcpp > /dev/null
-          haxelib install lime
+          haxelib install lime 8.0.0
           haxelib install openfl 9.2.0
            haxelib install flxgif
                   haxelib install yagp
@@ -219,7 +219,7 @@ jobs:
                 run: |
                   haxelib setup ~/haxelib
                   haxelib install hxcpp > nul
-                  haxelib install lime
+                  haxelib install lime 8.0.0
                   haxelib install openfl 9.2.0
                   haxelib install flixel 4.11.0
                   haxelib install devicelanguage 1.0.0 
