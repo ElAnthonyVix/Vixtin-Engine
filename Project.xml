@@ -35,7 +35,7 @@
 	<window if="switch" orientation="landscape" fullscreen="true" width="0" height="0" resizable="true" />
 
 	<!-- _____________________________ Path Settings ____________________________ -->
-	<define name="CRASH_HANDLER" if="desktop" />
+	<define name="CRASH_HANDLER"/>
 	<define name="VIDEOS_ALLOWED" if="web || windows || mobile"/>
 
 	<set name="BUILD_DIR" value="export/debug" if="debug" />
@@ -71,7 +71,7 @@
 	<assets path="NOTICE"/>
 	<assets path="LICENSE"/>
 		<section if="mobile">
-		<assets path='mobilePortStuffsIGuess' rename='assets/images' embed='false'/>
+		<assets path='mobilePortStuffsIGuess' rename='assets/images'/>
 		</section>
 	<!-- _______________________________ Libraries ______________________________ -->
 
