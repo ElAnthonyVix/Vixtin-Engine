@@ -103,7 +103,7 @@ class OptionsHandler {
 			lastOptions.alwaysDoCutscenes = false;
 			lastOptions.useCustomInput = true;
             lastOptions.allowEditOptions = false;
-            lastOptions.allowCrashHandler = true;
+            lastOptions.allowCrashHandler = false;
             lastOptions.useSaveDataMenu = false;
             // lastOptions.downscroll // we are going to add this to a special new menu
             lastOptions.preferredSave = 0;
