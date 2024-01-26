@@ -6,8 +6,8 @@ Jhiner::Jhiner::Xml Helper, Offset Fixer::https://www.youtube.com/c/Jhiner::#e6d
 Phypsi::Phypsi::Global Charter::https://www.youtube.com/channel/UCaqkAcLuPvRRS-Z-vnIig3A::#2d3fce
 CowiPastelP::Cowi::Artist::https://www.youtube.com/channel/UCfgjmQIcvzacRxTMaF2O1rQ::#daa7b0
 
-ANDROID SUPPORT HELPED(?)
-Kangel::kangel::Android port support helped,bug fix(?)::https://www.youtube.com/@angelkawaii9826::#FFA2DE
+BUG FIX
+Kangel::kangel::bug fix::https://www.youtube.com/@angelkawaii9826::#FFA2DE
 
 FNF TEAM LEADERS
  

@@ -70,7 +70,7 @@ function create()
     add(descBox);
 
     descText = new FlxText(50, FlxG.height + offsetThing - 25, 1180, "", 32);
-    descText.setFormat(Paths.font("vcr.ttf"), 32, 0xFFffffff, "center");
+    descText.setFormat("assets/fonts/vcr.ttf", 32, 0xFFffffff, "center");
     descText.scrollFactor.set();
     descBox.sprTracker = descText;
     add(descText);
