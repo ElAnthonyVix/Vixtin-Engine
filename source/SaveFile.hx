@@ -42,7 +42,7 @@ class SaveFile extends FlxSpriteGroup
 	public function new(x:Float, y:Float, saveNum:Int = 0)
 	{
 		super(x, y);
-		var tex = FlxAtlasFrames.fromSparrow(SUtil.getPath() + 'assets/images/save-data.png', SUtil.getPath() + 'assets/images/save-data.xml');
+		var tex = FlxAtlasFrames.fromSparrow('assets/images/save-data.png', 'assets/images/save-data.xml');
 		selectingLoad = true;
 		targetY = saveNum;
 		save = new FlxSprite();

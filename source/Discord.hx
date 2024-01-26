@@ -13,8 +13,8 @@ class DiscordClient
         #if cpp
 		
 		var client:String = "1139367275732926574";
-		if (FNFAssets.exists(SUtil.getPath() + "assets/discord/clientID.txt"))
-			client = FNFAssets.getText(SUtil.getPath() + "assets/discord/clientID.txt");
+		if (FNFAssets.exists("assets/discord/clientID.txt"))
+			client = FNFAssets.getText("assets/discord/clientID.txt");
 		
 		trace("Discord Client starting...");
 		DiscordRpc.start({

@@ -47,7 +47,7 @@ function start(song) {
 
 	botplayTxt = new FlxText(400, timeBarBG.y + 55, FlxG.width - 800, "BOTPLAY", 32);
 	if (downscroll) botplayTxt.y = timeBarBG.y - 78;
-	botplayTxt.font = SUtil.getPath() + "assets/fonts/vcr.ttf";
+	botplayTxt.font = "assets/fonts/vcr.ttf";
 	botplayTxt.alignment = 'center';
 	botplayTxt.borderStyle = songName.borderStyle;
 	botplayTxt.borderColor = songName.borderColor;

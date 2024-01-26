@@ -277,7 +277,7 @@ else{
     override function create()
     {
         FNFAssets.clearStoredMemory();
-        makeHaxeState("choosechar", SUtil.getPath() + "assets/scripts/custom_menus/", "ChooseCharState");	
+        makeHaxeState("choosechar", "assets/scripts/custom_menus/", "ChooseCharState");	
         super.create();
     }
 

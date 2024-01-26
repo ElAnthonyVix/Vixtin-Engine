@@ -7,7 +7,7 @@ function start(song) {
     songName.visible = false;
 
     scoreTxt.x = healthBarBG.x + healthBarBG.width - 190;
-    //scoreTxt.setFormat(SUtil.getPath() + "assets/fonts/vcr.ttf", 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.NONE, FlxColor.TRANSPARENT);
+    //scoreTxt.setFormat("assets/fonts/vcr.ttf", 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.NONE, FlxColor.TRANSPARENT);
     scoreTxt.size = 20;
     if (downscroll)
 	    scoreTxt.y = healthBarBG.y - 30;

@@ -65,7 +65,7 @@ class TitleState extends MusicBeatState
 	// doing this shit again because it broke in the last build :grief: (end)
 
 	// defining these variables now so i dont gotta do them later (start)
-	public static var discordStuff:DiscordJson = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + "assets/discord/presence/discord"));
+	public static var discordStuff:DiscordJson = CoolUtil.parseJson(FNFAssets.getJson("assets/discord/presence/discord"));
 	// defining these variables now so i dont gotta do them later (end)
 
 	var hscriptStates:Map<String, Interp> = [];
@@ -324,7 +324,7 @@ else{
 		#elseif CHARTING
 		LoadingState.loadAndSwitchState(new ChartingState());
 		#else
-		makeHaxeState("title", SUtil.getPath() + "assets/scripts/custom_menus/", "TitleState");
+		makeHaxeState("title", "assets/scripts/custom_menus/", "TitleState");
 		#end
 	}
 

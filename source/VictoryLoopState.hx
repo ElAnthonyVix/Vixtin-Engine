@@ -260,7 +260,7 @@ else{
 	}
 	public function new(x:Float, y:Float, gfX:Float, gfY:Float, accuracy:Float, score:Int, dadX:Float, dadY:Float)
 	{
-		makeHaxeState("victoryloop", SUtil.getPath() + "assets/scripts/custom_menus/", "VictoryLoopState");
+		makeHaxeState("victoryloop", "assets/scripts/custom_menus/", "VictoryLoopState");
 		callAllHScript("start", [x, y, gfX, gfY, accuracy, score, dadX, dadY]);
 		super();
 	}

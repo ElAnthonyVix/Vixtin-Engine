@@ -8,7 +8,7 @@ var skipTimeTracker;
 var curTime = Math.max(0, Conductor.songPosition);
 function create() 
 {
-	pauseMusic = new FlxSound().loadEmbedded(SUtil.getPath() + 'assets/music/breakfast' + TitleState.soundExt, true, true);
+	pauseMusic = new FlxSound().loadEmbedded('assets/music/breakfast' + TitleState.soundExt, true, true);
 	pauseMusic.volume = 0;
 	pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
 	FlxG.sound.list.add(pauseMusic);
@@ -53,13 +53,13 @@ function update(elapsed)
 	if(daSelected ==  'Skip Time'){
 				if (controls.LEFT_P)
 				{
-					FlxG.sound.play(SUtil.getPath() + 'assets/sounds/custom_menu_sounds/'+CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuScroll+'/scrollMenu' + TitleState.soundExt, 0.4);
+					FlxG.sound.play('assets/sounds/custom_menu_sounds/'+CoolUtil.parseJson(FNFAssets.getText("assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuScroll+'/scrollMenu' + TitleState.soundExt, 0.4);
 					curTime -= 1000;
 					holdTime = 0;
 				}
 				if (controls.RIGHT_P)
 				{
-					FlxG.sound.play(SUtil.getPath() + 'assets/sounds/custom_menu_sounds/'+CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuScroll+'/scrollMenu' + TitleState.soundExt, 0.4);
+					FlxG.sound.play('assets/sounds/custom_menu_sounds/'+CoolUtil.parseJson(FNFAssets.getText("assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuScroll+'/scrollMenu' + TitleState.soundExt, 0.4);
 					curTime += 1000;
 					holdTime = 0;
 				}
@@ -144,7 +144,7 @@ function regenMenu() {
         if(menuItems[i] == 'Skip Time')
         {
             skipTimeText = new FlxText(0, 0, 0, '', 64);
-            skipTimeText.setFormat(SUtil.getPath() + 'assets/fonts/vcr.ttf', 64, 0xffffffff, 'center', FlxTextBorderStyle.OUTLINE, 0xff000000);
+            skipTimeText.setFormat('assets/fonts/vcr.ttf', 64, 0xffffffff, 'center', FlxTextBorderStyle.OUTLINE, 0xff000000);
             skipTimeText.scrollFactor.set();
             skipTimeText.borderSize = 2;
             skipTimeTracker = item;

@@ -1,7 +1,7 @@
 function start(song) {
 
     var garcutscene = new MetroSprite(0, 0,true);
-    garcutscene.frames = FlxAtlasFrames.fromSparrow(SUtil.getPath() + 'assets/images/custom_stages/custom-stage/cutscene.png', SUtil.getPath() + 'assets/images/custom_stages/custom-stage/cutscene.xml');
+    garcutscene.frames = FlxAtlasFrames.fromSparrow('assets/images/custom_stages/custom-stage/cutscene.png', 'assets/images/custom_stages/custom-stage/cutscene.xml');
     garcutscene.setGraphicSize(Std.int(garcutscene.width * 1.4));
     garcutscene.animation.addByPrefix("cutscene", "FrameName", fps, false);
     addSprite(garcutscene, BEHIND_NONE);
@@ -12,7 +12,7 @@ function start(song) {
     new FlxTimer().start(0.1, function(tmr)
     {
         garcutscene.animation.play("cutscene");
-        FlxG.sound.play(FNFAssets.getSound(SUtil.getPath() + 'assets/images/custom_stages/custom-stage/cutscene.ogg'));
+        FlxG.sound.play(FNFAssets.getSound('assets/images/custom_stages/custom-stage/cutscene.ogg'));
 
     if (currentPlayState.doof != null) {
         new FlxTimer().start(10, function(tmr) {

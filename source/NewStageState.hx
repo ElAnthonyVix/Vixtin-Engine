@@ -66,7 +66,7 @@ class NewStageState extends MusicBeatState
 		addCharUi = new FlxUI();
 		FlxG.mouse.visible = true;
 		epicFiles = [];
-		var bg:FlxSprite = new FlxSprite().loadGraphic(SUtil.getPath() + 'assets/images/menuBGBlue.png');
+		var bg:FlxSprite = new FlxSprite().loadGraphic('assets/images/menuBGBlue.png');
 		add(bg);
 		mainPngButton = new FlxButton(10,10,"Stage Files",function ():Void {
 			var coolDialog = new FileDialog();
@@ -102,22 +102,22 @@ class NewStageState extends MusicBeatState
 	function writeCharacters() {
 		// check to see if directory exists
 		#if sys
-		if (!FileSystem.exists(SUtil.getPath() + 'assets/images/custom_stages/'+nameText.text)) {
-			FileSystem.createDirectory(SUtil.getPath() + 'assets/images/custom_stages/'+nameText.text);
+		if (!FileSystem.exists('assets/images/custom_stages/'+nameText.text)) {
+			FileSystem.createDirectory('assets/images/custom_stages/'+nameText.text);
 		}
 
 		for (epicFile in epicFiles) {
 			var coolPath:Path = new Path(epicFile);
-			coolPath.dir = SUtil.getPath() + 'assets/custom_stages/'+nameText.text;
+			coolPath.dir = 'assets/custom_stages/'+nameText.text;
 			var pathString:String = coolPath.dir + '/' + coolPath.file + '.' + coolPath.ext;
 			File.copy(epicFile,pathString);
 		}
 
-		var epicStageFile:Dynamic =CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + 'assets/images/custom_stages/custom_stages'));
+		var epicStageFile:Dynamic =CoolUtil.parseJson(FNFAssets.getText('assets/images/custom_stages/custom_stages'));
 		trace("parsed");
 		Reflect.setField(epicStageFile,nameText.text,likeText.text);
 
-		File.saveContent(SUtil.getPath() + 'assets/images/custom_stages/custom_stages.json', CoolUtil.stringifyJson(epicStageFile));
+		File.saveContent('assets/images/custom_stages/custom_stages.json', CoolUtil.stringifyJson(epicStageFile));
 		trace("cool stuff");
 		#end
 	}

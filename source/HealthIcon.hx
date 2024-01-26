@@ -91,8 +91,8 @@ class HealthIcon extends FlxSprite
 
 	}
 	public function switchAnim(char:String = 'bf') {
-		var charJson:Dynamic = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + "assets/images/custom_chars/custom_chars"));
-		var iconJson:Dynamic = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + "assets/images/custom_chars/icon_only_chars"));
+		var charJson:Dynamic = CoolUtil.parseJson(FNFAssets.getJson("assets/images/custom_chars/custom_chars"));
+		var iconJson:Dynamic = CoolUtil.parseJson(FNFAssets.getJson("assets/images/custom_chars/icon_only_chars"));
 		var iconFrames:Array<Int> = [];
 		var isAnimated:Null<Bool>;
 		var iconAnimations:Null<Array<String>> = [];
@@ -141,16 +141,16 @@ class HealthIcon extends FlxSprite
 
 		hasAnim = isAnimated;
 
-		if (FNFAssets.exists(SUtil.getPath() + 'assets/images/custom_chars/' + char + "/icons.png") && !isAnimated)
+		if (FNFAssets.exists('assets/images/custom_chars/' + char + "/icons.png") && !isAnimated)
 		{
-			var rawPic:BitmapData = FNFAssets.getBitmapData(SUtil.getPath() + 'assets/images/custom_chars/' + char + "/icons.png");
+			var rawPic:BitmapData = FNFAssets.getBitmapData('assets/images/custom_chars/' + char + "/icons.png");
 			loadGraphic(rawPic, true, boWidth, boHeight);
 			animation.add('icon', iconFrames, false, player);
 		}
-		else if (FNFAssets.exists(SUtil.getPath() + 'assets/images/custom_chars/' + char + "/icons.png") && FNFAssets.exists(SUtil.getPath() + 'assets/images/custom_chars/' + char + "/icons.xml") && isAnimated)
+		else if (FNFAssets.exists('assets/images/custom_chars/' + char + "/icons.png") && FNFAssets.exists('assets/images/custom_chars/' + char + "/icons.xml") && isAnimated)
 		{
-			var rawPic:BitmapData = FNFAssets.getBitmapData(SUtil.getPath() + 'assets/images/custom_chars/' + char + "/icons.png");
-			var rawXml:String = FNFAssets.getText(SUtil.getPath() + 'assets/images/custom_chars/' + char + "/icons.xml");
+			var rawPic:BitmapData = FNFAssets.getBitmapData('assets/images/custom_chars/' + char + "/icons.png");
+			var rawXml:String = FNFAssets.getText('assets/images/custom_chars/' + char + "/icons.xml");
 			frames = FlxAtlasFrames.fromSparrow(rawPic, rawXml);
 			animation.addByPrefix('normal', iconAnimations[0], 24, true, player);
 			animation.addByPrefix('losing', iconAnimations[1], 24, true, player);
@@ -159,7 +159,7 @@ class HealthIcon extends FlxSprite
 		}
 		else
 		{
-			loadGraphic(SUtil.getPath() + 'assets/images/iconGrid.png', true, 150, 150);
+			loadGraphic('assets/images/iconGrid.png', true, 150, 150);
 			animation.add('icon', [10, 11, 11, 10], false, player);
 			isAnimated = false;
 		}

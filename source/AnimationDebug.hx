@@ -257,7 +257,7 @@ else{
 	public function new(daAnim:String = 'spooky', daOtherAnim:String = 'bf')
 	{
 		super();
-		makeHaxeState("animationdebug", SUtil.getPath() + "assets/scripts/custom_menus/", "AnimationDebug");
+		makeHaxeState("animationdebug", "assets/scripts/custom_menus/", "AnimationDebug");
 		callAllHScript("start", [daAnim, daOtherAnim]);
 	}
 

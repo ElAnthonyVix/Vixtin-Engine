@@ -51,16 +51,16 @@ class PluginManager {
     public static function init() 
     {
         //checks if the text file that has the names of the classes stored exists, otherwise this function will do nothing.
-        if (!FNFAssets.exists(SUtil.getPath() + "assets/scripts/plugin_classes/classes.txt"))
+        if (!FNFAssets.exists("assets/scripts/plugin_classes/classes.txt"))
             return;
         
         //split lines of text, given to separate them into different names. something basic but powerful.
-        var filelist = hscriptClasses = CoolUtil.coolTextFile(SUtil.getPath() + "assets/scripts/plugin_classes/classes.txt");
+        var filelist = hscriptClasses = CoolUtil.coolTextFile("assets/scripts/plugin_classes/classes.txt");
 		addVarsToInterp(interp); //this little thing is responsible for adding the corresponding variables.
         HscriptGlobals.init();
         for (file in filelist) {
-            if (FNFAssets.exists(SUtil.getPath() + "assets/scripts/plugin_classes/" + file + ".hx")) {
-				interp.addModule(FNFAssets.getText(SUtil.getPath() + "assets/scripts/plugin_classes/" + file + '.hx'));
+            if (FNFAssets.exists("assets/scripts/plugin_classes/" + file + ".hx")) {
+				interp.addModule(FNFAssets.getText("assets/scripts/plugin_classes/" + file + '.hx'));
             }
         }
         trace(InterpEx._scriptClassDescriptors);

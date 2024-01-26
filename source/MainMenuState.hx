@@ -300,7 +300,7 @@ else{
 		Discord.DiscordClient.changePresence(customPrecence, null);
 		#end
 
-		makeHaxeState("mainmenu", SUtil.getPath() + "assets/scripts/custom_menus/", "MainMenuState");
+		makeHaxeState("mainmenu", "assets/scripts/custom_menus/", "MainMenuState");
 
 		super.create();
 	}

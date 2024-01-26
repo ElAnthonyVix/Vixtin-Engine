@@ -36,7 +36,7 @@ class AndroidControlsMenu extends MusicBeatState
 		config = new Config();
 		curSelected = config.getcontrolmode();
 
-		var bg:FlxSprite = new FlxSprite(0, 0).loadGraphic(FNFAssets.getBitmapData(SUtil.getPath() + 'assets/images/menuDesat.png'));
+		var bg:FlxSprite = new FlxSprite(0, 0).loadGraphic(FNFAssets.getBitmapData('assets/images/menuDesat.png'));
 		bg.scrollFactor.set();
 		bg.color = FlxColor.fromHSB(FlxG.random.int(0, 359), FlxG.random.float(0, 0.8), FlxG.random.float(0.3, 1));
 		add(bg);
@@ -59,7 +59,7 @@ class AndroidControlsMenu extends MusicBeatState
 		inputvari.screenCenter(X);
 		add(inputvari);
 
-		var ui_tex = DynamicSprite.DynamicAtlasFrames.fromSparrow(SUtil.getPath() + 'assets/images/androidcontrols/menu/arrows.png',SUtil.getPath() + 'assets/images/androidcontrols/menu/arrows.xml');
+		var ui_tex = DynamicSprite.DynamicAtlasFrames.fromSparrow('assets/images/androidcontrols/menu/arrows.png','assets/images/androidcontrols/menu/arrows.xml');
 
 		leftArrow = new FlxSprite(inputvari.x - 60, inputvari.y + 50);
 		leftArrow.frames = ui_tex;
@@ -76,27 +76,27 @@ class AndroidControlsMenu extends MusicBeatState
 		add(rightArrow);
 
 		upPozition = new FlxText(10, FlxG.height - 104, 0,"Button Up X:" + vpad.buttonUp.x +" Y:" + vpad.buttonUp.y, 16);
-		upPozition.setFormat(FNFAssets.getText(SUtil.getPath() + "assets/fonts/vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		upPozition.setFormat(FNFAssets.getText("assets/fonts/vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		upPozition.borderSize = 2.4;
 		add(upPozition);
 
 		downPozition = new FlxText(10, FlxG.height - 84, 0,"Button Down X:" + vpad.buttonDown.x +" Y:" + vpad.buttonDown.y, 16);
-		downPozition.setFormat(FNFAssets.getText(SUtil.getPath() + "assets/fonts/vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		downPozition.setFormat(FNFAssets.getText("assets/fonts/vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		downPozition.borderSize = 2.4;
 		add(downPozition);
 
 		leftPozition = new FlxText(10, FlxG.height - 64, 0,"Button Left X:" + vpad.buttonLeft.x +" Y:" + vpad.buttonLeft.y, 16);
-		leftPozition.setFormat(FNFAssets.getText(SUtil.getPath() + "assets/fonts/vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		leftPozition.setFormat(FNFAssets.getText("assets/fonts/vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		leftPozition.borderSize = 2.4;
 		add(leftPozition);
 
 		rightPozition = new FlxText(10, FlxG.height - 44, 0,"Button RIght x:" + vpad.buttonRight.x +" Y:" + vpad.buttonRight.y, 16);
-		rightPozition.setFormat(FNFAssets.getText(SUtil.getPath() + "assets/fonts/vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		rightPozition.setFormat(FNFAssets.getText("assets/fonts/vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		rightPozition.borderSize = 2.4;
 		add(rightPozition);
 
 		var tipText:FlxText = new FlxText(10, FlxG.height - 24, 0, 'Press BACK to Go Back to Options Menu', 16);
-		tipText.setFormat(FNFAssets.getText(SUtil.getPath() + "assets/fonts/vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		tipText.setFormat(FNFAssets.getText("assets/fonts/vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tipText.borderSize = 2;
 		tipText.scrollFactor.set();
 		add(tipText);

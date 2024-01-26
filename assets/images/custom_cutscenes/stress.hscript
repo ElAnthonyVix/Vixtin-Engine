@@ -5,11 +5,11 @@ function start(song) {
     currentPlayState.camFollow.y = dad.y + 170;
 
 
-    var texbf = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData(SUtil.getPath() + 'assets/images/custom_chars/bf/char.png'),SUtil.getPath() + 'assets/images/custom_chars/bf/char.xml');
+    var texbf = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData('assets/images/custom_chars/bf/char.png'),'assets/images/custom_chars/bf/char.xml');
     var tex = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData(hscriptPath + song + '.png'), hscriptPath + song + '.xml');
     var texgf = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData(hscriptPath +'stressGF.png'), hscriptPath +'stressGF.xml');
     var tex2 = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData(hscriptPath + song + '2.png'), hscriptPath + song + '2.xml');
-    var cutsceneSnd = new FlxSound().loadEmbedded(FNFAssets.getSound(SUtil.getPath() + 'assets/music/stressCutscene.ogg'));
+    var cutsceneSnd = new FlxSound().loadEmbedded(FNFAssets.getSound('assets/music/stressCutscene.ogg'));
 
     FlxG.sound.list.add(cutsceneSnd);
 
@@ -23,7 +23,7 @@ function start(song) {
         trace(2);
         var gfDance = new FlxSprite(gf.x - 107, gf.y + 140);
         gfDance.antialiasing = true;
-        gfDance.frames = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData(SUtil.getPath() + 'assets/images/custom_chars/gf-tankmen/char.png'),SUtil.getPath() + 'assets/images/custom_chars/gf-tankmen/char.xml');
+        gfDance.frames = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData('assets/images/custom_chars/gf-tankmen/char.png'),'assets/images/custom_chars/gf-tankmen/char.xml');
         gfDance.animation.addByPrefix('dance', 'GF Dancing at Gunpoint', 24, true);
         gfDance.animation.play('dance', true);
         gfDance.animation.pause();

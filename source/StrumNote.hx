@@ -31,12 +31,12 @@ class StrumNote extends FlxSprite
 		super(x, y);
        trace('Strum Crated');
 		if(isPixelNote)
-		loadGraphic(FNFAssets.getBitmapData(SUtil.getPath() + 'assets/images/custom_ui/ui_packs/' + curUiType.uses + "/arrows-pixels.png"), true, 17, 17);
+		loadGraphic(FNFAssets.getBitmapData('assets/images/custom_ui/ui_packs/' + curUiType.uses + "/arrows-pixels.png"), true, 17, 17);
 		else
-		frames = DynamicAtlasFrames.fromSparrow(SUtil.getPath() + 'assets/images/custom_ui/ui_packs/'
+		frames = DynamicAtlasFrames.fromSparrow('assets/images/custom_ui/ui_packs/'
 						+ curUiType.uses
 						+ "/NOTE_assets.png",
-						SUtil.getPath() + 'assets/images/custom_ui/ui_packs/'
+						'assets/images/custom_ui/ui_packs/'
 						+ curUiType.uses
 						+ "/NOTE_assets.xml");
 						

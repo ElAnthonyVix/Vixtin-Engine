@@ -287,7 +287,7 @@ else{
 		Discord.DiscordClient.changePresence(customPrecence, null);
 		#end
 		
-		makeHaxeState("freeplay", SUtil.getPath() + "assets/scripts/custom_menus/", "FreeplayState");		
+		makeHaxeState("freeplay", "assets/scripts/custom_menus/", "FreeplayState");		
 		super.create();
 	}
 

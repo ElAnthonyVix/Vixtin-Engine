@@ -249,7 +249,7 @@ else{
 	public function new(x:Float, y:Float)
 	{
 		super();
-		makeHaxeState("pause", SUtil.getPath() + "assets/scripts/custom_menus/", "PauseSubstate");
+		makeHaxeState("pause", "assets/scripts/custom_menus/", "PauseSubstate");
 	}
 
 	function setCameras()

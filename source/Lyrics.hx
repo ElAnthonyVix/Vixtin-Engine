@@ -50,7 +50,7 @@ class Lyrics extends FlxTypedGroup<FlxText> {
         this.lyrics = lyrics;
 
         
-        if (lyrics[0].font == "" || lyrics[0].font == "null" || !FNFAssets.exists(SUtil.getPath() + 'assets/fonts/' + lyrics[0].font))
+        if (lyrics[0].font == "" || lyrics[0].font == "null" || !FNFAssets.exists('assets/fonts/' + lyrics[0].font))
             lyrics[0].font = "vcr.ttf";
 
         lyrics.sort(function(lyric1:LyricMeasure, lyric2:LyricMeasure):Int {
@@ -86,7 +86,7 @@ class Lyrics extends FlxTypedGroup<FlxText> {
                 var newText:FlxText = new FlxText(0,0,0,text+"\n");
 
 
-                newText.setFormat(SUtil.getPath() + 'assets/fonts/' + lyrics[0].font), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+                newText.setFormat('assets/fonts/' + lyrics[0].font), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
                 newText.antialiasing = false;
                 newText.scrollFactor.set();
                 newText.borderSize = 1.5;

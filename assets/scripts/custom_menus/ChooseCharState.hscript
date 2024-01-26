@@ -18,10 +18,10 @@ var colorTween = null;
 
 function create()
 {
-    charJson = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + 'assets/images/custom_chars/custom_chars'));
-	iconJson = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + "assets/images/custom_chars/icon_only_chars"));
+    charJson = CoolUtil.parseJson(FNFAssets.getJson('assets/images/custom_chars/custom_chars'));
+	iconJson = CoolUtil.parseJson(FNFAssets.getJson("assets/images/custom_chars/icon_only_chars"));
     
-    menuBG = new FlxSprite().loadGraphic(SUtil.getPath() + 'assets/images/menuDesat.png');
+    menuBG = new FlxSprite().loadGraphic('assets/images/menuDesat.png');
     menuBG.color = 0xFFea71fd;
     grpAlphabet = new FlxGroup();
     menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
@@ -41,7 +41,7 @@ function create()
 
     //char.flipX = false;
 
-    charJson = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + 'assets/images/custom_chars/custom_chars'));
+    charJson = CoolUtil.parseJson(FNFAssets.getJson('assets/images/custom_chars/custom_chars'));
 
     if (ChooseCharState.characters == null) {
         // that is not how arrays work
@@ -120,7 +120,7 @@ if (mobile && visPressed('C'))
 
 function changeSelection(change) {
 
-    FlxG.sound.play(FNFAssets.getSound(SUtil.getPath() + 'assets/sounds/scrollMenu' + TitleState.soundExt), 0.4);
+    FlxG.sound.play(FNFAssets.getSound('assets/sounds/scrollMenu' + TitleState.soundExt), 0.4);
 
     curSelected += change;
 
@@ -193,7 +193,7 @@ function chooseSelection()
 }
 // well yeah it lags you are creating a new character
 function swapMenus() { //this lags somewhat on my end so please try to optimize it
-    FlxG.sound.play(FNFAssets.getSound(SUtil.getPath() + 'assets/sounds/scrollMenu' + TitleState.soundExt), 0.4);
+    FlxG.sound.play(FNFAssets.getSound('assets/sounds/scrollMenu' + TitleState.soundExt), 0.4);
     dadMenu = !dadMenu;
     remove(char);
     char.destroy();

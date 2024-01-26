@@ -343,7 +343,7 @@ else{
 		interp.variables.set("ParserEx", ParserEx);
 		//interp.variables.set("ClassDeclEx", ClassDeclEx);
 
-		interp.variables.set(SUtil.getPath() + "assets/", Assets);
+		interp.variables.set("assets/", Assets);
 		interp.variables.set("FlxBasic", FlxBasic);
 		interp.variables.set("FlxGame", FlxGame);
 		interp.variables.set("IOErrorEvent", IOErrorEvent);

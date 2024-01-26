@@ -23,9 +23,9 @@ var curScale = [[]];
 var animationType = [[]];
 //var Menu = [[]];
 
-var gfTitle = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + "assets/data/gfTitle"));
-var logoTitle = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + "assets/data/logoTitle"));
-var bgTitle = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + "assets/data/bgTitle"));
+var gfTitle = CoolUtil.parseJson(FNFAssets.getJson("assets/data/gfTitle"));
+var logoTitle = CoolUtil.parseJson(FNFAssets.getJson("assets/data/logoTitle"));
+var bgTitle = CoolUtil.parseJson(FNFAssets.getJson("assets/data/bgTitle"));
 
 var customMenuConfirm = [[]];
 var customMenuScroll = [[]];
@@ -53,11 +53,11 @@ function startIntro()
     {
         makeTransition();
 
-        FlxG.sound.playMusic(FNFAssets.getSound(SUtil.getPath() + 'assets/music/custom_menu_music/'
-            + CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/music/custom_menu_music/custom_menu_music.json")).Menu+'/title' + TitleState.soundExt), 0);
+        FlxG.sound.playMusic(FNFAssets.getSound('assets/music/custom_menu_music/'
+            + CoolUtil.parseJson(FNFAssets.getText("assets/music/custom_menu_music/custom_menu_music.json")).Menu+'/title' + TitleState.soundExt), 0);
 
-        //FlxG.sound.play(SUtil.getPath() + 'assets/music/custom_menu_music/'
-        //+ CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/music/custom_menu_music/custom_menu_music.json")).Menu+'/title' + TitleState.soundExt, 0);
+        //FlxG.sound.play('assets/music/custom_menu_music/'
+        //+ CoolUtil.parseJson(FNFAssets.getText("assets/music/custom_menu_music/custom_menu_music.json")).Menu+'/title' + TitleState.soundExt, 0);
         
         FlxG.sound.music.fadeIn(4, 0, 0.7);
     }
@@ -66,7 +66,7 @@ function startIntro()
     togglePersistUpdate(true);
 
     titleBg = new FlxSprite();
-    titleBg.frames = FlxAtlasFrames.fromSparrow(SUtil.getPath() + 'assets/images/titleBG.png', SUtil.getPath() + 'assets/images/titleBG.xml');
+    titleBg.frames = FlxAtlasFrames.fromSparrow('assets/images/titleBG.png', 'assets/images/titleBG.xml');
     titleBg.antialiasing = !bgTitle.isPixel;
     titleBg.animation.addByPrefix('thefunny', bgTitle.curName, bgTitle.curFPS, true);
     titleBg.animation.play('thefunny');
@@ -76,7 +76,7 @@ function startIntro()
     }
 
     logoBl = new FlxSprite(logoTitle.curX, logoTitle.curY);
-    logoBl.frames = FlxAtlasFrames.fromSparrow(SUtil.getPath() + 'assets/images/logoBumpin.png', SUtil.getPath() + 'assets/images/logoBumpin.xml');
+    logoBl.frames = FlxAtlasFrames.fromSparrow('assets/images/logoBumpin.png', 'assets/images/logoBumpin.xml');
     logoBl.antialiasing = !logoTitle.isPixel;
     logoBl.animation.addByPrefix('bump', logoTitle.curName, logoTitle.curFPS);
     logoBl.animation.play('bump');
@@ -86,7 +86,7 @@ function startIntro()
     }
 
     gfDance = new FlxSprite(gfTitle.curX, gfTitle.curY);
-    gfDance.frames = FlxAtlasFrames.fromSparrow(SUtil.getPath() + 'assets/images/gfDanceTitle.png', SUtil.getPath() + 'assets/images/gfDanceTitle.xml');
+    gfDance.frames = FlxAtlasFrames.fromSparrow('assets/images/gfDanceTitle.png', 'assets/images/gfDanceTitle.xml');
     if (gfTitle.animationType == "gfIdle"){
         gfDance.animation.addByIndices('danceLeft', gfTitle.curName, [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", gfTitle.curFPS, false);
         gfDance.animation.addByIndices('danceRight', gfTitle.curName, [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", gfTitle.curFPS, false);
@@ -105,7 +105,7 @@ function startIntro()
     add(logoBl);
 
     titleText = new FlxSprite(100, FlxG.height * 0.8);
-    titleText.frames = FlxAtlasFrames.fromSparrow(SUtil.getPath() + 'assets/images/titleEnter.png', SUtil.getPath() + 'assets/images/titleEnter.xml');
+    titleText.frames = FlxAtlasFrames.fromSparrow('assets/images/titleEnter.png', 'assets/images/titleEnter.xml');
     titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
     titleText.animation.addByPrefix('press', "ENTER PRESSED", 24);
     titleText.antialiasing = true;
@@ -113,7 +113,7 @@ function startIntro()
     titleText.updateHitbox();
     add(titleText);
 
-    var logo = new FlxSprite().loadGraphic(SUtil.getPath() + 'assets/images/logo.png');
+    var logo = new FlxSprite().loadGraphic('assets/images/logo.png');
     logo.screenCenter();
     logo.antialiasing = true;
 
@@ -125,13 +125,13 @@ function startIntro()
     credGroup.add(blackScreen);
     // THIS SHIT DOESN'T WORK ON NEKO!
     // IDK WHY I AM TESTING IT ON NEKO!
-    coolDudes = FNFAssets.getText(SUtil.getPath() + 'assets/data/creators.txt').split("\n");
+    coolDudes = FNFAssets.getText('assets/data/creators.txt').split("\n");
     trace(coolDudes);
     credTextShit = new Alphabet(0, 0, "akofhafsk", true);
     credTextShit.screenCenter();
     credTextShit.visible = false;
 
-    ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(SUtil.getPath() + 'assets/images/newgrounds_logo.png');
+    ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic('assets/images/newgrounds_logo.png');
     add(ngSpr);
     ngSpr.visible = false;
     ngSpr.setGraphicSize(Std.int(ngSpr.width * 0.8));
@@ -150,7 +150,7 @@ function startIntro()
 
 function getIntroTextShit()
 {
-    var fullText = FNFAssets.getText(SUtil.getPath() + 'assets/data/introText.txt');
+    var fullText = FNFAssets.getText('assets/data/introText.txt');
 
     var firstArray = fullText.split('\n');
     var swagGoodArray = [[]];
@@ -193,8 +193,8 @@ function update(elapsed)
         titleBg.animation.play('selected');
 
         FlxG.camera.flash(0xFFffffff, 1);
-        FlxG.sound.play(SUtil.getPath() + 'assets/sounds/custom_menu_sounds/'
-            + CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuConfirm+'/confirmMenu' + TitleState.soundExt, 0.7);
+        FlxG.sound.play('assets/sounds/custom_menu_sounds/'
+            + CoolUtil.parseJson(FNFAssets.getText("assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuConfirm+'/confirmMenu' + TitleState.soundExt, 0.7);
 
         transitioning = true;
 
@@ -310,11 +310,11 @@ function beatHit(beat)
                 case 1:
                     deleteCoolText();
                 case 2:
-                    addMoreText(CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/data/gameInfo.json")).name_1);
+                    addMoreText(CoolUtil.parseJson(FNFAssets.getText("assets/data/gameInfo.json")).name_1);
                 case 3:
-                    addMoreText(CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/data/gameInfo.json")).name_2);
+                    addMoreText(CoolUtil.parseJson(FNFAssets.getText("assets/data/gameInfo.json")).name_2);
                 case 4:
-                    addMoreText(CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/data/gameInfo.json")).name_3);
+                    addMoreText(CoolUtil.parseJson(FNFAssets.getText("assets/data/gameInfo.json")).name_3);
                 case 5:
                     skipIntro();
             }

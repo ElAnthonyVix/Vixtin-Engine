@@ -40,20 +40,20 @@ class MenuCharacter extends FlxSprite
 
 		this.character = character;
 		// use assets it is less laggy
-		var parsedCharJson:DynamicAccess<TMenuCharacterRef> = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + "assets/images/campaign-ui-char/custom_ui_chars"));
+		var parsedCharJson:DynamicAccess<TMenuCharacterRef> = CoolUtil.parseJson(FNFAssets.getJson("assets/images/campaign-ui-char/custom_ui_chars"));
 		if (parsedCharJson[character].defaultGraphics) {
 			// use assets, it is less laggy
-			var tex = FlxAtlasFrames.fromSparrow(SUtil.getPath() + 'assets/images/campaign-ui-char/default.png', SUtil.getPath() + 'assets/images/campaign-ui-char/default.xml');
+			var tex = FlxAtlasFrames.fromSparrow('assets/images/campaign-ui-char/default.png', 'assets/images/campaign-ui-char/default.xml');
 			frames = tex;
 		} else {
-			var rawPic:BitmapData = FNFAssets.getBitmapData(SUtil.getPath() + 'assets/images/campaign-ui-char/'+character+".png");
-			var rawXml:String = FNFAssets.getText(SUtil.getPath() + 'assets/images/campaign-ui-char/'+character+".xml");
+			var rawPic:BitmapData = FNFAssets.getBitmapData('assets/images/campaign-ui-char/'+character+".png");
+			var rawXml:String = FNFAssets.getText('assets/images/campaign-ui-char/'+character+".xml");
 			var tex = FlxAtlasFrames.fromSparrow(rawPic, rawXml);
 			frames = tex;
 		}
 
 		// don't use assets because you can use custom like folders
-		var animJson:TMenuCharAnimation = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + "assets/images/campaign-ui-char/"+parsedCharJson[character].like));
+		var animJson:TMenuCharAnimation = CoolUtil.parseJson(FNFAssets.getJson("assets/images/campaign-ui-char/"+parsedCharJson[character].like));
 		for (field in Reflect.fields(animJson.animation)) {
 			animation.addByPrefix(field, Reflect.field(animJson.animation, field), 24, (field == "idle"));
 		}

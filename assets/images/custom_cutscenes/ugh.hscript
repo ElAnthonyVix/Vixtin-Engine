@@ -2,7 +2,7 @@ function start(song) {
     currentPlayState.camFollow.y += 100;
     var tex = FlxAtlasFrames.fromSparrow(FNFAssets.getBitmapData(hscriptPath + song + '.png'), hscriptPath + song + '.xml');
     
-    var bgMusic = new FlxSound().loadEmbedded(FNFAssets.getSound(SUtil.getPath() + 'assets/music/DISTORTO.ogg'));
+    var bgMusic = new FlxSound().loadEmbedded(FNFAssets.getSound('assets/music/DISTORTO.ogg'));
     bgMusic.play(false);
     FlxG.sound.list.add(bgMusic);
 

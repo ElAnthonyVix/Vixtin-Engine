@@ -20,7 +20,7 @@ class ControlsState extends MusicBeatState {
     override function create() {
         
         FlxG.mouse.visible = true;
-		var bg:FlxSprite = new FlxSprite(-80).loadGraphic(SUtil.getPath() + 'assets/images/menuBG.png');
+		var bg:FlxSprite = new FlxSprite(-80).loadGraphic('assets/images/menuBG.png');
 		bg.scrollFactor.x = 0;
 		bg.scrollFactor.y = 0.18;
 		bg.setGraphicSize(Std.int(bg.width * 1.2));
@@ -126,8 +126,8 @@ class ControlsState extends MusicBeatState {
     }
 	function changeSelection(change:Int = 0)
 	{
-		FlxG.sound.play(SUtil.getPath() + 'assets/sounds/custom_menu_sounds/'
-			+ CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuScroll
+		FlxG.sound.play('assets/sounds/custom_menu_sounds/'
+			+ CoolUtil.parseJson(FNFAssets.getText("assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuScroll
 			+ '/scrollMenu'
 			+ TitleState.soundExt,
 			0.4);
@@ -143,7 +143,7 @@ class ControlsState extends MusicBeatState {
 
 		// comment out because lag?
 		// if (!soundTest)
-		//	FlxG.sound.playMusic(FNFAssets.getSound(SUtil.getPath() + "assets/music/"+songs[curSelected].songName+"_Inst"+TitleState.soundExt), 0);
+		//	FlxG.sound.playMusic(FNFAssets.getSound("assets/music/"+songs[curSelected].songName+"_Inst"+TitleState.soundExt), 0);
 		var bullShit:Int = 0;
 
 		for (item in grpBind.members)

@@ -576,7 +576,7 @@ else{
 	override function create()
 	{
 		FNFAssets.clearStoredMemory();
-		makeHaxeState("modifier", SUtil.getPath() + "assets/scripts/custom_menus/", "ModifierState");
+		makeHaxeState("modifier", "assets/scripts/custom_menus/", "ModifierState");
 		super.create();
 	}
 	override function update(elapsed:Float) {

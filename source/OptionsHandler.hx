@@ -91,7 +91,7 @@ class OptionsHandler {
         #if sys
         // update the file
         if (needToRefresh) {
-			lastOptions = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + 'assets/data/options'));
+			lastOptions = CoolUtil.parseJson(FNFAssets.getJson('assets/data/options'));
             needToRefresh = false;
 			
         }
@@ -140,14 +140,14 @@ class OptionsHandler {
 		return lastOptions;
         #else
         if (!Reflect.hasField(FlxG.save.data, "options"))
-			FlxG.save.data.options = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + 'assets/data/options'));
+			FlxG.save.data.options = CoolUtil.parseJson(FNFAssets.getJson('assets/data/options'));
         return FlxG.save.data.options;
         #end
     }
     static function set_options(opt:TOptions) {
         #if sys
         needToRefresh = true;
-        File.saveContent(SUtil.getPath() + 'assets/data/options.json', CoolUtil.stringifyJson(opt));
+        File.saveContent('assets/data/options.json', CoolUtil.stringifyJson(opt));
         #else
         FlxG.save.data.options = CoolUtil.stringifyJson(opt);
         #end

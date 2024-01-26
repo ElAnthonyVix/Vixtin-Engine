@@ -261,7 +261,7 @@ else{
 	public function new(x:Float, y:Float, ?isPlayer:Bool = true)
 	{
 		super();
-		makeHaxeState("gameover", SUtil.getPath() + "assets/scripts/custom_menus/", "GameOverSubstate");
+		makeHaxeState("gameover", "assets/scripts/custom_menus/", "GameOverSubstate");
 		callAllHScript("start", [x, y, isPlayer]);
 	}
 

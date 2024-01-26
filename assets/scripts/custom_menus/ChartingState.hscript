@@ -111,7 +111,7 @@ function create()
 	//remove(coolText);
 	curSection = ChartingState.lastSection;
 
-	var bg = new FlxSprite().loadGraphic(FNFAssets.getBitmapData(SUtil.getPath() + 'assets/images/menuDesat.png'));
+	var bg = new FlxSprite().loadGraphic(FNFAssets.getBitmapData('assets/images/menuDesat.png'));
 	bg.scrollFactor.set();
 	bg.color = 0xFF222222;
 	add(bg);
@@ -124,7 +124,7 @@ function create()
 	gridLayer = new FlxTypedGroup();
 	add(gridLayer);
 
-	var eventIcon = new FlxSprite((-1 * GRID_SIZE) - 5, -90).loadGraphic(FNFAssets.getGraphicData(SUtil.getPath() + 'assets/images/eventArrow.png'));
+	var eventIcon = new FlxSprite((-1 * GRID_SIZE) - 5, -90).loadGraphic(FNFAssets.getGraphicData('assets/images/eventArrow.png'));
 	leftIcon = new HealthIcon('bf');
 	rightIcon = new HealthIcon('dad');
 	leftIcon.scrollFactor.set(1, 1);
@@ -170,15 +170,15 @@ function create()
 		};
 	}
 
-	if (FNFAssets.exists(SUtil.getPath() + 'assets/images/custom_notetypes/notetypes.txt'))
+	if (FNFAssets.exists('assets/images/custom_notetypes/notetypes.txt'))
 	{
-		customNoteNamesFile = FNFAssets.getText(SUtil.getPath() + 'assets/images/custom_notetypes/notetypes.txt');
+		customNoteNamesFile = FNFAssets.getText('assets/images/custom_notetypes/notetypes.txt');
 		
 		if (customNoteNamesFile != "")
 			customNoteNamesData = customNoteNamesFile.split('\n');
 	}
 
-	var diffJson = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + "assets/images/custom_difficulties/difficulties"));
+	var diffJson = CoolUtil.parseJson(FNFAssets.getJson("assets/images/custom_difficulties/difficulties"));
 	var diffJsonDiff = diffJson.difficulties;
 	for (i in diffJsonDiff) {
 		var nameDif = '-' + i.name.toLowerCase();
@@ -186,7 +186,7 @@ function create()
 		{
 			nameDif = '';
 		}
-		if (FNFAssets.exists(SUtil.getPath() + 'assets/data/' + PlayState.SONG.song.toLowerCase() + '/' + PlayState.SONG.song.toLowerCase() + nameDif.toLowerCase() + '.json'))
+		if (FNFAssets.exists('assets/data/' + PlayState.SONG.song.toLowerCase() + '/' + PlayState.SONG.song.toLowerCase() + nameDif.toLowerCase() + '.json'))
 		{
 			difficultyChoices.push(i.name);
 		}
@@ -264,7 +264,7 @@ function create()
 	for (i in 0...tipTextArray.length) {
 		var tipText = new FlxText(UI_box.x, UI_box.y + UI_box.height + 8, 0, tipTextArray[i], 16);
 		tipText.y += i * 14;
-		tipText.setFormat(SUtil.getPath() + "assets/fonts/vcr.ttf", 16, 0xFFffffff, "left");
+		tipText.setFormat("assets/fonts/vcr.ttf", 16, 0xFFffffff, "left");
 		//tipText.borderSize = 2;
 		tipText.scrollFactor.set();
 		add(tipText);
@@ -443,7 +443,7 @@ function addSongUI()
 	var loadEventJson = new FlxButton(loadAutosaveBtn.x, loadAutosaveBtn.y + 30, 'Load Events', function()
 	{
 		var songName = _song.song.toLowerCase();
-		var file = SUtil.getPath() + 'assets/data/' + songName + '/events.json';
+		var file = 'assets/data/' + songName + '/events.json';
 		if (FNFAssets.exists(file))
 		{
 			trace('ok this json exists! :D');
@@ -646,7 +646,7 @@ function addEventsUI()
 	if (sysTarget)
 	{
 		var eventPushedMap = new Map();
-		var directories = [SUtil.getPath() + 'assets/images/custom_events/'];
+		var directories = ['assets/images/custom_events/'];
 		for (i in 0...directories.length) {
 			var directory =  directories[i];
 			if(FNFAssets.exists(directory)) 
@@ -934,32 +934,32 @@ function loadSong(daSong)
 	if (_song.needsVoices) {
 		if (sysTarget)
 		{
-			var vocalSound = FNFAssets.getSound(SUtil.getPath() + "assets/music/"+daSong+"_Voices"+TitleState.soundExt);
+			var vocalSound = FNFAssets.getSound("assets/music/"+daSong+"_Voices"+TitleState.soundExt);
 			vocals = new FlxSound().loadEmbedded(vocalSound);
 		}
 		else
-			vocals = new FlxSound().loadEmbedded(SUtil.getPath() + "assets/music/" + daSong + "_Voices" + TitleState.soundExt);
+			vocals = new FlxSound().loadEmbedded("assets/music/" + daSong + "_Voices" + TitleState.soundExt);
 		
 		FlxG.sound.list.add(vocals);
 	}
 
-	if (FNFAssets.exists(SUtil.getPath() + 'assets/music/' + daSong + "_Sounds" + TitleState.soundExt))
+	if (FNFAssets.exists('assets/music/' + daSong + "_Sounds" + TitleState.soundExt))
 	{
 		if (sysTarget)
 		{
-			var sfxSound = FNFAssets.getSound(SUtil.getPath() + "assets/music/"+daSong+"_Sounds"+TitleState.soundExt);
+			var sfxSound = FNFAssets.getSound("assets/music/"+daSong+"_Sounds"+TitleState.soundExt);
 			sfxtrack = new FlxSound().loadEmbedded(sfxSound);
 		}
 		else
-			sfxtrack = new FlxSound().loadEmbedded(SUtil.getPath() + "assets/music/" + daSong + "_Sounds" + TitleState.soundExt);
+			sfxtrack = new FlxSound().loadEmbedded("assets/music/" + daSong + "_Sounds" + TitleState.soundExt);
 		
 		FlxG.sound.list.add(sfxtrack);
 	}
 
 	if (sysTarget)
-		FlxG.sound.playMusic(FNFAssets.getSound(SUtil.getPath() + "assets/music/"+daSong+"_Inst"+TitleState.soundExt), 0.6);
+		FlxG.sound.playMusic(FNFAssets.getSound("assets/music/"+daSong+"_Inst"+TitleState.soundExt), 0.6);
 	else
-		FlxG.sound.playMusic(SUtil.getPath() + 'assets/music/' + daSong + "_Inst" + TitleState.soundExt, 0.6);
+		FlxG.sound.playMusic('assets/music/' + daSong + "_Inst" + TitleState.soundExt, 0.6);
 
 	if (instVolume != null) FlxG.sound.music.volume = instVolume.value;
 	
@@ -1548,7 +1548,7 @@ function update(elapsed)
 						}
 						var tempPan = 0.3;
 						if (note.noteData < 4) tempPan = -0.3;
-						FlxG.sound.play(FNFAssets.getSound(SUtil.getPath() + 'assets/sounds/' + soundToPlay + '.ogg')).pan = tempPan; //would be coolio
+						FlxG.sound.play(FNFAssets.getSound('assets/sounds/' + soundToPlay + '.ogg')).pan = tempPan; //would be coolio
 						playedSound[data] = true;
 					}
 				
@@ -1861,8 +1861,8 @@ function updateGrid()
 		Conductor.changeBPM(daBPM);
 	}
 
-	//var yummyPng = FNFAssets.getBitmapData(SUtil.getPath() + 'assets/images/custom_ui/ui_packs/normal/NOTE_assets.png');
-	//var yummyXml = FNFAssets.getText(SUtil.getPath() + 'assets/images/custom_ui/ui_packs/normal/NOTE_assets.xml');
+	//var yummyPng = FNFAssets.getBitmapData('assets/images/custom_ui/ui_packs/normal/NOTE_assets.png');
+	//var yummyXml = FNFAssets.getText('assets/images/custom_ui/ui_packs/normal/NOTE_assets.xml');
 	
 	for (i in _song.notes[curSection].sectionNotes)
 	{
@@ -1901,7 +1901,7 @@ function updateGrid()
 				if(note.eventLength > 1) text = note.eventLength + ' Events:\n' + note.eventName;
 
 				var daText = new AttachedFlxText(0, 0, 400, text, 12);
-				daText.setFormat(SUtil.getPath() + "assets/fonts/vcr.ttf", 12, 0xFFffffff, "right", FlxTextBorderStyle.OUTLINE_FAST, 0xFF000000);
+				daText.setFormat("assets/fonts/vcr.ttf", 12, 0xFFffffff, "right", FlxTextBorderStyle.OUTLINE_FAST, 0xFF000000);
 				daText.xAdd = -410;
 				daText.borderSize = 1;
 				if(note.eventLength > 1) daText.yAdd += 8;
@@ -1937,7 +1937,7 @@ function setupNoteData(i)
 	}
 	else
 	{
-		note.loadGraphic(FNFAssets.getGraphicData(SUtil.getPath() + 'assets/images/eventArrow.png'));
+		note.loadGraphic(FNFAssets.getGraphicData('assets/images/eventArrow.png'));
 		note.eventName = getEventName(i[1]);
 		note.eventLength = i[1].length;
 		if(i[1].length < 3)
@@ -2187,7 +2187,7 @@ function loadJson(song)
 	if (_song.song.toLowerCase() == 'triple-trouble')
 		proceed = false;
 
-	if (!FNFAssets.exists(SUtil.getPath() + 'assets/data/' + _song.song.toLowerCase() + '/' + _song.song.toLowerCase() + diffSuxx + '.json'))
+	if (!FNFAssets.exists('assets/data/' + _song.song.toLowerCase() + '/' + _song.song.toLowerCase() + diffSuxx + '.json'))
 		proceed = false;
 	
 	if (proceed)
@@ -2199,7 +2199,7 @@ function loadJson(song)
 	}
 	else //Prevents enter to the song in charting mode (i catched bitches)
 	{
-		FlxG.sound.play(FNFAssets.getSound(SUtil.getPath() + 'assets/sounds/ANGRY.ogg'));
+		FlxG.sound.play(FNFAssets.getSound('assets/sounds/ANGRY.ogg'));
 	}
 }
 

@@ -199,7 +199,7 @@ return false;
 	}
 
 	public static function getFrames():FlxAtlasFrames {
-		return DynamicAtlasFrames.fromSpriteSheetPacker(SUtil.getPath() + 'assets/images/androidcontrols/virtualpad.png',SUtil.getPath() + 'assets/images/androidcontrols/virtualpad.txt');
+		return DynamicAtlasFrames.fromSpriteSheetPacker('assets/images/androidcontrols/virtualpad.png','assets/images/androidcontrols/virtualpad.txt');
 	
 	}
     public function getColor(frame:String):flixel.util.FlxColor

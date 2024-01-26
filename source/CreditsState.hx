@@ -310,7 +310,7 @@ else{
 	{
 		FNFAssets.clearStoredMemory();
 
-		var cArray = CoolUtil.coolTextFile(SUtil.getPath() + 'assets/data/credits.txt');
+		var cArray = CoolUtil.coolTextFile('assets/data/credits.txt');
 		for(i in cArray)
 		{
 			var arr:Array<String> = i.replace('\\n', '\n').split("::");
@@ -319,7 +319,7 @@ else{
 		}
 		songs.push(['']);
 		
-		makeHaxeState("credits", SUtil.getPath() + "assets/scripts/custom_menus/", "CreditsState");
+		makeHaxeState("credits", "assets/scripts/custom_menus/", "CreditsState");
 
 		super.create();
 	}

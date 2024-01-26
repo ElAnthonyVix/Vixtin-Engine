@@ -8,8 +8,8 @@ var inOptionsMenu = false;
 var optionsSelected = 0;
 var checkmarks;
 var numberDisplays = [];
-var sfxJson = CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/sounds/custom_menu_sounds/custom_menu_sounds.json"));
-var musicJson = CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/music/custom_menu_music/custom_menu_music.json"));
+var sfxJson = CoolUtil.parseJson(FNFAssets.getText("assets/sounds/custom_menu_sounds/custom_menu_sounds.json"));
+var musicJson = CoolUtil.parseJson(FNFAssets.getText("assets/music/custom_menu_music/custom_menu_music.json"));
 var preferredSave = 0;
 var description;
 var forbiddenIndexes = [];
@@ -17,13 +17,13 @@ var activedOptions = [];
 function create()
 {
 	FlxG.sound.music.stop();
-	var goodSound = FNFAssets.getSound(SUtil.getPath() + 'assets/music/custom_menu_music/'
+	var goodSound = FNFAssets.getSound('assets/music/custom_menu_music/'
 		+ musicJson.Options
 		+ '/options'
 		+ TitleState.soundExt);
-	optionMask = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + 'assets/data/optionsMask'));
+	optionMask = CoolUtil.parseJson(FNFAssets.getJson('assets/data/optionsMask'));
 	FlxG.sound.playMusic(goodSound);
-	var menuBG = new FlxSprite().loadGraphic(SUtil.getPath() + 'assets/images/menuDesat.png');
+	var menuBG = new FlxSprite().loadGraphic('assets/images/menuDesat.png');
 	makeOptionList();
 	var kidsToKill = [];
 	for (option in 0...SaveDataState.optionList.length) {
@@ -94,7 +94,7 @@ function create()
 		swagOption.isMenuItem = true;
 		swagOption.targetY = curNum;
 		trace("l57");
-		var coolCheckmark = new FlxSprite().loadGraphic(SUtil.getPath() + 'assets/images/checkmark.png');
+		var coolCheckmark = new FlxSprite().loadGraphic('assets/images/checkmark.png');
 
 		var gvar;
 		if (SaveDataState.optionList[j].precision != null) 
@@ -141,7 +141,7 @@ function create()
 	optionMenu.x = FlxG.width;
 	options.y = 10;
 	description = new FlxText(750, 150, 350, "", 90);
-	description.setFormat(SUtil.getPath() + "assets/fonts/vcr.ttf", 32, 0xFFffffff, "left", FlxTextBorderStyle.OUTLINE, 0xFF000000);
+	description.setFormat("assets/fonts/vcr.ttf", 32, 0xFFffffff, "left", FlxTextBorderStyle.OUTLINE, 0xFF000000);
 	description.text = "Amongus???";
 	description.scrollFactor.set();
 	optionMenu.add(description);
@@ -209,8 +209,8 @@ function update(elapsed) {
 					flixelSave.close();
 					preferredSave = curSelected;
 					flixelSave.bind(saveName, "ElAnthonyVixtin");
-					FlxG.sound.play(SUtil.getPath() + 'assets/sounds/custom_menu_sounds/'
-						+ CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuConfirm+'/confirmMenu.ogg');
+					FlxG.sound.play('assets/sounds/custom_menu_sounds/'
+						+ CoolUtil.parseJson(FNFAssets.getText("assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuConfirm+'/confirmMenu.ogg');
 					// don't edit the djkf
 					if (flixelSave.data.songScores == null) {
 						flixelSave.data.songScores = ["tutorial" => 0];
@@ -228,13 +228,13 @@ function update(elapsed) {
 				flixelSave.erase();
 				saves.members[curSelected].askToConfirm(false);
 				// sounds like someone farted into the mic. perfect for a delete sfx
-				FlxG.sound.play(SUtil.getPath() + 'assets/sounds/freshIntro.ogg');
+				FlxG.sound.play('assets/sounds/freshIntro.ogg');
 				flixelSave.data.songScores = ["tutorial" => 0];
 				flixelSave.bind(oldSave, "ElAnthonyVixtin");
 				Highscore.load();
 			}
 		} else if (!inOptionsMenu) {
-			FlxG.sound.play(SUtil.getPath() + 'assets/sounds/custom_menu_sounds/'
+			FlxG.sound.play('assets/sounds/custom_menu_sounds/'
 				+ sfxJson.customMenuScroll+'/scrollMenu' + TitleState.soundExt);
 			saves.members[curSelected].beSelected(true);
 		} else {
@@ -294,8 +294,8 @@ function update(elapsed) {
 					}
 			}
 
-			FlxG.sound.play(SUtil.getPath() + 'assets/sounds/custom_menu_sounds/'
-				+ CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuScroll+'/scrollMenu' + TitleState.soundExt);
+			FlxG.sound.play('assets/sounds/custom_menu_sounds/'
+				+ CoolUtil.parseJson(FNFAssets.getText("assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuScroll+'/scrollMenu' + TitleState.soundExt);
 		}
 	}
 
@@ -323,7 +323,7 @@ function changeAmount(increase) {
 		}
 	}
 	if (SaveDataState.optionList[activedOptions[optionsSelected]].intName == "preferJudgement") {
-		var judgementList = CoolUtil.coolTextFile(SUtil.getPath() + 'assets/data/judgements.txt');
+		var judgementList = CoolUtil.coolTextFile('assets/data/judgements.txt');
 		numberDisplays[optionsSelected].text = judgementList[Std.int(SaveDataState.optionList[activedOptions[optionsSelected]].amount)];
 	}
 	if (SaveDataState.optionList[activedOptions[optionsSelected]].intName == "accuracyMode") {
@@ -343,8 +343,8 @@ function changeAmount(increase) {
 function changeSelection(change)
 {
 	if (!inOptionsMenu) {
-		FlxG.sound.play(SUtil.getPath() + 'assets/sounds/custom_menu_sounds/'
-			+ CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuScroll+'/scrollMenu' + TitleState.soundExt, 0.4);
+		FlxG.sound.play('assets/sounds/custom_menu_sounds/'
+			+ CoolUtil.parseJson(FNFAssets.getText("assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuScroll+'/scrollMenu' + TitleState.soundExt, 0.4);
 
 		curSelected += change;
 
@@ -371,8 +371,8 @@ function changeSelection(change)
 			}
 		}
 	} else {
-		FlxG.sound.play(SUtil.getPath() + 'assets/sounds/custom_menu_sounds/'
-			+ CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + "assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuScroll+'/scrollMenu' + TitleState.soundExt, 0.4);
+		FlxG.sound.play('assets/sounds/custom_menu_sounds/'
+			+ CoolUtil.parseJson(FNFAssets.getText("assets/sounds/custom_menu_sounds/custom_menu_sounds.json")).customMenuScroll+'/scrollMenu' + TitleState.soundExt, 0.4);
 
 		optionsSelected += change;
 

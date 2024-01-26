@@ -408,7 +408,7 @@ catch (e) {
 	override function create()
 	{
 		FNFAssets.clearStoredMemory();
-		makeHaxeState("charting", SUtil.getPath() + 'assets/scripts/custom_menus/', 'ChartingState');
+		makeHaxeState("charting", 'assets/scripts/custom_menus/', 'ChartingState');
 		super.create();
 	}
 

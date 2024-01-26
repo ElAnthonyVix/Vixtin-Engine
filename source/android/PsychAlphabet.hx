@@ -203,8 +203,8 @@ class PsychAlphabet extends FlxSpriteGroup
 	public static function setDialogueSound(name:String = '')
 	{
 		if (name == null || name.trim() == '') name = 'dialogue';
-		soundDialog = FNFAssets.getSound(SUtil.getPath() + 'assets/sounds/' +name + '.ogg');
-		if(soundDialog == null) FNFAssets.getSound(SUtil.getPath() + 'assets/sounds/pixelText.ogg');
+		soundDialog = FNFAssets.getSound('assets/sounds/' +name + '.ogg');
+		if(soundDialog == null) FNFAssets.getSound('assets/sounds/pixelText.ogg');
 	}
 
 	var typeTimer:FlxTimer = null;
@@ -389,7 +389,7 @@ class AlphaCharacter extends FlxSprite
 	public function new(x:Float, y:Float, textSize:Float)
 	{
 		super(x, y);
-		var tex = DynamicSprite.DynamicAtlasFrames.fromSparrow(SUtil.getPath() + 'assets/images/androidcontrols/menu/alphabet.png',SUtil.getPath() + 'assets/images/androidcontrols/menu/alphabet.xml');
+		var tex = DynamicSprite.DynamicAtlasFrames.fromSparrow('assets/images/androidcontrols/menu/alphabet.png','assets/images/androidcontrols/menu/alphabet.xml');
 		frames = tex;
 
 		setGraphicSize(Std.int(width * textSize));

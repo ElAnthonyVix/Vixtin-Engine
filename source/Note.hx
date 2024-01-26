@@ -342,10 +342,10 @@ class Note extends DynamicSprite
 			} else {
 				if (getFrames) {
 					getFrames = false;
-					gotFrames = DynamicAtlasFrames.fromSparrow(SUtil.getPath() + 'assets/images/custom_ui/ui_packs/'
+					gotFrames = DynamicAtlasFrames.fromSparrow('assets/images/custom_ui/ui_packs/'
 						+ curUiType.uses
 						+ "/NOTE_assets.png",
-						SUtil.getPath() + 'assets/images/custom_ui/ui_packs/'
+						'assets/images/custom_ui/ui_packs/'
 						+ curUiType.uses
 						+ "/NOTE_assets.xml");
 				}
@@ -376,7 +376,7 @@ class Note extends DynamicSprite
 			if (customNotePath != null)
 				loadGraphic(customNotePath + '.png', true, 17, 17);
 			else
-				loadGraphic(SUtil.getPath() + 'assets/images/custom_ui/ui_packs/' + curUiType.uses + "/arrows-pixels.png", true, 17, 17);
+				loadGraphic('assets/images/custom_ui/ui_packs/' + curUiType.uses + "/arrows-pixels.png", true, 17, 17);
 			
 			if (animSuffix != null && numSuffix == null)
 			{
@@ -396,7 +396,7 @@ class Note extends DynamicSprite
 				animation.add('cyanScroll', [intSuffix]);
 				if (isSustainNote)
 				{
-					loadGraphic(SUtil.getPath() + 'assets/images/custom_ui/ui_packs/' + curUiType.uses + "/arrowEnds.png", true, 7, 6);
+					loadGraphic('assets/images/custom_ui/ui_packs/' + curUiType.uses + "/arrowEnds.png", true, 7, 6);
 
 					animation.add('purpleholdend', [intSuffix]);
 					animation.add('greenholdend', [intSuffix]);
@@ -433,7 +433,7 @@ class Note extends DynamicSprite
 
 				if (isSustainNote)
 				{
-					loadGraphic(SUtil.getPath() + 'assets/images/custom_ui/ui_packs/' + curUiType.uses + "/arrowEnds.png", true, 7, 6);
+					loadGraphic('assets/images/custom_ui/ui_packs/' + curUiType.uses + "/arrowEnds.png", true, 7, 6);
 
 					animation.add('purpleholdend', [4]);
 					animation.add('greenholdend', [6]);

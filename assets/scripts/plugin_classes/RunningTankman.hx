@@ -6,7 +6,7 @@ class RunningTankman extends DynamicSprite {
     public var tankSpeed = 0.7;
     public var goingRight = false;
     public var strumTime = 0;
-    public var hscriptPath = SUtil.getPath() + "assets/images/custom_stages";
+    public var hscriptPath = "assets/images/custom_stages";
 	public var endingOffset = HscriptGlobals.random.float(0.6, 1);
     public function new (?x=0, y=0, scriptPath:String) {
         super(x, y);

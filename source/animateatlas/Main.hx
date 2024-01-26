@@ -34,9 +34,9 @@ class Main extends Sprite {
 		graphics.beginFill(0x333333);
 		graphics.drawRect(0, 0, Lib.current.stage.stageWidth, Lib.current.stage.stageHeight);
 
-		var animationData:AnimationData = Json.parse(Assets.getText(SUtil.getPath() + "assets/TEST/Animation.json"));
-		var atlasData:AtlasData = Json.parse(Assets.getText(SUtil.getPath() + "assets/TEST/spritemap.json"));
-		var bitmapData:BitmapData = Assets.getBitmapData(SUtil.getPath() + "assets/TEST/spritemap.png");
+		var animationData:AnimationData = Json.parse(Assets.getText("assets/TEST/Animation.json"));
+		var atlasData:AtlasData = Json.parse(Assets.getText("assets/TEST/spritemap.json"));
+		var bitmapData:BitmapData = Assets.getBitmapData("assets/TEST/spritemap.png");
 
 		aa = new TileAnimationLibrary(animationData, atlasData, bitmapData);
 		ss = new SpriteAnimationLibrary(animationData, atlasData, bitmapData);

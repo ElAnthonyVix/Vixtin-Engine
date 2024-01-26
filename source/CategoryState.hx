@@ -283,7 +283,7 @@ else
 		Discord.DiscordClient.changePresence("In the Freeplay Menu", null);
 		#end
 		FNFAssets.clearStoredMemory();
-		makeHaxeState("category", SUtil.getPath() + "assets/scripts/custom_menus/", "CategoryState");
+		makeHaxeState("category", "assets/scripts/custom_menus/", "CategoryState");
 		super.create();
 	}
 

@@ -13,20 +13,20 @@ class DifficultyManager {
     public static var supportedDiff:Map<String,Array<Int>> = [];
     public static var weeksSupported:Map<Int, Array<Int>> = [];
     public static function init() {
-        diffJson = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + "assets/images/custom_difficulties/difficulties"));
-        var fpJson:Array<CoolCategory> = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + "assets/data/freeplaySongJson"));
+        diffJson = CoolUtil.parseJson(FNFAssets.getJson("assets/images/custom_difficulties/difficulties"));
+        var fpJson:Array<CoolCategory> = CoolUtil.parseJson(FNFAssets.getJson("assets/data/freeplaySongJson"));
         for (cat in fpJson) {
             for (song in cat.songs) {
                 supportedDiff.set(song.name.toLowerCase(), []);
                 for (diff in 0...diffJson.difficulties.length) {
-                    if (FNFAssets.exists(SUtil.getPath() + 'assets/data/${song.name.toLowerCase()}/${song.name.toLowerCase()+getDiffEnding(diff)}.json')) {
+                    if (FNFAssets.exists('assets/data/${song.name.toLowerCase()}/${song.name.toLowerCase()+getDiffEnding(diff)}.json')) {
                         // : )
                         supportedDiff.get(song.name.toLowerCase()).push(diff);
                     }
                 }
             }
         }
-        var weekJson:StorySongsJson = CoolUtil.parseJson(FNFAssets.getText(SUtil.getPath() + 'assets/data/storySonglist.json'));
+        var weekJson:StorySongsJson = CoolUtil.parseJson(FNFAssets.getText('assets/data/storySonglist.json'));
         if (weekJson.version == null || weekJson.version == 1) {
             var week = 0;
             for (weekSongs in weekJson.songs) {

@@ -88,7 +88,7 @@ private static var lmaoAngel:Array<Array<Int>> = [[0,-90,90,180],
 		}
 		
 		for (i in 0...Main.ammo[mania] - 1){
-			var hitbox_hint:FlxSprite = new FlxSprite(dumbLength * i, 0).loadGraphic(FNFAssets.getBitmapData(SUtil.getPath() + 'assets/images/androidcontrols/hitbox_hintblank.png'));
+			var hitbox_hint:FlxSprite = new FlxSprite(dumbLength * i, 0).loadGraphic(FNFAssets.getBitmapData('assets/images/androidcontrols/hitbox_hintblank.png'));
 		hitbox_hint.antialiasing = orgAntialiasing;
 		hitbox_hint.alpha = orgAlpha;
 		hitbox_hint.angle += lmaoAngel[mania][i];
@@ -99,7 +99,7 @@ private static var lmaoAngel:Array<Array<Int>> = [[0,-90,90,180],
 
 	public function createhitbox(x:Float = 0, y:Float = 0, frame:String) {
 		var button = new FlxButton(x, y);
-		button.loadGraphic(FNFAssets.getBitmapData(SUtil.getPath() + 'assets/images/androidcontrols/hitboxblank.png'));
+		button.loadGraphic(FNFAssets.getBitmapData('assets/images/androidcontrols/hitboxblank.png'));
 		button.antialiasing = orgAntialiasing;
 		button.color = getColor(frame);
 		button.setGraphicSize(Std.int(dumbLength),Std.int(button.height));

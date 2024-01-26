@@ -312,7 +312,7 @@ else{
 	{
 		FNFAssets.clearStoredMemory();
 		
-		makeHaxeState("storymenu", SUtil.getPath() + "assets/scripts/custom_menus/", "StoryMenuState");
+		makeHaxeState("storymenu", "assets/scripts/custom_menus/", "StoryMenuState");
 
 		super.create();
 	}

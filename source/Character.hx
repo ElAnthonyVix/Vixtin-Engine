@@ -203,7 +203,7 @@ class Character extends FlxSprite
 		trace(curCharacter);
 		var charJson:Dynamic = null;
 		var isError:Bool = false;
-		charJson = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + 'assets/images/custom_chars/custom_chars'));
+		charJson = CoolUtil.parseJson(FNFAssets.getJson('assets/images/custom_chars/custom_chars'));
 		interp = Character.getAnimInterp(curCharacter);
 		callInterp("init", [this]);
 		dance();
@@ -367,8 +367,8 @@ class Character extends FlxSprite
 	{
 
 		//curCharacter = curCharacter.trim();
-		//var charJson:Dynamic = Json.parse(Assets.getText(SUtil.getPath() + 'assets/images/custom_chars/custom_chars.json'));
-		//var animJson = File.getContent(SUtil.getPath() + "assets/images/custom_chars/"+Reflect.field(charJson,curCharacter).like+".json");
+		//var charJson:Dynamic = Json.parse(Assets.getText('assets/images/custom_chars/custom_chars.json'));
+		//var animJson = File.getContent("assets/images/custom_chars/"+Reflect.field(charJson,curCharacter).like+".json");
 
 		if(!debugMode && animation.curAnim != null)
 		{
@@ -563,17 +563,17 @@ class Character extends FlxSprite
 	public static function getAnimInterp(char:String):Interp {
 		var interp = PluginManager.createSimpleInterp();
 		var parser = new hscript.Parser();
-		var charJson = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + 'assets/images/custom_chars/custom_chars'));
+		var charJson = CoolUtil.parseJson(FNFAssets.getJson('assets/images/custom_chars/custom_chars'));
 		var program:Expr;
-		if (FNFAssets.exists(SUtil.getPath() + 'assets/images/custom_chars/' + Reflect.field(charJson, char).like, Hscript))
-			program = parser.parseString(FNFAssets.getHscript(SUtil.getPath() + 'assets/images/custom_chars/' + Reflect.field(charJson, char).like));
+		if (FNFAssets.exists('assets/images/custom_chars/' + Reflect.field(charJson, char).like, Hscript))
+			program = parser.parseString(FNFAssets.getHscript('assets/images/custom_chars/' + Reflect.field(charJson, char).like));
 		else
-			program = parser.parseString(FNFAssets.getText(SUtil.getPath() + 'assets/images/custom_chars/jsonbased.hscript'));
-		if (!FNFAssets.exists(SUtil.getPath() + 'assets/images/custom_chars/' + Reflect.field(charJson, char).like, Hscript)) 
-			interp.variables.set("charJson", CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + 'assets/images/custom_chars/'+Reflect.field(charJson, char).like)));
+			program = parser.parseString(FNFAssets.getText('assets/images/custom_chars/jsonbased.hscript'));
+		if (!FNFAssets.exists('assets/images/custom_chars/' + Reflect.field(charJson, char).like, Hscript)) 
+			interp.variables.set("charJson", CoolUtil.parseJson(FNFAssets.getJson('assets/images/custom_chars/'+Reflect.field(charJson, char).like)));
 		else
 			interp.variables.set("charJson", {});
-		interp.variables.set("hscriptPath", SUtil.getPath() + 'assets/images/custom_chars/' + char + '/');
+		interp.variables.set("hscriptPath", 'assets/images/custom_chars/' + char + '/');
 		interp.variables.set("charName", char);
 		interp.variables.set("Level_NotAHoe", Level_NotAHoe);
 		interp.variables.set("Level_Boogie", Level_Boogie);

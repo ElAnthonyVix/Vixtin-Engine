@@ -11,7 +11,7 @@ function start(song) {
     songName.visible = false;
 
     scoreTxt.x = healthBarBG.x + healthBarBG.width - 90;
-    //scoreTxt.setFormat(SUtil.getPath() + "assets/fonts/vcr.ttf", 20, FlxColor.WHITE, RIGHT);
+    //scoreTxt.setFormat("assets/fonts/vcr.ttf", 20, FlxColor.WHITE, RIGHT);
     scoreTxt.size = 20;
     if (downscroll)
 	    scoreTxt.y = healthBarBG.y - 30;
@@ -19,17 +19,17 @@ function start(song) {
 	    scoreTxt.y = healthBarBG.y + 30;
 
     healthTxt = new FlxText(healthBarBG.x + healthBarBG.width - 300, scoreTxt.y, 0, "", 200);
-    //healthTxt.setFormat(SUtil.getPath() + "assets/fonts/vcr.ttf", 20, FlxColor.WHITE, RIGHT);
+    //healthTxt.setFormat("assets/fonts/vcr.ttf", 20, FlxColor.WHITE, RIGHT);
     healthTxt.size = 20;
-    healthTxt.font = SUtil.getPath() + "assets/fonts/vcr.ttf";
+    healthTxt.font = "assets/fonts/vcr.ttf";
     healthTxt.scrollFactor.set();
     healthTxt.cameras = [camHUD];
     addSprite(healthTxt);
 
     accuracyTxt = new FlxText(healthBarBG.x, scoreTxt.y, 0, "", 200);
-    //accuracyTxt.setFormat(SUtil.getPath() + "assets/fonts/vcr.ttf", 20, FlxColor.WHITE, RIGHT);
+    //accuracyTxt.setFormat("assets/fonts/vcr.ttf", 20, FlxColor.WHITE, RIGHT);
     accuracyTxt.size = 20;
-    accuracyTxt.font = SUtil.getPath() + "assets/fonts/vcr.ttf";
+    accuracyTxt.font = "assets/fonts/vcr.ttf";
     accuracyTxt.scrollFactor.set();
     accuracyTxt.cameras = [camHUD];
     addSprite(accuracyTxt);

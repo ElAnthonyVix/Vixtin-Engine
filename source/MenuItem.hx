@@ -27,12 +27,12 @@ class MenuItem extends FlxSpriteGroup
 		// WHY THE FUCK DO YOU READ A FILE FUCKING 5 TIMES
 		// NO WONDER THERE ARE PREFORMANCE ISSUE
 		
-		var parsedWeekJson:StoryMenuState.StorySongsJson = CoolUtil.parseJson(FNFAssets.getJson(SUtil.getPath() + "assets/data/storySongList"));
-		var rawPic = FNFAssets.getBitmapData(SUtil.getPath() + 'assets/images/campaign-ui-week/week'+weekNum+".png");
+		var parsedWeekJson:StoryMenuState.StorySongsJson = CoolUtil.parseJson(FNFAssets.getJson("assets/data/storySongList"));
+		var rawPic = FNFAssets.getBitmapData('assets/images/campaign-ui-week/week'+weekNum+".png");
 		
 		var rawXml:String = "";
-		if (FNFAssets.exists(SUtil.getPath() + 'assets/images/campaign-ui-week/week' + weekNum + ".xml")) {
-			rawXml = FNFAssets.getText(SUtil.getPath() + 'assets/images/campaign-ui-week/week' + weekNum + ".xml");
+		if (FNFAssets.exists('assets/images/campaign-ui-week/week' + weekNum + ".xml")) {
+			rawXml = FNFAssets.getText('assets/images/campaign-ui-week/week' + weekNum + ".xml");
 		}
 		if (rawXml != "") {
 			var tex = FlxAtlasFrames.fromSparrow(rawPic, rawXml);

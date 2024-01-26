@@ -339,7 +339,7 @@ else{
 				intName: "newJudgementPos",
 				desc: "Put judgements in a more convenient place."
 			},						
-			{name: "Overwrite Judgement", value: false, intName: "preferJudgement", desc: "What judgement to display other than default, if any.", defAmount: 0, amount: 0, max: CoolUtil.coolTextFile(SUtil.getPath() + 'assets/data/judgements.txt').length - 1},
+			{name: "Overwrite Judgement", value: false, intName: "preferJudgement", desc: "What judgement to display other than default, if any.", defAmount: 0, amount: 0, max: CoolUtil.coolTextFile('assets/data/judgements.txt').length - 1},
 			{name: "Emulate Osu Lifts", value: false, intName: "emuOsuLifts", desc: "Whether to add lift notes at the end of sustains to force releasing buttons."},
 			{name: "Show Combo Breaks", value: false, intName:"showComboBreaks", desc: "Whether to display any combo breaks by flashing the screen."},
 			{name: "Funny Songs", value: false, intName: "stressTankmen", desc: "funny songs"},
@@ -392,7 +392,7 @@ else{
 	override function create()
 	{
 		FNFAssets.clearStoredMemory();
-		makeHaxeState("savedata", SUtil.getPath() + "assets/scripts/custom_menus/", "SaveDataState");	
+		makeHaxeState("savedata", "assets/scripts/custom_menus/", "SaveDataState");	
 		super.create();
 	}
 
