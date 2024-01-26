@@ -87,7 +87,7 @@
 	<haxelib name="faxe" if='switch'/>
 	<haxelib name="hscript"/>
 	<haxelib name="flxgif"/>
-	<define name="hscriptPos"/>
+	
 	<!-- git https://github.com/ianharrigan/hscript-ex-->
 	<haxelib name="hscript-ex"/>
 	<!--haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc -->
