@@ -375,13 +375,16 @@ class PlayState extends MusicBeatState
 	#if true
 	var hscriptStates:Map<String, Interp> = [];
 	var hscriptIsModChart:Map<String, Bool> = [];
+	var hscriptTraceStates:Map<String, Bool> = [];
 	var exInterp:InterpEx = new InterpEx();
 	var haxeSprites:Map<String, FlxSprite> = [];
 	var traced:Bool = false;
     public function callHscript(func_name:String, args:Array<Dynamic>, usehaxe:String) {
 		// if function doesn't exist
 			if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
-				trace("Function doesn't exist, silently skipping...");
+				if (!hscriptTraceStates.exists(usehaxe))
+					trace("Function doesn't exist, silently skipping...");
+					hscriptTraceStates.set(usehaxe,true);
 				return;
 			}
 			if (OptionsHandler.options.allowCrashHandler){
@@ -415,7 +418,9 @@ class PlayState extends MusicBeatState
 }
 else{
 	if (!hscriptStates.get(usehaxe).variables.exists(func_name)) {
+		if (!hscriptTraceStates.exists(usehaxe))
 		trace("Function doesn't exist, silently skipping...");
+		hscriptTraceStates.set(usehaxe,true);
 		return;
 	}
 	var method = hscriptStates.get(usehaxe).variables.get(func_name);

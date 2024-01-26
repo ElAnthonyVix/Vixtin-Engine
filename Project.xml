@@ -35,7 +35,7 @@
 	<window if="switch" orientation="landscape" fullscreen="true" width="0" height="0" resizable="true" />
     <haxeflag name="-dce" value="no" if="typebuild"/>
 	<!-- _____________________________ Path Settings ____________________________ -->
-
+	<define name="CRASH_HANDLER"/>
 	<define name="VIDEOS_ALLOWED" if="web || windows || mobile"/>
 
 	<set name="BUILD_DIR" value="export/debug" if="debug" />
@@ -87,6 +87,7 @@
 	<haxelib name="faxe" if='switch'/>
 	<haxelib name="hscript"/>
 	<haxelib name="flxgif"/>
+	<define name="hscriptPos"/>
 	<!-- git https://github.com/ianharrigan/hscript-ex-->
 	<haxelib name="hscript-ex"/>
 	<!--haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc -->
