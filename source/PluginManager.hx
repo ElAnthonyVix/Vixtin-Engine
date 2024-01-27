@@ -27,6 +27,10 @@ import plugins.tools.MetroSprite;
 import hscript.InterpEx;
 import hscript.Interp;
 import flixel.FlxG;
+import flixel.addons.editors.pex.FlxPexParser;
+import flixel.addons.text.FlxTypeText;
+import flixel.effects.particles.FlxEmitter;
+import flixel.effects.particles.FlxParticle;
 import Type.ValueType;
 import hscript.Parser;
 import hscript.ParserEx;
@@ -41,7 +45,116 @@ import flxgif.FlxGifSprite;
 import android.FlxHitbox;
 import android.FlxVirtualPad;
 import flixel.ui.FlxButton;
+import flixel.system.FlxAssets.FlxGraphicAsset;
 #end
+class DynamicPexParser extends FlxPexParser
+{
+    public static function parse<T:FlxEmitter>(data:Dynamic, particleGraphic:FlxGraphicAsset, ?emitter:T, scale:Float = 1):T{
+        if (emitter == null)
+            {
+                emitter = cast new FlxEmitter();
+            }
+            if ((particleGraphic is String)) {
+                var datapng = FNFAssets.getBitmapData(particleGraphic);
+            }
+
+            var config:Access = getAccessNode(data);
+    
+            // Need to extract the particle graphic information
+            var particle:FlxParticle = new FlxParticle();
+            particle.loadGraphic(particleGraphic);
+    
+            var emitterType = Std.parseInt(config.node.emitterType.att.value);
+            if (emitterType != PexEmitterType.GRAVITY)
+            {
+                FlxG.log.warn("FlxPexParser: This emitter type isn't supported. Only the 'Gravity' emitter type is supported.");
+            }
+    
+            var maxParticles:Int = Std.parseInt(config.node.maxParticles.att.value);
+    
+            var lifespan = minMax("particleLifeSpan", "particleLifespanVariance", config);
+            var speed = minMax("speed", config);
+    
+            var angle = minMax("angle", config);
+    
+            var startSize = minMax("startParticleSize", config);
+            var finishSize = minMax("finishParticleSize", "finishParticleSizeVariance", config);
+            var rotationStart = minMax("rotationStart", config);
+            var rotationEnd = minMax("rotationEnd", config);
+    
+            var sourcePositionVariance = xy("sourcePositionVariance", config);
+            var gravity = xy("gravity", config);
+    
+            var startColors = color("startColor", config);
+            var finishColors = color("finishColor", config);
+    
+            emitter.launchMode = FlxEmitterMode.CIRCLE;
+            emitter.loadParticles(particleGraphic, maxParticles);
+    
+            emitter.width = (sourcePositionVariance.x == 0 ? 1 : sourcePositionVariance.x * 2) * scale;
+            emitter.height = (sourcePositionVariance.y == 0 ? 1 : sourcePositionVariance.y * 2) * scale;
+    
+            emitter.lifespan.set(lifespan.min, lifespan.max);
+    
+            emitter.acceleration.set(gravity.x * scale, gravity.y * scale);
+    
+            emitter.launchAngle.set(angle.min, angle.max);
+    
+            emitter.speed.start.set(speed.min * scale, speed.max * scale);
+            emitter.speed.end.set(speed.min * scale, speed.max * scale);
+    
+            emitter.angle.set(rotationStart.min, rotationStart.max, rotationEnd.min, rotationEnd.max);
+    
+            emitter.scale.start.min.set(startSize.min / particle.frameWidth * scale, startSize.min / particle.frameHeight * scale);
+            emitter.scale.start.max.set(startSize.max / particle.frameWidth * scale, startSize.max / particle.frameHeight * scale);
+            emitter.scale.end.min.set(finishSize.min / particle.frameWidth * scale, finishSize.min / particle.frameHeight * scale);
+            emitter.scale.end.max.set(finishSize.max / particle.frameWidth * scale, finishSize.max / particle.frameHeight * scale);
+    
+            emitter.alpha.set(startColors.minColor.alphaFloat, startColors.maxColor.alphaFloat, finishColors.minColor.alphaFloat,
+                finishColors.maxColor.alphaFloat);
+            emitter.color.set(startColors.minColor, startColors.maxColor, finishColors.minColor, finishColors.maxColor);
+    
+            if (config.hasNode.blendFuncSource && config.hasNode.blendFuncDestination)
+            {
+                /**
+                 * ParticleDesigner blend function values:
+                 *
+                 * 0x000: ZERO
+                 * 0x001: ONE
+                 * 0x300: SOURCE_COLOR
+                 * 0x301: ONE_MINUS_SOURCE_COLOR
+                 * 0x302: SOURCE_ALPHA
+                 * 0x303: ONE_MINUS_SOURCE_ALPHA
+                 * 0x304: DESTINATION_ALPHA
+                 * 0x305: ONE_MINUS_DESTINATION_ALPHA
+                 * 0x306: DESTINATION_COLOR
+                 * 0x307: ONE_MINUS_DESTINATION_COLOR
+                **/
+    
+                var src = Std.parseInt(config.node.blendFuncSource.att.value),
+                    dst = Std.parseInt(config.node.blendFuncDestination.att.value);
+    
+                emitter.blend = switch ((src << 12) | dst)
+                {
+                    case 0x306303:
+                        BlendMode.MULTIPLY;
+                    case 0x001301:
+                        BlendMode.SCREEN;
+                    case 0x001303, 0x302303:
+                        BlendMode.NORMAL;
+                    default:
+                        BlendMode.ADD;
+                }
+            }
+            else
+            {
+                emitter.blend = BlendMode.ADD;
+            }
+            emitter.keepScaleRatio = true;
+            return emitter;
+
+    }
+}
 class PluginManager {
     public static var interp = new InterpEx();
     public static var hscriptClasses:Array<String> = [];
@@ -98,6 +211,9 @@ class PluginManager {
         interp.variables.set("FlxGifSprite", FlxGifSprite);
 		interp.variables.set("FlxSprite", DynamicSprite);
 		interp.variables.set("FlxSound", DynamicSound);
+        interp.variables.set("FlxPexParser", DynamicPexParser);
+        interp.variables.set("FlxParticle", FlxParticle);
+        interp.variables.set("FlxEmitter", FlxEmitter);
 		interp.variables.set("FlxAtlasFrames", DynamicSprite.DynamicAtlasFrames);
 		interp.variables.set("FlxGroup", flixel.group.FlxGroup);
 		interp.variables.set("FlxAngle", flixel.math.FlxAngle);
@@ -144,7 +260,7 @@ interp.variables.set("mobile", false);
 		interp.variables.set("globalVars", Main.globalVars);
 		interp.variables.set('addHaxeLibrary', function (libName:String, ?libFolder:String = '',varName:String = '') {
 			try {
-                if(varName.length == 0)
+				if (varName == null || varName == '')
                     varName = libName;
 				var str:String = '';
 				if(libFolder.length > 0)
