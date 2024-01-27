@@ -45,8 +45,8 @@ import flxgif.FlxGifSprite;
 import android.FlxHitbox;
 import android.FlxVirtualPad;
 import flixel.ui.FlxButton;
-import flixel.system.FlxAssets.FlxGraphicAsset;
 #end
+import flixel.system.FlxAssets.FlxGraphicAsset;
 class DynamicPexParser extends FlxPexParser
 {
     public static function parse<T:FlxEmitter>(data:Dynamic, particleGraphic:FlxGraphicAsset, ?emitter:T, scale:Float = 1):T{
