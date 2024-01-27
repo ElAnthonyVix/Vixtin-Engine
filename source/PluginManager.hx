@@ -26,6 +26,8 @@ import flixel.addons.effects.FlxTrail;
 import plugins.tools.MetroSprite;
 import hscript.InterpEx;
 import hscript.Interp;
+import openfl.Assets;
+import openfl.display.BlendMode;
 import flixel.FlxG;
 import flixel.addons.editors.pex.FlxPexParser;
 import flixel.addons.text.FlxTypeText;
@@ -46,6 +48,11 @@ import android.FlxHitbox;
 import android.FlxVirtualPad;
 import flixel.ui.FlxButton;
 #end
+#if haxe4
+import haxe.xml.Access;
+#else
+import haxe.xml.Fast as Access;
+#end
 import flixel.system.FlxAssets.FlxGraphicAsset;
 class DynamicPexParser extends FlxPexParser
 {
@@ -58,7 +65,7 @@ class DynamicPexParser extends FlxPexParser
                 var datapng = FNFAssets.getBitmapData(particleGraphic);
             }
 
-            var config:Access = getAccessNode(data);
+            var config:Access = FlxPexParser.getAccessNode(data);
     
             // Need to extract the particle graphic information
             var particle:FlxParticle = new FlxParticle();
@@ -72,21 +79,21 @@ class DynamicPexParser extends FlxPexParser
     
             var maxParticles:Int = Std.parseInt(config.node.maxParticles.att.value);
     
-            var lifespan = minMax("particleLifeSpan", "particleLifespanVariance", config);
-            var speed = minMax("speed", config);
+            var lifespan = FlxPexParser.minMax("particleLifeSpan", "particleLifespanVariance", config);
+            var speed = FlxPexParser.minMax("speed", config);
     
-            var angle = minMax("angle", config);
+            var angle = FlxPexParser.minMax("angle", config);
     
-            var startSize = minMax("startParticleSize", config);
-            var finishSize = minMax("finishParticleSize", "finishParticleSizeVariance", config);
-            var rotationStart = minMax("rotationStart", config);
-            var rotationEnd = minMax("rotationEnd", config);
+            var startSize = FlxPexParser.minMax("startParticleSize", config);
+            var finishSize = FlxPexParser.minMax("finishParticleSize", "finishParticleSizeVariance", config);
+            var rotationStart = FlxPexParser.minMax("rotationStart", config);
+            var rotationEnd = FlxPexParser.minMax("rotationEnd", config);
     
-            var sourcePositionVariance = xy("sourcePositionVariance", config);
-            var gravity = xy("gravity", config);
+            var sourcePositionVariance = FlxPexParser.xy("sourcePositionVariance", config);
+            var gravity = FlxPexParser.xy("gravity", config);
     
-            var startColors = color("startColor", config);
-            var finishColors = color("finishColor", config);
+            var startColors = FlxPexParser.color("startColor", config);
+            var finishColors = FlxPexParser.color("finishColor", config);
     
             emitter.launchMode = FlxEmitterMode.CIRCLE;
             emitter.loadParticles(particleGraphic, maxParticles);
