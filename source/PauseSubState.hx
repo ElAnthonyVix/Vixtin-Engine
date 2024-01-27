@@ -162,7 +162,7 @@ else{
 		interp.variables.set("SelectSortState", SelectSortState);
 		interp.variables.set("CategoryState", CategoryState);
 		interp.variables.set("ControlsState", ControlsState);
-		interp.variables.set("close", close);
+		interp.variables.set("close", this.close);
 		interp.variables.set("resetState", FlxG.resetState);
 		interp.variables.set("setCameras", setCameras);
 		#if mobile
@@ -259,8 +259,8 @@ else{
 
 	override function update(elapsed:Float)
 	{
-		super.update(elapsed);
 		callAllHScript("update", [elapsed]);
+		super.update(elapsed);
 	}
 
 	override function destroy()
