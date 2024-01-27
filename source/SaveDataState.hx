@@ -168,7 +168,7 @@ else{
 		interp.variables.set("ChartingState", ChartingState);
 		interp.variables.set("Alphabet", Alphabet);
 		interp.variables.set("curBeat", 0);
-		interp.variables.set("currentFreeplayState", this);
+		interp.variables.set("currentState", this);
 		interp.variables.set("add", add);
 		interp.variables.set("remove", remove);
 		interp.variables.set("insert", insert);

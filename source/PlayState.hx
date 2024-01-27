@@ -3008,10 +3008,12 @@ public function callAllHScript(func_name:String, args:Array<Dynamic>) {
 		}
 		
 		for (tween in modTweens) {
+			if (tween != null && !tween.finished)
 			tween.active = false;
 		}
 		
 		for (timer in modTimers) {
+			if (timer != null && !timer.finished)
 			timer.active = false;
 		}
 
@@ -3103,10 +3105,12 @@ public function callAllHScript(func_name:String, args:Array<Dynamic>) {
 		}
 		
 		for (tween in modTweens) {
+			if (tween != null && !tween.finished)
 			tween.active = true;
 		}
 		
 		for (timer in modTimers) {
+			if (timer != null && !timer.finished)
 			timer.active = true;
 		}
 
