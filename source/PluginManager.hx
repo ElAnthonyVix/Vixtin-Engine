@@ -37,6 +37,14 @@ import Type.ValueType;
 import hscript.Parser;
 import hscript.ParserEx;
 import hscript.ClassDeclEx;
+import flixel.addons.effects.chainable.FlxEffectSprite;
+import flixel.addons.effects.chainable.FlxGlitchEffect;
+import flixel.addons.effects.chainable.FlxOutlineEffect;
+import flixel.addons.effects.chainable.FlxRainbowEffect;
+import flixel.addons.effects.chainable.FlxShakeEffect;
+import flixel.addons.effects.chainable.FlxTrailEffect;
+import flixel.addons.effects.chainable.FlxWaveEffect;
+import flixel.addons.effects.chainable.IFlxEffect;
 #if VIDEOS_ALLOWED
 import hxcodec.flixel.FlxVideo as FlxVideo;
 import hxcodec.flixel.FlxVideoSprite;
@@ -54,6 +62,7 @@ import haxe.xml.Access;
 import haxe.xml.Fast as Access;
 #end
 import flixel.system.FlxAssets.FlxGraphicAsset;
+using StringTools;
 class DynamicPexParser extends FlxPexParser
 {
     public static function parse<T:FlxEmitter>(data:Dynamic, particleGraphic:FlxGraphicAsset, ?emitter:T, scale:Float = 1):T{
@@ -207,16 +216,52 @@ class PluginManager {
 	    FlxG.cameras.add(dummyCam);
 	    return dummyCam;
     }
+    static function addEffectSpriteVars<T:Interp>(interp:T):T{
+        interp.variables.set("FlxEffectSprite", FlxEffectSprite);
+		interp.variables.set("FlxOutlineEffect", FlxOutlineEffect);
+        interp.variables.set("FlxRainbowEffect", FlxRainbowEffect);
+        interp.variables.set("FlxShakeEffect", FlxShakeEffect);
+        interp.variables.set("FlxTrailEffect", FlxTrailEffect);
+		interp.variables.set("FlxWaveEffect", FlxWaveEffect);
+        interp.variables.set("IFlxEffect", IFlxEffect);
+        interp.variables.set("FlxGlitchDirection", FlxGlitchDirection);
+        interp.variables.set("FlxOutlineMode", FlxOutlineMode);
+        interp.variables.set("FlxWaveMode", FlxWaveMode);
+        interp.variables.set("FlxWaveDirection", FlxWaveDirection);
+        interp.variables.set("FlxGlitchEffect", FlxGlitchEffect);
+        return interp;
+        
+    }
     public static function addVarsToInterp<T:Interp>(interp:T):T {
         #if mobile
         interp.variables.set("FlxActionMode", FlxActionMode);
         interp.variables.set("FlxDPadMode", FlxDPadMode);
         interp.variables.set("FlxVirtualPad", FlxVirtualPad);
         #end
+        interp.variables.set("blendModeFromString", function(blend){
+            switch(blend.toLowerCase().trim()) {
+                case 'add': return ADD;
+                case 'alpha': return ALPHA;
+                case 'darken': return DARKEN;
+                case 'difference': return DIFFERENCE;
+                case 'erase': return ERASE;
+                case 'hardlight': return HARDLIGHT;
+                case 'invert': return INVERT;
+                case 'layer': return LAYER;
+                case 'lighten': return LIGHTEN;
+                case 'multiply': return MULTIPLY;
+                case 'overlay': return OVERLAY;
+                case 'screen': return SCREEN;
+                case 'shader': return SHADER;
+                case 'subtract': return SUBTRACT;
+            }
+            return NORMAL;
+        });
 		interp.variables.set("Conductor", Conductor);
 	    interp.variables.set("addCamera", addCamera);
         interp.variables.set("FlxGifSprite", FlxGifSprite);
 		interp.variables.set("FlxSprite", DynamicSprite);
+        interp.variables.set("CustomSprite", CustomSprite);
 		interp.variables.set("FlxSound", DynamicSound);
         interp.variables.set("FlxPexParser", DynamicPexParser);
         interp.variables.set("FlxParticle", FlxParticle);
@@ -243,6 +288,7 @@ interp.variables.set("mobile", true);
 #else
 interp.variables.set("mobile", false);
 #end
+addEffectSpriteVars(interp);
 		// : )
 		interp.variables.set("FlxG", HscriptGlobals);
 		interp.variables.set("FlxTimer", flixel.util.FlxTimer);
