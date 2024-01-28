@@ -57,7 +57,7 @@ jobs:
                               haxelib install json2object
                                haxelib install haxeui-core
 
-          haxelib install flxanimate
+          haxelib git flxanimate https://github.com/ShadowMario/flxanimate dev
           haxelib install uniontypes
     
           haxelib install random
@@ -109,7 +109,7 @@ jobs:
                               haxelib install json2object
                                haxelib install haxeui-core
 
-                               haxelib install flxanimate
+                               haxelib git flxanimate https://github.com/ShadowMario/flxanimate dev
           haxelib install uniontypes
          
           haxelib install random
@@ -162,7 +162,7 @@ jobs:
                               haxelib install json2object
                                haxelib install haxeui-core
 
-          haxelib install flxanimate
+          haxelib git flxanimate https://github.com/ShadowMario/flxanimate dev
           haxelib install uniontypes
 
           haxelib install random
@@ -243,7 +243,7 @@ jobs:
                   haxelib git extension-videoview https://github.com/mcagabe19-stuff/extension-videoview
                   haxelib git extension-androidtools https://github.com/MaysLastPlay77/extension-androidtools
                   haxelib install uniontypes
-                  haxelib install flxanimate
+                  haxelib git flxanimate https://github.com/ShadowMario/flxanimate dev
                   haxelib install random
                   haxelib install haxeui-flixel
                   haxelib list

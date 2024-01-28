@@ -244,16 +244,74 @@ class FNFAssets {
         #end
     }
 
-	public static function loadAnimateAtlas(curAnim:FlxAnimate,id:String, ?useCache:Bool=true) {
-
-		if (!FNFAssets.exists('$id/Animation.json') || !FNFAssets.exists('$id/spritemap.json'))
+	public static function loadAnimateAtlas(spr:FlxAnimate, folderOrImg:Dynamic, spriteJson:Dynamic = null, animationJson:Dynamic = null)
+		{
+			var changedAnimJson = false;
+			var changedAtlasJson = false;
+			var changedImage = false;
+			
+			if(spriteJson != null)
 			{
-				FlxG.log.error('Animation file not found in specified path: "$id", have you written the correct path?');
-				return;
+				changedAtlasJson = true;
+				spriteJson = File.getContent(spriteJson);
 			}
-			curAnim.loadAtlas(id);
-    }
 	
+			if(animationJson != null) 
+			{
+				changedAnimJson = true;
+				animationJson = File.getContent(animationJson);
+			}
+	
+			// is folder or image path
+			if(Std.isOfType(folderOrImg, String))
+			{
+				var originalPath:String = folderOrImg;
+				for (i in 0...10)
+				{
+					var st:String = '$i';
+					if(i == 0) st = '';
+	
+					if(!changedAtlasJson)
+					{
+						spriteJson = FNFAssets.getText('$originalPath/spritemap$st.json');
+						if(spriteJson != null)
+						{
+							//trace('found Sprite Json');
+							changedImage = true;
+							changedAtlasJson = true;
+							folderOrImg = FNFAssets.getBitmapData('$originalPath/spritemap$st.png');
+							break;
+						}
+					}
+					else if(FNFAssets.exists('$originalPath/spritemap$st.png'))
+					{
+						//trace('found Sprite PNG');
+						changedImage = true;
+						folderOrImg = FNFAssets.getBitmapData('$originalPath/spritemap$st.png');
+						break;
+					}
+				}
+	
+				if(!changedImage)
+				{
+					//trace('Changing folderOrImg to FlxGraphic');
+					changedImage = true;
+					folderOrImg = FNFAssets.getBitmapData(originalPath);
+				}
+	
+				if(!changedAnimJson)
+				{
+					//trace('found Animation Json');
+					changedAnimJson = true;
+					animationJson = FNFAssets.getText('$originalPath/Animation.json');
+				}
+			}
+	
+			//trace(folderOrImg);
+			//trace(spriteJson);
+			//trace(animationJson);
+			spr.loadAtlasEx(folderOrImg, spriteJson, animationJson);
+		}
 
 	public static function getImage(id:String):Null<FlxGraphic>
 		{
