@@ -250,13 +250,14 @@ class FNFAssets {
 			{
 				FlxG.log.error('Animation file not found in specified path: "$id", have you written the correct path?');
 				return;
+			}
 			var file = CoolUtil.parseJson(FNFAssets.getJson(id + "/Animation"));
 			@:privateAccess
 			curAnim.anim._loadAtlas(file);
 			curAnim.frames = DynamicSprite.DynamicAnimateFrames.fromTextureAtlas(id);
 	   }
     }
-	}
+	
 
 	public static function getImage(id:String):Null<FlxGraphic>
 		{
