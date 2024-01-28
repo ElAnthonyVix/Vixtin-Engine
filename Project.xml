@@ -77,7 +77,7 @@
 
 	<haxelib name="flixel" />
 	<haxedev set='webgl' />
-
+    <haxelib name="flxanimate"/>
 	<!--In case you want to use the addons package-->
 	<haxelib name="flixel-addons" />
 	<haxelib name="tjson"/>

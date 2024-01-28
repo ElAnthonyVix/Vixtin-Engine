@@ -3,6 +3,8 @@ package;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.FlxSprite;
+import flxanimate.FlxAnimate;
+import flxanimate.frames.FlxAnimateFrames;
 /**
  * A sprite that automatically handles loading files dynamically. This is used in hscripts by default.
  * Only overwrites "loadGraphic."
@@ -17,11 +19,51 @@ class DynamicSprite extends FlxSprite {
         return super.loadGraphic(Graphic, Animated, Width, Height, Unique, Key);
     }
 }
+class DynamicAnimateFrames{
+    public static function fromSparrow(path:FlxSparrow, png:FlxGraphicAsset) {
+        if (FNFAssets.exists(path)) {
+            path = FNFAssets.getText(path);
+        }
+        if ((png is String)) {
+            // show time again
+            png = FNFAssets.getBitmapData(png);
+        }
+        return FlxAnimateFrames.fromSparrow(path, png);
+    }
+    public static function fromJson(path:FlxJson, png:FlxGraphicAsset) {
+        if (FNFAssets.exists(path)) {
+            path = FNFAssets.getText(path);
+        }
+        if ((png is String)) {
+            // show time again
+            png = FNFAssets.getBitmapData(png);
+        }
+        return FlxAnimateFrames.fromJson(path, png);
+    }
+    public static function fromEdgeAnimate(path:String, png:FlxGraphicAsset){
+        if ((png is String)) {
+            // show time again
+            png = FNFAssets.getBitmapData(png);
+        }
+        return FlxAnimateFrames.fromEdgeAnimate(path, png);
+
+    }
+    public static function fromTextureAtlas(path:String) {
+        var returned = FlxAnimateFrames.fromTextureAtlas(path);
+		if (!FNFAssets.exists('$path/spritemap.json'))
+		{
+            trace('spriteMap cannot be found....');
+			return null;
+		}
+        return returned;
+    }
+}
 /**
  * A replacement for FlxAtlasFrames that dynamically handles loading assets.
  * Passed to hscripts by default.
  * Because of how this works only "fromSparrow" and "fromSpriteSheetPAcker is supported."
  */
+
 class DynamicAtlasFrames {
     public static function fromSparrow(png:FlxGraphicAsset, xml:String) {
         if (FNFAssets.exists(xml)) {

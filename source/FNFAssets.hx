@@ -7,6 +7,8 @@ import sys.FileSystem;
 import animateatlas.AtlasFrameMaker;
 import sys.io.File;
 //#end
+import flxanimate.FlxAnimate;
+import flxanimate.frames.FlxAnimateFrames;
 import openfl.utils.Assets;
 import lime.utils.Assets as LimeAssets;
 import openfl.display.BitmapData;
@@ -241,6 +243,20 @@ class FNFAssets {
             return Assets.getBitmapData(id, useCache);
         #end
     }
+
+	public static function loadAnimateAtlas(curAnim:FlxAnimate,id:String, ?useCache:Bool=true) {
+       if (FNFAssets.exists(id)){
+		if (!FNFAssets.exists('$id/Animation.json') && haxe.io.Path.extension(id) != "zip")
+			{
+				FlxG.log.error('Animation file not found in specified path: "$id", have you written the correct path?');
+				return;
+			var file = CoolUtil.parseJson(FNFAssets.getJson(id + "/Animation"));
+			@:privateAccess
+			curAnim.anim._loadAtlas(file);
+			curAnim.frames = DynamicSprite.DynamicAnimateFrames.fromTextureAtlas(id);
+	   }
+    }
+	}
 
 	public static function getImage(id:String):Null<FlxGraphic>
 		{
