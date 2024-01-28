@@ -516,7 +516,7 @@ class AlphaCharacter extends FlxSprite
 	public function createLetter(letter:String):Void
 	{
 		var curLetter:Letter = null;
-		var lowercase = character.toLowerCase();
+		var lowercase = letter.toLowerCase();
 		if(allLetters.exists(lowercase)) curLetter = allLetters.get(lowercase);
 		if(curLetter != null && curLetter.offsets != null)
 			{
@@ -549,7 +549,7 @@ class AlphaCharacter extends FlxSprite
 	public function createNumber(letter:String):Void
 	{
 		var curLetter:Letter = null;
-		var lowercase = character.toLowerCase();
+		var lowercase = letter.toLowerCase();
 		if(allLetters.exists(lowercase)) curLetter = allLetters.get(lowercase);
 		if(curLetter != null && curLetter.offsets != null)
 			{
@@ -565,7 +565,7 @@ class AlphaCharacter extends FlxSprite
 	public function createSymbol(letter:String)
 	{
 		var curLetter:Letter = null;
-		var lowercase = character.toLowerCase();
+		var lowercase = letter.toLowerCase();
 		if(allLetters.exists(lowercase)) curLetter = allLetters.get(lowercase);
 		if(curLetter != null && curLetter.offsets != null)
 			{
