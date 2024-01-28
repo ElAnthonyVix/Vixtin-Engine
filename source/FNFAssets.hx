@@ -252,7 +252,6 @@ class FNFAssets {
 				return;
 			}
 			curAnim.loadAtlas(id);
-	   
     }
 	
 

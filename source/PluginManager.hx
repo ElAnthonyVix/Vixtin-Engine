@@ -264,6 +264,7 @@ class PluginManager {
         interp.variables.set("CustomSprite", CustomSprite);
 		interp.variables.set("FlxSound", DynamicSound);
         interp.variables.set("FlxPexParser", DynamicPexParser);
+        interp.variables.set("FlxAnimate", flxanimate.FlxAnimate);
         interp.variables.set("FlxParticle", FlxParticle);
         interp.variables.set("FlxEmitter", FlxEmitter);
 		interp.variables.set("FlxAtlasFrames", DynamicSprite.DynamicAtlasFrames);
