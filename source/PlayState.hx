@@ -3074,7 +3074,7 @@ public function callAllHScript(func_name:String, args:Array<Dynamic>) {
 				}
 			}
 			#if desktop
-			if (startTimer.finished)
+			if (startTimer != null && startTimer.finished)
 			{
 				DiscordClient.changePresence(customPrecence
 					+ " "

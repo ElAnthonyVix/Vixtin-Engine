@@ -298,6 +298,7 @@ addEffectSpriteVars(interp);
 		interp.variables.set("StringTools", StringTools);
 		interp.variables.set("MetroSprite", MetroSprite);
 		interp.variables.set("FlxTrail", FlxTrail);
+        interp.variables.set("Map", haxe.ds.StringMap);
 		interp.variables.set("FlxEase", FlxEase);
 		interp.variables.set("Reflect", Reflect);
 		interp.variables.set("Character", Character);
