@@ -41,6 +41,8 @@ class Alphabet extends FlxSpriteGroup
 	var lastWasEscape:Bool = false;
 	var drawHypens:Bool = false;
 	var splitWords:Array<String> = [];
+	var scaleX(default, set):Float = 1;
+	var scaleY(default, set):Float = 1;
 
 	var isBold:Bool = false;
 
@@ -268,6 +270,47 @@ class Alphabet extends FlxSpriteGroup
 
 			tmr.time = FlxG.random.float(0.04, 0.09);
 		}, splitWords.length);
+	}
+
+	private function set_scaleX(value:Float)
+	{
+		if (value == scaleX) 
+			return value;
+
+		var ratio:Float = value / scale.x;
+		scale.x = value;
+		scaleX = value;
+		softReloadLetters(ratio, 1);
+		return value;
+	}
+
+	private function set_scaleY(value:Float)
+	{
+		if (value == scaleY) 
+			return value;
+
+		var ratio:Float = value / scale.y;
+		scale.y = value;
+		scaleY = value;
+		softReloadLetters(1, ratio);
+		return value;
+	}
+
+	public function softReloadLetters(ratioX:Float = 1, ratioY:Null<Float> = null)
+	{
+		if(ratioY == null) 
+			ratioY = ratioX;
+
+		forEach(function (sprite:FlxSprite)
+		{
+			if (sprite != null)
+			{
+				sprite.x = (sprite.x - x) * ratioX + x;
+				sprite.y = (sprite.y - y) * ratioY + y;
+				sprite.scale.x = scaleX;
+				sprite.scale.y = scaleY;
+			}
+		});
 	}
 
 	override function update(elapsed:Float)
