@@ -544,7 +544,7 @@ public function callAllHScript(func_name:String, args:Array<Dynamic>) {
 	function makeHaxeState(usehaxe:String, path:String, filename:String) {
 		trace("opening a haxe state (because we are cool :))");
 		var parser = new ParserEx();
-		var program = parser.parseString(FNFAssets.getHscript(path + filename));
+		var program = parser.parseString(FNFAssets.getText(path + filename));
 		var interp = PluginManager.createSimpleInterp();
 		// set vars
 		#if mobile
@@ -1491,13 +1491,13 @@ public function callAllHScript(func_name:String, args:Array<Dynamic>) {
 		//Notetypes (the reason it is a single file is to further optimize space and ram memory.)
 		if (FNFAssets.exists("assets/images/custom_notetypes/notetypes", Hscript))
 		{
-			makeHaxeState("notetypes", "assets/images/custom_notetypes/", "notetypes");
+			makeHaxeState("notetypes", "assets/images/custom_notetypes/", "notetypes.hscript");
 		}
 
 		//Events (the same reason of the notetypes)
 		if (FNFAssets.exists("assets/images/custom_events/events", Hscript))
 		{
-			makeHaxeState("events", "assets/images/custom_events/", "events");
+			makeHaxeState("events", "assets/images/custom_events/", "events.hscript");
 		}
 
 		// add(strumLine);
@@ -1645,20 +1645,9 @@ public function callAllHScript(func_name:String, args:Array<Dynamic>) {
 		#end
 		
 		var stageJson = CoolUtil.parseJson(FNFAssets.getText("assets/images/custom_stages/custom_stages.json"));
-		makeHaxeState("stages", "assets/images/custom_stages/" + SONG.stage + "/", "../"+Reflect.field(stageJson, SONG.stage));
+		makeHaxeState("stages", "assets/images/custom_stages/" + SONG.stage + "/", "../"+Reflect.field(stageJson, SONG.stage)+'.hscript');
 		trace('stage done');
-		var modchartPushed:Array<String> = [];
-		if(FileSystem.exists("assets/data/" + SONG.song.toLowerCase() + "/"))
-			{
-				for (file in FileSystem.readDirectory("assets/data/" + SONG.song.toLowerCase() + "/"))
-				{
-		if (file.endsWith('.hscript') && !modchartPushed.contains(file))
-		{
-			hscriptIsModChart.set(file.substr(0, file.length - 8),true);
-			makeHaxeState(file.substr(0, file.length - 8), "assets/data/" + SONG.song.toLowerCase() + "/", file.substr(0, file.length - 8));	
-		}
-	}
-	}
+		
 		
 		var uiJson = CoolUtil.parseJson(FNFAssets.getText("assets/images/custom_ui/ui_layouts/ui.json"));
 		makeHaxeStateUI("ui", "assets/images/custom_ui/ui_layouts/" + Reflect.field(uiJson, 'layout') + "/", "../" + Reflect.field(uiJson, 'layout') + ".hscript");
@@ -1671,7 +1660,7 @@ public function callAllHScript(func_name:String, args:Array<Dynamic>) {
 				{
 		if (file.endsWith('.hscript') && !scriptPushed.contains(file))
 		{
-			makeHaxeState(file.substr(0, file.length - 8), "assets/scripts/", file.substr(0, file.length - 8));	
+			makeHaxeState(file.substr(0, file.length - 8), "assets/scripts/", file);	
 		}
 	}
 	}
@@ -1950,7 +1939,7 @@ public function callAllHScript(func_name:String, args:Array<Dynamic>) {
 			return;
 		}
 		inCutscene = true;
-		makeHaxeState("cutscene", "assets/images/custom_cutscenes/"+SONG.cutsceneType+'/', "../"+Reflect.field(goodJson, SONG.cutsceneType));
+		makeHaxeState("cutscene", "assets/images/custom_cutscenes/"+SONG.cutsceneType+'/', "../"+Reflect.field(goodJson, SONG.cutsceneType)+'.hscript');
 	}
 	function schoolIntro(?dialogueBox:DialogueBox, intro:Bool=true):Void
 	{
@@ -2064,7 +2053,19 @@ public function callAllHScript(func_name:String, args:Array<Dynamic>) {
 		#end
 		generateStaticArrows(0);
 		generateStaticArrows(1);
-		
+
+		var modchartPushed:Array<String> = [];
+		if(FileSystem.exists("assets/data/" + SONG.song.toLowerCase() + "/"))
+			{
+				for (file in FileSystem.readDirectory("assets/data/" + SONG.song.toLowerCase() + "/"))
+				{
+		if (file.endsWith('.hscript') && !modchartPushed.contains(file))
+		{
+			hscriptIsModChart.set(file.substr(0, file.length - 8),true);
+			makeHaxeState(file.substr(0, file.length - 8), "assets/data/" + SONG.song.toLowerCase() + "/", file);	
+		}
+	}
+	}
 		if (duoMode)
 		{
 			controls.setKeyboardScheme(Duo(true));
