@@ -245,17 +245,14 @@ class FNFAssets {
     }
 
 	public static function loadAnimateAtlas(curAnim:FlxAnimate,id:String, ?useCache:Bool=true) {
-       if (FNFAssets.exists(id)){
-		if (!FNFAssets.exists('$id/Animation.json') && haxe.io.Path.extension(id) != "zip")
+
+		if (!FNFAssets.exists('$id/Animation.json') || !FNFAssets.exists('$id/spritemap.json'))
 			{
 				FlxG.log.error('Animation file not found in specified path: "$id", have you written the correct path?');
 				return;
 			}
-			var file = CoolUtil.parseJson(FNFAssets.getJson(id + "/Animation"));
-			@:privateAccess
-			curAnim.anim._loadAtlas(file);
-			curAnim.frames = DynamicSprite.DynamicAnimateFrames.fromTextureAtlas(id);
-	   }
+			curAnim.loadAtlas(id);
+	   
     }
 	
 
